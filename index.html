@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Merch Stock</title>
+  <style>
+    :root {
+      --bg: #f6f5fa;
+      --surface: #ffffff;
+      --ink: #1f1b2e;
+      --ink-muted: #6f6a80;
+      --brand: #7c3aed;
+      --brand-2: #d946ef;
+      --danger: #dc2626;
+      --border: #e7e4f0;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141220;
+        --surface: #1e1b2e;
+        --ink: #f1eefb;
+        --ink-muted: #9b95b0;
+        --border: #2c2840;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    .wrap { max-width: 640px; margin: 0 auto; padding: 16px 16px 48px; }
+    h1 {
+      font-size: 1.5rem;
+      margin: 8px 0 16px;
+      background: linear-gradient(90deg, var(--brand), var(--brand-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-block;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    /* ---- login ---- */
+    #login-form { display: grid; gap: 12px; max-width: 360px; margin: 48px auto 0; }
+    #login-form input, #search {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 1rem;
+      background: var(--surface);
+      color: var(--ink);
+    }
+    #login-form button {
+      padding: 12px;
+      border: 0;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(90deg, var(--brand), var(--brand-2));
+      cursor: pointer;
+    }
+    #login-form button:disabled { opacity: 0.6; cursor: default; }
+    .error { color: var(--danger); font-size: 0.875rem; min-height: 1.2em; margin: 0; }
+    /* ---- header / totals ---- */
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .totals { display: flex; gap: 12px; margin: 0 0 16px; }
+    .totals .card { flex: 1; text-align: center; padding: 12px; }
+    .totals .num { font-size: 1.5rem; font-weight: 800; }
+    .totals .lbl { font-size: 0.75rem; color: var(--ink-muted); }
+    #logout {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--ink-muted);
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    /* ---- item list ---- */
+    #search { margin: 0 0 16px; }
+    .group-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink-muted);
+      margin: 20px 4px 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 14px 10px 10px;
+    }
+    .item img, .item .ph {
+      width: 48px; height: 48px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .item .ph {
+      display: flex; align-items: center; justify-content: center;
+      background: color-mix(in srgb, var(--brand) 12%, transparent);
+      color: var(--brand);
+      font-weight: 800;
+    }
+    .item .info { flex: 1; min-width: 0; }
+    .item .name { font-weight: 600; overflow-wrap: anywhere; }
+    .item .sub { font-size: 0.75rem; color: var(--ink-muted); }
+    .item .qty { font-size: 1.25rem; font-weight: 800; flex-shrink: 0; }
+    .item.zero { opacity: 0.55; }
+    .item.zero .qty { color: var(--danger); }
+    .muted { color: var(--ink-muted); text-align: center; margin-top: 48px; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <h1>Merch Stock</h1>
+      <button id="logout" class="hidden">Log out</button>
+    </div>
+
+    <p id="status" class="muted">Loading…</p>
+
+    <form id="login-form" class="hidden card">
+      <input id="email" type="email" placeholder="Email" autocomplete="email" required />
+      <input id="password" type="password" placeholder="Password" autocomplete="current-password" required />
+      <p id="login-error" class="error"></p>
+      <button type="submit">Log in</button>
+    </form>
+
+    <div id="app" class="hidden">
+      <div class="totals">
+        <div class="card"><div class="num" id="total-items">–</div><div class="lbl">items</div></div>
+        <div class="card"><div class="num" id="total-stock">–</div><div class="lbl">in stock</div></div>
+      </div>
+      <input id="search" type="search" placeholder="Search by name, type or fandom…" />
+      <div id="list"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // Placeholders are replaced by the deploy workflow from repo variables.
+    const SUPABASE_URL = '__SUPABASE_URL__'
+    const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__'
+
+    const $ = (id) => document.getElementById(id)
+    const status = $('status')
+
+    const configured =
+      SUPABASE_URL && SUPABASE_ANON_KEY && !SUPABASE_URL.startsWith('__')
+    if (!configured) {
+      status.textContent =
+        'Not configured: set the VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY repository variables and redeploy (see README).'
+    }
+
+    const sb = configured
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      : null
+
+    const esc = (s) =>
+      String(s).replace(/[&<>"']/g, (c) =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+
+    let items = []
+
+    function render() {
+      const q = $('search').value.trim().toLowerCase()
+      const visible = q
+        ? items.filter((i) =>
+            [i.name, i.type, i.fandom].some((f) => f && f.toLowerCase().includes(q)))
+        : items
+
+      $('total-items').textContent = visible.length
+      $('total-stock').textContent = visible.reduce((s, i) => s + (i.stock_qty ?? 0), 0)
+
+      const groups = new Map()
+      for (const i of visible) {
+        const key = i.type || 'Other'
+        if (!groups.has(key)) groups.set(key, [])
+        groups.get(key).push(i)
+      }
+
+      let html = ''
+      for (const [type, list] of groups) {
+        const groupStock = list.reduce((s, i) => s + (i.stock_qty ?? 0), 0)
+        html += `<div class="group-title"><span>${esc(type)}</span><span>${groupStock}</span></div><ul>`
+        for (const i of list) {
+          const qty = i.stock_qty ?? 0
+          const img = i.image_url
+            ? `<img src="${esc(i.image_url)}" alt="" loading="lazy" />`
+            : `<div class="ph">${esc((i.type || '★').charAt(0).toUpperCase())}</div>`
+          html += `<li class="item${qty <= 0 ? ' zero' : ''}">
+            ${img}
+            <div class="info">
+              <div class="name">${esc(i.name)}</div>
+              ${i.fandom ? `<div class="sub">${esc(i.fandom)}</div>` : ''}
+            </div>
+            <div class="qty">${qty}</div>
+          </li>`
+        }
+        html += '</ul>'
+      }
+      $('list').innerHTML = html || '<p class="muted">Nothing found.</p>'
+    }
+
+    async function loadItems() {
+      status.textContent = 'Loading…'
+      status.classList.remove('hidden')
+      const { data, error } = await sb
+        .from('items')
+        .select('id, type, fandom, name, image_url, stock_qty')
+        .order('type', { ascending: true, nullsFirst: false })
+        .order('name')
+      if (error) {
+        status.textContent = 'Failed to load items: ' + error.message
+        return
+      }
+      items = data
+      status.classList.add('hidden')
+      $('app').classList.remove('hidden')
+      render()
+    }
+
+    function showLogin() {
+      status.classList.add('hidden')
+      $('app').classList.add('hidden')
+      $('logout').classList.add('hidden')
+      $('login-form').classList.remove('hidden')
+    }
+
+    async function showApp() {
+      $('login-form').classList.add('hidden')
+      $('logout').classList.remove('hidden')
+      await loadItems()
+    }
+
+    if (configured) {
+      sb.auth.getSession().then(({ data: { session } }) => {
+        session ? showApp() : showLogin()
+      })
+
+      $('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault()
+        const btn = e.target.querySelector('button')
+        btn.disabled = true
+        $('login-error').textContent = ''
+        const { error } = await sb.auth.signInWithPassword({
+          email: $('email').value,
+          password: $('password').value,
+        })
+        btn.disabled = false
+        if (error) {
+          $('login-error').textContent = error.message
+          return
+        }
+        showApp()
+      })
+
+      $('logout').addEventListener('click', async () => {
+        await sb.auth.signOut()
+        showLogin()
+      })
+
+      $('search').addEventListener('input', render)
+    }
+  </script>
+</body>
+</html>
