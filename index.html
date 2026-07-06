@@ -47,9 +47,13 @@
       border-radius: 16px;
       padding: 16px;
     }
-    /* ---- login ---- */
-    #login-form { display: grid; gap: 12px; max-width: 360px; margin: 48px auto 0; }
-    #login-form input, #search {
+    /* ---- header / totals ---- */
+    .totals { display: flex; gap: 12px; margin: 0 0 16px; }
+    .totals .card { flex: 1; text-align: center; padding: 12px; }
+    .totals .num { font-size: 1.5rem; font-weight: 800; }
+    .totals .lbl { font-size: 0.75rem; color: var(--ink-muted); }
+    /* ---- item list ---- */
+    #search {
       width: 100%;
       padding: 12px 14px;
       border: 1px solid var(--border);
@@ -57,36 +61,8 @@
       font-size: 1rem;
       background: var(--surface);
       color: var(--ink);
+      margin: 0 0 16px;
     }
-    #login-form button {
-      padding: 12px;
-      border: 0;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 700;
-      color: #fff;
-      background: linear-gradient(90deg, var(--brand), var(--brand-2));
-      cursor: pointer;
-    }
-    #login-form button:disabled { opacity: 0.6; cursor: default; }
-    .error { color: var(--danger); font-size: 0.875rem; min-height: 1.2em; margin: 0; }
-    /* ---- header / totals ---- */
-    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .totals { display: flex; gap: 12px; margin: 0 0 16px; }
-    .totals .card { flex: 1; text-align: center; padding: 12px; }
-    .totals .num { font-size: 1.5rem; font-weight: 800; }
-    .totals .lbl { font-size: 0.75rem; color: var(--ink-muted); }
-    #logout {
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--ink-muted);
-      border-radius: 10px;
-      padding: 6px 12px;
-      font-size: 0.8rem;
-      cursor: pointer;
-    }
-    /* ---- item list ---- */
-    #search { margin: 0 0 16px; }
     .group-title {
       font-size: 0.8rem;
       font-weight: 800;
@@ -122,28 +98,20 @@
     .item .info { flex: 1; min-width: 0; }
     .item .name { font-weight: 600; overflow-wrap: anywhere; }
     .item .sub { font-size: 0.75rem; color: var(--ink-muted); }
-    .item .qty { font-size: 1.25rem; font-weight: 800; flex-shrink: 0; }
+    .item .price { font-size: 0.8rem; font-weight: 700; color: var(--brand); }
+    .item .qty { font-size: 1.25rem; font-weight: 800; flex-shrink: 0; text-align: right; }
+    .item .qty .cap { display: block; font-size: 0.65rem; font-weight: 600; color: var(--ink-muted); }
     .item.zero { opacity: 0.55; }
-    .item.zero .qty { color: var(--danger); }
+    .item.zero .qty { color: var(--danger); font-size: 0.8rem; }
     .muted { color: var(--ink-muted); text-align: center; margin-top: 48px; }
     .hidden { display: none !important; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="topbar">
-      <h1>Merch Stock</h1>
-      <button id="logout" class="hidden">Log out</button>
-    </div>
+    <h1>Merch Stock</h1>
 
     <p id="status" class="muted">Loading…</p>
-
-    <form id="login-form" class="hidden card">
-      <input id="email" type="email" placeholder="Email" autocomplete="email" required />
-      <input id="password" type="password" placeholder="Password" autocomplete="current-password" required />
-      <p id="login-error" class="error"></p>
-      <button type="submit">Log in</button>
-    </form>
 
     <div id="app" class="hidden">
       <div class="totals">
@@ -179,6 +147,8 @@
       String(s).replace(/[&<>"']/g, (c) =>
         ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
 
+    const rub = (n) => new Intl.NumberFormat('ru-RU').format(n) + ' ₽'
+
     let items = []
 
     function render() {
@@ -212,8 +182,9 @@
             <div class="info">
               <div class="name">${esc(i.name)}</div>
               ${i.fandom ? `<div class="sub">${esc(i.fandom)}</div>` : ''}
+              ${i.sale_price != null ? `<div class="price">${esc(rub(i.sale_price))}</div>` : ''}
             </div>
-            <div class="qty">${qty}</div>
+            <div class="qty">${qty > 0 ? qty + '<span class="cap">in stock</span>' : 'sold out'}</div>
           </li>`
         }
         html += '</ul>'
@@ -222,15 +193,15 @@
     }
 
     async function loadItems() {
-      status.textContent = 'Loading…'
-      status.classList.remove('hidden')
       const { data, error } = await sb
-        .from('items')
-        .select('id, type, fandom, name, image_url, stock_qty')
+        .from('public_stock')
+        .select('id, type, fandom, name, image_url, sale_price, stock_qty')
         .order('type', { ascending: true, nullsFirst: false })
         .order('name')
       if (error) {
-        status.textContent = 'Failed to load items: ' + error.message
+        status.textContent =
+          'Failed to load items: ' + error.message +
+          ' — if this mentions "public_stock", run supabase/public_stock_view.sql in the Supabase SQL Editor (see README).'
         return
       }
       items = data
@@ -239,46 +210,8 @@
       render()
     }
 
-    function showLogin() {
-      status.classList.add('hidden')
-      $('app').classList.add('hidden')
-      $('logout').classList.add('hidden')
-      $('login-form').classList.remove('hidden')
-    }
-
-    async function showApp() {
-      $('login-form').classList.add('hidden')
-      $('logout').classList.remove('hidden')
-      await loadItems()
-    }
-
     if (configured) {
-      sb.auth.getSession().then(({ data: { session } }) => {
-        session ? showApp() : showLogin()
-      })
-
-      $('login-form').addEventListener('submit', async (e) => {
-        e.preventDefault()
-        const btn = e.target.querySelector('button')
-        btn.disabled = true
-        $('login-error').textContent = ''
-        const { error } = await sb.auth.signInWithPassword({
-          email: $('email').value,
-          password: $('password').value,
-        })
-        btn.disabled = false
-        if (error) {
-          $('login-error').textContent = error.message
-          return
-        }
-        showApp()
-      })
-
-      $('logout').addEventListener('click', async () => {
-        await sb.auth.signOut()
-        showLogin()
-      })
-
+      loadItems()
       $('search').addEventListener('input', render)
     }
   </script>
