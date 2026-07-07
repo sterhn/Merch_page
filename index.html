@@ -66,7 +66,7 @@
       );
     }
 
-    .wrap { max-width: 600px; margin: 0 auto; padding: 24px 16px 64px; position: relative; }
+    .wrap { max-width: 600px; margin: 0 auto; padding: 24px 16px 100px; position: relative; }
 
     /* ---- header ---- */
     .header {
@@ -120,7 +120,6 @@
       83%, 100% { transform: translate(0); }
     }
 
-    /* ---- glitch hover burst ---- */
     h1:hover::before {
       animation: glitch-burst-1 0.3s steps(2) infinite;
     }
@@ -206,7 +205,6 @@
       color: var(--ink-muted);
     }
 
-    /* ---- ink splatter divider ---- */
     .ink-divider {
       height: 8px;
       margin: 4px 0 0;
@@ -247,7 +245,6 @@
     }
     .item:last-child { border-bottom: none; }
 
-    /* ---- item hover glitch ---- */
     .item:hover {
       transform: translateX(4px);
     }
@@ -281,8 +278,6 @@
     .item:hover img, .item:hover .ph {
       transform: scale(1.08);
     }
-
-    /* ---- chromatic aberration on image hover ---- */
     .item:hover img {
       filter: drop-shadow(2px 0 0 rgba(255,0,64,0.4)) drop-shadow(-2px 0 0 rgba(0,255,255,0.4));
     }
@@ -318,10 +313,16 @@
       font-weight: 800;
     }
 
+    .item .right-col {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
     .item .qty {
       font-size: 1.3rem;
       font-weight: 900;
-      flex-shrink: 0;
       text-align: right;
       min-width: 40px;
     }
@@ -334,8 +335,47 @@
       color: var(--ink-muted);
     }
 
-    .item.zero { opacity: 0; animation: fadeUp 0.4s ease forwards; }
-    .item.zero .item-inner { opacity: 0.45; }
+    /* ---- add to cart button ---- */
+    .add-btn {
+      width: 36px;
+      height: 36px;
+      border: 2px solid var(--ink);
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 1.2rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      flex-shrink: 0;
+      line-height: 1;
+      padding: 0;
+    }
+    .add-btn:hover {
+      background: var(--ink);
+      color: var(--bg);
+      transform: scale(1.1);
+      box-shadow: 2px 2px 0 var(--glitch-r), -1px -1px 0 var(--glitch-c);
+    }
+    .add-btn:active {
+      transform: scale(0.95);
+    }
+    .add-btn.in-cart {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+    .add-btn.pop {
+      animation: pop 0.25s ease;
+    }
+
     .item.zero .qty {
       color: var(--danger);
       font-size: 0.75rem;
@@ -358,7 +398,7 @@
     }
     .hidden { display: none !important; }
 
-    /* ---- halftone decorative corners ---- */
+    /* ---- halftone corners ---- */
     .wrap::before {
       content: '';
       position: fixed;
@@ -386,6 +426,259 @@
       background-size: 8px 8px;
       mask-image: linear-gradient(-45deg, black, transparent 70%);
       -webkit-mask-image: linear-gradient(-45deg, black, transparent 70%);
+    }
+
+    /* ---- floating cart bar ---- */
+    .cart-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: var(--ink);
+      color: var(--bg);
+      padding: 0;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .cart-bar.visible {
+      transform: translateY(0);
+    }
+    .cart-bar-inner {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      cursor: pointer;
+    }
+    .cart-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .cart-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: var(--glitch-r);
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 900;
+    }
+    .cart-bar-total {
+      font-weight: 900;
+      font-size: 1rem;
+    }
+
+    /* ---- cart panel ---- */
+    .cart-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    .cart-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .cart-panel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 201;
+      background: var(--bg);
+      border-top: 3px solid var(--ink);
+      max-height: 80vh;
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .cart-panel.open {
+      transform: translateY(0);
+    }
+    .cart-panel-inner {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px 16px 24px;
+    }
+    .cart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .cart-title {
+      font-size: 1.1rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .cart-close {
+      width: 36px;
+      height: 36px;
+      border: 2px solid var(--ink);
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 1.2rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      padding: 0;
+    }
+    .cart-close:hover {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    /* ---- cart items ---- */
+    .cart-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .cart-item:last-child { border-bottom: none; }
+    .cart-item .info { flex: 1; min-width: 0; }
+    .cart-item .name { font-weight: 700; font-size: 0.9rem; }
+    .cart-item .type-tag {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+    .cart-item .cart-price {
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-shrink: 0;
+    }
+    .qty-btn {
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--ink);
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 1rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      padding: 0;
+    }
+    .qty-btn:hover {
+      background: var(--ink);
+      color: var(--bg);
+    }
+    .qty-val {
+      width: 36px;
+      height: 32px;
+      border-top: 2px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+      border-left: none;
+      border-right: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 900;
+    }
+
+    .cart-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 3px solid var(--ink);
+    }
+    .cart-total-label {
+      font-size: 1rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .cart-total-val {
+      font-size: 1.3rem;
+      font-weight: 900;
+    }
+
+    /* ---- send order button ---- */
+    .send-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px;
+      margin-top: 16px;
+      border: 2px solid var(--ink);
+      background: var(--ink);
+      color: var(--bg);
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .send-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 4px 4px 0 var(--glitch-r), -2px 2px 0 var(--glitch-c);
+    }
+    .send-btn:active {
+      transform: translate(0);
+      box-shadow: none;
+    }
+    .send-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+    .clear-btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border: 2px solid var(--border);
+      background: transparent;
+      color: var(--ink-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .clear-btn:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .cart-empty {
+      text-align: center;
+      padding: 24px 0;
+      color: var(--ink-muted);
+      font-weight: 600;
     }
 
     /* ---- footer sig ---- */
@@ -423,10 +716,45 @@
     <div class="footer">hehearse.exe</div>
   </div>
 
+  <!-- cart bar -->
+  <div id="cart-bar" class="cart-bar">
+    <div class="cart-bar-inner" onclick="toggleCart()">
+      <div class="cart-bar-left">
+        <span class="cart-badge" id="cart-count">0</span>
+        <span>Корзина</span>
+      </div>
+      <span class="cart-bar-total" id="cart-bar-total">0 ₽</span>
+    </div>
+  </div>
+
+  <!-- cart panel -->
+  <div id="cart-overlay" class="cart-overlay" onclick="toggleCart()"></div>
+  <div id="cart-panel" class="cart-panel">
+    <div class="cart-panel-inner">
+      <div class="cart-header">
+        <span class="cart-title">Ваш заказ</span>
+        <button class="cart-close" onclick="toggleCart()">✕</button>
+      </div>
+      <div id="cart-items"></div>
+      <div id="cart-footer" class="hidden">
+        <div class="cart-total-row">
+          <span class="cart-total-label">Итого</span>
+          <span class="cart-total-val" id="cart-total">0 ₽</span>
+        </div>
+        <a id="send-order" class="send-btn" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0h-.056zm4.962 7.224c.1-.002.321.023.465.14a.5.5 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          Отправить заказ в ТГ
+        </a>
+        <button class="clear-btn" onclick="clearCart()">Очистить корзину</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = '__SUPABASE_URL__'
     const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__'
+    const TG_CHANNEL = 'hehearse_exe'
 
     const $ = (id) => document.getElementById(id)
     const status = $('status')
@@ -449,6 +777,145 @@
     const rub = (n) => new Intl.NumberFormat('ru-RU').format(n) + ' ₽'
 
     let items = []
+    let cart = {}
+
+    function loadCart() {
+      try {
+        const saved = localStorage.getItem('hehearse_cart')
+        if (saved) cart = JSON.parse(saved)
+      } catch {}
+    }
+    function saveCart() {
+      localStorage.setItem('hehearse_cart', JSON.stringify(cart))
+    }
+
+    function addToCart(id) {
+      const item = items.find((i) => i.id === id)
+      if (!item || (item.stock_qty ?? 0) <= 0) return
+      const max = item.stock_qty ?? 0
+      cart[id] = Math.min((cart[id] || 0) + 1, max)
+      saveCart()
+      updateCartUI()
+      render()
+
+      const btn = document.querySelector(`.add-btn[data-id="${id}"]`)
+      if (btn) {
+        btn.classList.remove('pop')
+        void btn.offsetWidth
+        btn.classList.add('pop')
+      }
+    }
+
+    function setQty(id, qty) {
+      const item = items.find((i) => i.id === id)
+      if (!item) return
+      const max = item.stock_qty ?? 0
+      if (qty <= 0) {
+        delete cart[id]
+      } else {
+        cart[id] = Math.min(qty, max)
+      }
+      saveCart()
+      updateCartUI()
+      render()
+    }
+
+    function clearCart() {
+      cart = {}
+      saveCart()
+      updateCartUI()
+      render()
+      toggleCart()
+    }
+
+    function getCartItems() {
+      return Object.entries(cart)
+        .map(([id, qty]) => {
+          const item = items.find((i) => i.id === id)
+          if (!item || qty <= 0) return null
+          return { ...item, cartQty: qty }
+        })
+        .filter(Boolean)
+    }
+
+    function getCartTotal() {
+      return getCartItems().reduce(
+        (sum, i) => sum + (i.sale_price || 0) * i.cartQty, 0)
+    }
+
+    function getCartCount() {
+      return Object.values(cart).reduce((s, q) => s + q, 0)
+    }
+
+    function buildTgMessage() {
+      const ci = getCartItems()
+      if (!ci.length) return ''
+      let msg = 'Привет! Хочу заказать:\n\n'
+      for (const i of ci) {
+        const line = `• ${i.name}`
+          + (i.type ? ` (${i.type})` : '')
+          + ` × ${i.cartQty}`
+          + (i.sale_price ? ` — ${rub(i.sale_price * i.cartQty)}` : '')
+        msg += line + '\n'
+      }
+      msg += `\nИтого: ${rub(getCartTotal())}`
+      msg += '\n\n---\n'
+      const data = ci.map((i) => ({
+        id: i.id,
+        name: i.name,
+        type: i.type,
+        qty: i.cartQty,
+        price: i.sale_price,
+      }))
+      msg += 'import:' + JSON.stringify(data)
+      return msg
+    }
+
+    function updateCartUI() {
+      const count = getCartCount()
+      const total = getCartTotal()
+      $('cart-count').textContent = count
+      $('cart-bar-total').textContent = rub(total)
+      $('cart-bar').classList.toggle('visible', count > 0)
+
+      const ci = getCartItems()
+      if (!ci.length) {
+        $('cart-items').innerHTML = '<div class="cart-empty">Корзина пуста</div>'
+        $('cart-footer').classList.add('hidden')
+        return
+      }
+
+      $('cart-footer').classList.remove('hidden')
+      $('cart-total').textContent = rub(total)
+
+      const url = 'https://t.me/' + TG_CHANNEL + '?text=' + encodeURIComponent(buildTgMessage())
+      $('send-order').href = url
+
+      let html = ''
+      for (const i of ci) {
+        html += `<div class="cart-item">
+          <div class="info">
+            <div class="name">${esc(i.name)}</div>
+            ${i.type ? `<div class="type-tag">${esc(i.type)}</div>` : ''}
+            <div class="cart-price">${i.sale_price != null ? esc(rub(i.sale_price * i.cartQty)) : ''}</div>
+          </div>
+          <div class="qty-controls">
+            <button class="qty-btn" onclick="setQty('${esc(i.id)}',${ i.cartQty - 1})">−</button>
+            <span class="qty-val">${i.cartQty}</span>
+            <button class="qty-btn" onclick="setQty('${esc(i.id)}',${i.cartQty + 1})">+</button>
+          </div>
+        </div>`
+      }
+      $('cart-items').innerHTML = html
+    }
+
+    let cartOpen = false
+    function toggleCart() {
+      cartOpen = !cartOpen
+      $('cart-overlay').classList.toggle('open', cartOpen)
+      $('cart-panel').classList.toggle('open', cartOpen)
+      document.body.style.overflow = cartOpen ? 'hidden' : ''
+    }
 
     function render() {
       const q = $('search').value.trim().toLowerCase()
@@ -482,6 +949,10 @@
           const img = i.image_url
             ? `<img src="${esc(i.image_url)}" alt="" loading="lazy" />`
             : `<div class="ph">${esc((i.fandom || '★').charAt(0).toUpperCase())}</div>`
+          const inCart = cart[i.id] > 0
+          const addBtn = qty > 0
+            ? `<button class="add-btn${inCart ? ' in-cart' : ''}" data-id="${esc(i.id)}" onclick="addToCart('${esc(i.id)}')" title="Добавить">${inCart ? cart[i.id] : '+'}</button>`
+            : ''
           html += `<li class="item${qty <= 0 ? ' zero' : ''}" style="animation-delay:${delay}ms">
             ${img}
             <div class="info">
@@ -489,7 +960,10 @@
               ${i.type ? `<div class="type-tag">${esc(i.type)}</div>` : ''}
               ${i.sale_price != null ? `<div class="price">${esc(rub(i.sale_price))}</div>` : ''}
             </div>
-            <div class="qty">${qty > 0 ? qty + '<span class="cap">шт.</span>' : 'нет'}</div>
+            <div class="right-col">
+              <div class="qty">${qty > 0 ? qty + '<span class="cap">шт.</span>' : 'нет'}</div>
+              ${addBtn}
+            </div>
           </li>`
           itemIdx++
         }
@@ -511,9 +985,15 @@
         return
       }
       items = data
+      loadCart()
+      Object.keys(cart).forEach((id) => {
+        if (!items.find((i) => i.id === id)) delete cart[id]
+      })
+      saveCart()
       status.classList.add('hidden')
       $('app').classList.remove('hidden')
       render()
+      updateCartUI()
     }
 
     if (configured) {
