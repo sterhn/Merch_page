@@ -369,11 +369,19 @@
 
     @keyframes pop {
       0% { transform: scale(1); }
-      50% { transform: scale(1.3); }
+      40% { transform: scale(1.15); }
       100% { transform: scale(1); }
     }
     .add-btn.pop {
-      animation: pop 0.25s ease;
+      animation: pop 0.2s ease;
+    }
+
+    /* skip entry animations on cart updates */
+    .no-anim .item,
+    .no-anim .fandom-group {
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
     }
 
     .item.zero .qty {
@@ -796,14 +804,23 @@
       cart[id] = Math.min((cart[id] || 0) + 1, max)
       saveCart()
       updateCartUI()
-      render()
+      updateAddBtn(id)
+    }
 
+    function updateAddBtn(id) {
       const btn = document.querySelector(`.add-btn[data-id="${id}"]`)
-      if (btn) {
-        btn.classList.remove('pop')
-        void btn.offsetWidth
-        btn.classList.add('pop')
+      if (!btn) return
+      const qty = cart[id] || 0
+      if (qty > 0) {
+        btn.classList.add('in-cart')
+        btn.textContent = qty
+      } else {
+        btn.classList.remove('in-cart')
+        btn.textContent = '+'
       }
+      btn.classList.remove('pop')
+      void btn.offsetWidth
+      btn.classList.add('pop')
     }
 
     function setQty(id, qty) {
@@ -817,15 +834,20 @@
       }
       saveCart()
       updateCartUI()
-      render()
+      renderNoAnim()
     }
 
     function clearCart() {
       cart = {}
       saveCart()
       updateCartUI()
-      render()
+      renderNoAnim()
       toggleCart()
+    }
+
+    function renderNoAnim() {
+      $('list').classList.add('no-anim')
+      render()
     }
 
     function getCartItems() {
