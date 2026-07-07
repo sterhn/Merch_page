@@ -3,13 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Мерч — наличие</title>
+  <title>HEHEARSE — мерч</title>
   <style>
     :root {
       --bg: #ffffff;
       --ink: #111111;
       --ink-muted: #777777;
-      --accent: #111111;
       --surface: #f5f5f5;
       --border: #e0e0e0;
       --danger: #c42020;
@@ -19,7 +18,6 @@
         --bg: #111111;
         --ink: #f0f0f0;
         --ink-muted: #888888;
-        --accent: #f0f0f0;
         --surface: #1a1a1a;
         --border: #2a2a2a;
       }
@@ -33,38 +31,40 @@
     }
     .wrap { max-width: 600px; margin: 0 auto; padding: 24px 16px 64px; }
 
+    /* ---- header ---- */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 0 24px;
+    }
     h1 {
       font-size: 2rem;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      margin: 0 0 24px;
     }
-
-    .stats {
-      display: flex;
-      gap: 16px;
-      margin: 0 0 24px;
-    }
-    .stat {
-      flex: 1;
-      text-align: center;
-      padding: 14px 8px;
+    .tg-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
       border: 2px solid var(--ink);
-      border-radius: 0;
-    }
-    .stat .num {
-      font-size: 1.75rem;
-      font-weight: 900;
-    }
-    .stat .lbl {
-      font-size: 0.7rem;
-      font-weight: 700;
+      text-decoration: none;
+      color: var(--ink);
+      font-size: 0.75rem;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--ink-muted);
+      letter-spacing: 0.05em;
+      transition: background 0.2s, color 0.2s;
     }
+    .tg-link:hover, .tg-link:active {
+      background: var(--ink);
+      color: var(--bg);
+    }
+    .tg-link svg { width: 16px; height: 16px; fill: currentColor; }
 
+    /* ---- search ---- */
     #search {
       width: 100%;
       padding: 12px 14px;
@@ -76,10 +76,12 @@
       color: var(--ink);
       margin: 0 0 8px;
       outline: none;
+      transition: border-color 0.2s;
     }
     #search::placeholder { color: var(--ink-muted); font-weight: 600; }
-    #search:focus { border-color: var(--ink); }
+    #search:focus { border-color: var(--ink-muted); }
 
+    /* ---- fandom groups ---- */
     .fandom-group { margin: 28px 0 0; }
     .fandom-title {
       font-size: 1.1rem;
@@ -99,22 +101,32 @@
       color: var(--ink-muted);
     }
 
-    ul { list-style: none; padding: 0; display: grid; gap: 6px; }
+    ul { list-style: none; padding: 0; display: grid; gap: 0; }
 
+    /* ---- items ---- */
     .item {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 8px 0;
+      padding: 10px 0;
       border-bottom: 1px solid var(--border);
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeUp 0.4s ease forwards;
     }
     .item:last-child { border-bottom: none; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     .item img, .item .ph {
       width: 52px; height: 52px;
       flex-shrink: 0;
       object-fit: cover;
+      transition: transform 0.2s ease;
     }
+    .item:hover img, .item:hover .ph { transform: scale(1.08); }
     .item img { border: 2px solid var(--ink); }
     .item .ph {
       display: flex; align-items: center; justify-content: center;
@@ -159,12 +171,20 @@
       color: var(--ink-muted);
     }
 
-    .item.zero { opacity: 0.45; }
+    .item.zero { opacity: 0; animation: fadeUp 0.4s ease forwards; }
+    .item.zero .item-inner { opacity: 0.45; }
     .item.zero .qty {
       color: var(--danger);
       font-size: 0.75rem;
       font-weight: 800;
       text-transform: uppercase;
+    }
+
+    /* ---- fandom title animation ---- */
+    .fandom-group {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp 0.35s ease forwards;
     }
 
     .muted {
@@ -178,15 +198,17 @@
 </head>
 <body>
   <div class="wrap">
-    <h1>Мерч</h1>
+    <div class="header">
+      <h1>Hehearse</h1>
+      <a class="tg-link" href="https://t.me/hehearse_exe" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0h-.056zm4.962 7.224c.1-.002.321.023.465.14a.5.5 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        ТГ
+      </a>
+    </div>
 
     <p id="status" class="muted">Загрузка…</p>
 
     <div id="app" class="hidden">
-      <div class="stats">
-        <div class="stat"><div class="num" id="total-items">–</div><div class="lbl">позиций</div></div>
-        <div class="stat"><div class="num" id="total-stock">–</div><div class="lbl">в наличии</div></div>
-      </div>
       <input id="search" type="search" placeholder="Поиск по названию или фандому…" />
       <div id="list"></div>
     </div>
@@ -226,9 +248,6 @@
             [i.name, i.type, i.fandom].some((f) => f && f.toLowerCase().includes(q)))
         : items
 
-      $('total-items').textContent = visible.length
-      $('total-stock').textContent = visible.reduce((s, i) => s + (i.stock_qty ?? 0), 0)
-
       const groups = new Map()
       for (const i of visible) {
         const key = i.fandom || 'Другое'
@@ -237,19 +256,22 @@
       }
 
       let html = ''
+      let itemIdx = 0
       for (const [fandom, list] of groups) {
         const groupStock = list.reduce((s, i) => s + (i.stock_qty ?? 0), 0)
-        html += `<div class="fandom-group">
+        const groupDelay = itemIdx * 30
+        html += `<div class="fandom-group" style="animation-delay:${groupDelay}ms">
           <div class="fandom-title">
             <span>${esc(fandom)}</span>
             <span class="count">${groupStock} шт.</span>
           </div><ul>`
         for (const i of list) {
           const qty = i.stock_qty ?? 0
+          const delay = (itemIdx + 1) * 30
           const img = i.image_url
             ? `<img src="${esc(i.image_url)}" alt="" loading="lazy" />`
             : `<div class="ph">${esc((i.fandom || '★').charAt(0).toUpperCase())}</div>`
-          html += `<li class="item${qty <= 0 ? ' zero' : ''}">
+          html += `<li class="item${qty <= 0 ? ' zero' : ''}" style="animation-delay:${delay}ms">
             ${img}
             <div class="info">
               <div class="name">${esc(i.name)}</div>
@@ -258,6 +280,7 @@
             </div>
             <div class="qty">${qty > 0 ? qty + '<span class="cap">шт.</span>' : 'нет'}</div>
           </li>`
+          itemIdx++
         }
         html += '</ul></div>'
       }
