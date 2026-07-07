@@ -23,6 +23,7 @@
     .atmo-blob {
       position: absolute; filter: blur(80px);
       animation: warmGlow 8s ease-in-out infinite;
+      will-change: transform; transition: transform .1s linear;
     }
     .atmo-1 { top: -20%; right: -10%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(74,143,143,0.15) 0%, transparent 70%); }
     .atmo-2 { bottom: -10%; left: -15%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(90,160,160,0.10) 0%, transparent 70%); animation-delay: 3s; animation-duration: 10s; }
@@ -227,8 +228,9 @@
     .detail-sold { color: #5a5148; font-size: .75rem; font-style: italic; font-family: 'Cormorant Garamond', Georgia, serif; }
 
     /* Animations */
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .fade-in { opacity: 0; animation: fadeUp .5s ease both; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { opacity: 0; transform: translateY(24px); transition: none; }
+    .fade-in.revealed { animation: fadeUp .5s ease both; }
     .no-anim .fade-in,
     .no-anim .fandom-group {
       opacity: 1 !important;
@@ -789,6 +791,41 @@
     if (configured) {
       loadItems()
       $('search').addEventListener('input', render)
+    }
+
+    const blobs = document.querySelectorAll('.atmo-blob')
+    const parallaxSpeeds = [0.03, -0.02, 0.015]
+    let ticking = false
+    window.addEventListener('scroll', () => {
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(() => {
+        const y = window.scrollY
+        blobs.forEach((b, i) => {
+          const speed = parallaxSpeeds[i] || 0.02
+          b.style.transform = `translateY(${y * speed}px)`
+        })
+        ticking = false
+      })
+    })
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('revealed')
+          revealObserver.unobserve(e.target)
+        }
+      })
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' })
+
+    function observeCards() {
+      document.querySelectorAll('.fade-in:not(.revealed)').forEach((el) => revealObserver.observe(el))
+    }
+
+    const origRender = render
+    render = function () {
+      origRender()
+      if (!$('list').classList.contains('no-anim')) observeCards()
     }
   </script>
 </body>
