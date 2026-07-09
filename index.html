@@ -49,13 +49,6 @@
     ::-webkit-scrollbar-thumb { background: rgba(138,126,114,0.25); border-radius: 5px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(138,126,114,0.4); }
 
-    /* Grain */
-    .grain {
-      position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.025;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      background-repeat: repeat; background-size: 256px;
-    }
-
     .wrap { position: relative; z-index: 2; max-width: 860px; margin: 0 auto; padding: 48px 24px 120px; }
 
     /* Header */
@@ -70,7 +63,6 @@
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: headerShimmer 6s ease-in-out infinite;
-      filter: drop-shadow(0 0 40px rgba(90,160,160,0.2));
     }
     @keyframes headerShimmer { 0%, 100% { background-position: 100% 0; } 50% { background-position: 0% 0; } }
     .header-rule { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 24px; }
@@ -80,7 +72,6 @@
     .header-ornament {
       font-size: 1rem; color: var(--page-accent); opacity: 0.7;
       animation: ornamentPulse 3s ease-in-out infinite;
-      text-shadow: 0 0 12px color-mix(in srgb, var(--page-accent) 40%, transparent);
       transition: color .6s;
     }
     @keyframes ornamentPulse { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.15); } }
@@ -91,7 +82,7 @@
       font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .12em;
       transition: all .3s; background: rgba(90,160,160,0.05);
     }
-    .tg-link:hover { background: rgba(90,160,160,0.12); border-color: rgba(90,160,160,0.5); box-shadow: 0 0 30px rgba(90,160,160,0.1); color: #7dbdbd; }
+    .tg-link:hover { background: rgba(90,160,160,0.12); border-color: rgba(90,160,160,0.5); color: #7dbdbd; }
     .tg-link svg { width: 14px; height: 14px; fill: currentColor; }
 
     /* Controls: search, filter chips, totals */
@@ -101,12 +92,12 @@
       border: 1px solid rgba(90,160,160,0.2); border-radius: 2px;
       font-size: .9rem; font-weight: 500;
       background: rgba(26,21,32,0.8); color: var(--ink);
-      outline: none; transition: border-color .3s, box-shadow .3s;
+      outline: none; transition: border-color .3s;
       font-family: var(--sans);
       backdrop-filter: blur(10px);
     }
     #search::placeholder { color: var(--faint); }
-    #search:focus { border-color: rgba(90,160,160,0.4); box-shadow: 0 0 20px rgba(90,160,160,0.08); }
+    #search:focus { border-color: rgba(90,160,160,0.4); }
     /* Big fandom selection */
     .fandoms { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
     .fandom-btn {
@@ -199,8 +190,9 @@
     .card::before { top: 6px; left: 6px; border-top-width: 1px; border-left-width: 1px; }
     .card::after { bottom: 6px; right: 6px; border-bottom-width: 1px; border-right-width: 1px; }
     .card:hover::before, .card:hover::after { opacity: .8; }
-    .card:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 20px rgba(90,160,160,0.08); border-color: rgba(90,160,160,0.25); }
+    .card:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 40px rgba(0,0,0,0.3); border-color: rgba(90,160,160,0.25); }
     .card.sold-out { opacity: 0.5; }
+    .card.sold-out .card-img img, .card.sold-out .card-img .ph { filter: grayscale(1); }
     .card-img {
       width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
       overflow: hidden; position: relative; cursor: pointer;
@@ -293,6 +285,7 @@
       overflow: hidden; position: relative;
     }
     .detail-img img { width: 100%; height: 100%; object-fit: cover; }
+    .detail-img.sold img, .detail-img.sold .ph { filter: grayscale(1); opacity: .75; }
     .detail-img .ph {
       font-family: var(--serif);
       font-size: 4rem; font-weight: 600; opacity: 0.3;
@@ -477,7 +470,7 @@
       font-size: .95rem; font-weight: 700; text-transform: uppercase;
       letter-spacing: .1em; text-decoration: none; cursor: pointer; transition: all .3s;
     }
-    .send-btn:hover { background: linear-gradient(135deg, #5aa0a0 0%, #4a8f8f 100%); box-shadow: 0 8px 30px rgba(74,143,143,0.3); transform: translateY(-1px); color: #f0e8de; }
+    .send-btn:hover { background: linear-gradient(135deg, #5aa0a0 0%, #4a8f8f 100%); transform: translateY(-1px); color: #f0e8de; }
     .send-btn svg { width: 16px; height: 16px; fill: currentColor; }
     .cart-actions { display: flex; gap: 8px; margin-top: 10px; }
     .copy-btn {
@@ -516,8 +509,6 @@
   </style>
 </head>
 <body>
-  <div class="grain"></div>
-
   <div class="wrap">
     <header class="header">
       <h1>Hehearse</h1>
@@ -829,6 +820,7 @@
         : `<span class="ph" style="color:${color}">${esc((item.fandom || '★').charAt(0).toUpperCase())}</span>`)
         + (soldOut ? '<div class="stamp">Нет в наличии</div>' : '')
       $('detail-img').style.background = item.image_url ? 'none' : `linear-gradient(135deg,${color}22,${color}08)`
+      $('detail-img').classList.toggle('sold', soldOut)
       $('detail-img').innerHTML = imgHtml
 
       let info = ''
