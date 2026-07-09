@@ -151,15 +151,13 @@
       font-size: 1.5rem; font-weight: 700; color: var(--ink);
       margin: 0; letter-spacing: .04em;
     }
-    .fandom-count {
-      font-family: var(--serif); font-style: italic;
-      font-size: .95rem; color: var(--faint);
-    }
     .fandom-header .line { flex: 1; height: 1px; }
-    .fandom-full {
-      margin: -12px 0 18px; padding-left: 24px;
-      font-size: .62rem; color: var(--faint);
-      letter-spacing: .08em; line-height: 1.7;
+    .fandom-full { margin: -12px 0 18px; padding-left: 24px; line-height: 1.6; }
+    .fandom-en {
+      font-size: .7rem; color: var(--muted); letter-spacing: .08em;
+    }
+    .fandom-ru {
+      font-size: .62rem; color: var(--faint); letter-spacing: .06em;
     }
 
     /* Card grid */
@@ -611,14 +609,19 @@
         en: "omniscient reader's viewpoint",
       },
       {
-        aliases: ['s-ранги', 'с-ранги', 's-class', 'my s-class hunters', 's-ранги, которых я воспитал'],
-        ru: 's-ранги, которых я воспитал',
+        aliases: ['msch', 's-ранги', 'с-ранги', 's-class', 'my s-class hunters', 'воспитанные мной s-классы'],
+        ru: 'воспитанные мной s-классы',
         en: 'my s-class hunters',
       },
       {
         aliases: ['гсгв', 'gsgw', 'ghost story', 'история о призраках'],
         ru: 'даже если попадёшь в историю о призраках, всё равно придётся идти на работу',
         en: 'got dropped into a ghost story, still gotta work',
+      },
+      {
+        aliases: ['oc', 'original characters', 'оригинальные персонажи'],
+        ru: 'оригинальные персонажи',
+        en: 'original characters',
       },
     ]
     function fandomFull(name) {
@@ -1001,10 +1004,12 @@
           <div class="fandom-header" style="border-bottom:1px solid ${color}33">
             <span class="orn" style="color:${color}">&#10022;</span>
             <h2>${esc(fandom)}</h2>
-            <span class="fandom-count">· ${sorted.length}</span>
             <div class="line" style="background:linear-gradient(to right,${color}33,transparent)"></div>
           </div>
-          ${full ? `<div class="fandom-full">${esc(full.ru)} &#8889; ${esc(full.en)}</div>` : ''}
+          ${full ? `<div class="fandom-full">
+            <div class="fandom-en">${esc(full.en)}</div>
+            <div class="fandom-ru">${esc(full.ru)}</div>
+          </div>` : ''}
           <div class="card-grid">`
 
         for (let i = 0; i < sorted.length; i++) {
