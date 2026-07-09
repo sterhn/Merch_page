@@ -85,21 +85,9 @@
     .tg-link:hover { background: rgba(90,160,160,0.12); border-color: rgba(90,160,160,0.5); color: #7dbdbd; }
     .tg-link svg { width: 14px; height: 14px; fill: currentColor; }
 
-    /* Controls: search, filter chips, totals */
+    /* Controls: fandom selection + type chips */
     .controls { margin-bottom: 40px; animation: fadeUp .8s ease both .15s; opacity: 0; }
-    #search {
-      width: 100%; padding: 14px 20px;
-      border: 1px solid rgba(90,160,160,0.2); border-radius: 2px;
-      font-size: .9rem; font-weight: 500;
-      background: rgba(26,21,32,0.8); color: var(--ink);
-      outline: none; transition: border-color .3s;
-      font-family: var(--sans);
-      backdrop-filter: blur(10px);
-    }
-    #search::placeholder { color: var(--faint); }
-    #search:focus { border-color: rgba(90,160,160,0.4); }
-    /* Big fandom selection */
-    .fandoms { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .fandoms { display: flex; flex-wrap: wrap; gap: 10px; }
     .fandom-btn {
       flex: 1 1 calc(50% - 5px); min-width: 150px;
       padding: 14px 16px; cursor: pointer;
@@ -110,7 +98,6 @@
       transition: all .25s;
     }
     .fandom-btn .orn { font-size: .75rem; color: var(--fc, var(--accent)); align-self: center; opacity: .8; }
-    .fandom-btn .cnt { margin-left: auto; font-style: italic; font-weight: 400; font-size: .9rem; color: var(--faint); }
     .fandom-btn:hover { border-color: color-mix(in srgb, var(--fc, var(--accent)) 45%, transparent); }
     .fandom-btn.active {
       border-color: color-mix(in srgb, var(--fc, var(--accent)) 60%, transparent);
@@ -133,11 +120,6 @@
       background: rgba(90,160,160,0.1);
     }
     .chip-stock { margin-left: auto; border-style: dashed; }
-    .totals {
-      margin-top: 14px; text-align: right;
-      font-family: var(--serif); font-style: italic;
-      font-size: .9rem; color: var(--faint); letter-spacing: .04em;
-    }
 
     /* Status */
     .status {
@@ -174,6 +156,11 @@
       font-size: .95rem; color: var(--faint);
     }
     .fandom-header .line { flex: 1; height: 1px; }
+    .fandom-full {
+      margin: -12px 0 18px; padding-left: 24px;
+      font-size: .62rem; color: var(--faint);
+      letter-spacing: .08em; line-height: 1.7;
+    }
 
     /* Card grid */
     .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -354,7 +341,7 @@
     .footer-rule .orn { font-size: .8rem; color: var(--faint); }
     .footer span {
       font-family: var(--serif);
-      font-size: .8rem; font-style: italic; color: var(--faint); letter-spacing: .1em;
+      font-size: .8rem; color: var(--faint); letter-spacing: .1em;
     }
 
     /* Cart bar — ticket stub */
@@ -524,10 +511,8 @@
     </header>
 
     <div class="controls">
-      <input id="search" type="search" placeholder="Поиск по названию или фандому…" />
       <div id="fandoms" class="fandoms hidden"></div>
       <div id="chips" class="chips hidden"></div>
-      <div id="totals" class="totals hidden"></div>
     </div>
 
     <p id="status" class="status hidden"></p>
@@ -618,11 +603,28 @@
 
     const rub = (n) => new Intl.NumberFormat('ru-RU').format(n) + ' ₽'
 
-    const plural = (n, one, few, many) => {
-      const m10 = n % 10, m100 = n % 100
-      if (m10 === 1 && m100 !== 11) return one
-      if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few
-      return many
+    /* Full fandom titles, matched loosely against the short catalog labels */
+    const FANDOM_FULL = [
+      {
+        aliases: ['орв', 'orv', 'всеведущий читатель', 'omniscient reader'],
+        ru: 'всеведущий читатель',
+        en: "omniscient reader's viewpoint",
+      },
+      {
+        aliases: ['s-ранги', 'с-ранги', 's-class', 'my s-class hunters', 's-ранги, которых я воспитал'],
+        ru: 's-ранги, которых я воспитал',
+        en: 'my s-class hunters',
+      },
+      {
+        aliases: ['гсгв', 'gsgw', 'ghost story', 'история о призраках'],
+        ru: 'даже если попадёшь в историю о призраках, всё равно придётся идти на работу',
+        en: 'got dropped into a ghost story, still gotta work',
+      },
+    ]
+    function fandomFull(name) {
+      const n = String(name || '').trim().toLowerCase()
+      if (!n) return null
+      return FANDOM_FULL.find((f) => f.aliases.some((a) => n === a || n.includes(a))) || null
     }
 
     let items = []
@@ -918,9 +920,8 @@
       let html = ''
       fandomList.forEach((f, i) => {
         const color = fandomColor.get(f)
-        const count = items.filter((it) => (it.fandom || 'Другое') === f).length
         html += `<button class="fandom-btn${fandomFilter === f ? ' active' : ''}" style="--fc:${color}" onclick="setFandomFilter(${i})">
-          <span class="orn">&#10022;</span>${esc(f)}<span class="cnt">${count}</span>
+          <span class="orn">&#10022;</span>${esc(f)}
         </button>`
       })
       const wrap = $('fandoms')
@@ -961,20 +962,10 @@
     }
 
     function render() {
-      const q = $('search').value.trim().toLowerCase()
       let visible = items
-      if (q) {
-        visible = visible.filter((i) =>
-          [i.name, i.type, i.fandom].some((f) => f && f.toLowerCase().includes(q)))
-      }
       if (fandomFilter) visible = visible.filter((i) => (i.fandom || 'Другое') === fandomFilter)
       if (typeFilter) visible = visible.filter((i) => i.type === typeFilter)
       if (stockOnly) visible = visible.filter((i) => (i.stock_qty ?? 0) > 0)
-
-      const totalUnits = visible.reduce((s, i) => s + Math.max(0, i.stock_qty ?? 0), 0)
-      $('totals').textContent =
-        `${visible.length} ${plural(visible.length, 'товар', 'товара', 'товаров')} · ${totalUnits} шт. в наличии`
-      $('totals').classList.remove('hidden')
 
       // Single visible fandom → the whole page takes on its color
       const visibleFandoms = new Set(visible.map((i) => i.fandom || 'Другое'))
@@ -1005,6 +996,7 @@
           ...list.filter((i) => (i.stock_qty ?? 0) > 0),
           ...list.filter((i) => (i.stock_qty ?? 0) <= 0),
         ]
+        const full = fandomFull(fandom)
         html += `<div class="fandom-group${fadeCls}"${animate ? ` style="animation-delay:${groupDelay}ms"` : ''}>
           <div class="fandom-header" style="border-bottom:1px solid ${color}33">
             <span class="orn" style="color:${color}">&#10022;</span>
@@ -1012,6 +1004,7 @@
             <span class="fandom-count">· ${sorted.length}</span>
             <div class="line" style="background:linear-gradient(to right,${color}33,transparent)"></div>
           </div>
+          ${full ? `<div class="fandom-full">${esc(full.ru)} &#8889; ${esc(full.en)}</div>` : ''}
           <div class="card-grid">`
 
         for (let i = 0; i < sorted.length; i++) {
@@ -1097,7 +1090,6 @@
 
     if (configured) {
       loadItems()
-      $('search').addEventListener('input', render)
     }
   </script>
 </body>
