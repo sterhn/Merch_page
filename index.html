@@ -312,15 +312,6 @@
     .detail-add:hover { background: rgba(90,160,160,0.18); border-color: rgba(90,160,160,0.6); }
     .detail-add.in-cart { background: rgba(90,160,160,0.15); }
     .detail-sold { color: var(--faint); font-size: .75rem; font-style: italic; font-family: var(--serif); }
-    .detail-share {
-      width: 100%; margin-top: 14px; padding: 10px;
-      border: 1px dashed rgba(138,126,114,0.3); background: transparent;
-      color: var(--muted); font-family: var(--sans);
-      font-size: .68rem; font-weight: 600; text-transform: uppercase;
-      letter-spacing: .12em; cursor: pointer; transition: all .2s;
-    }
-    .detail-share:hover { border-color: var(--accent-soft); color: var(--accent); }
-    .detail-share.copied { border-style: solid; border-color: rgba(90,160,160,0.5); color: var(--accent); }
 
     .cart-badge.pulse { animation: badgePulse .5s ease; }
     @keyframes badgePulse { 0% { transform: scale(1); } 40% { transform: scale(1.35); } 100% { transform: scale(1); } }
@@ -849,7 +840,6 @@
         info += `<button class="detail-add${inCart ? ' in-cart' : ''}" onclick="addToCart('${esc(item.id)}');openDetail('${esc(item.id)}')">${inCart ? 'В корзине: ' + cart[item.id] : 'В корзину'}</button>`
       }
       info += '</div>'
-      info += `<button class="detail-share" onclick="copyItemLink('${esc(item.id)}', this)">Скопировать ссылку на товар</button>`
       $('detail-info').innerHTML = info
 
       if (!detailOpen) {
@@ -858,18 +848,6 @@
       }
       $('detail-overlay').classList.add('open')
       document.body.style.overflow = 'hidden'
-    }
-
-    function copyItemLink(id, btn) {
-      const url = location.origin + location.pathname + '#item=' + encodeURIComponent(id)
-      navigator.clipboard.writeText(url).then(() => {
-        btn.textContent = 'Ссылка скопирована ✦'
-        btn.classList.add('copied')
-        setTimeout(() => {
-          btn.textContent = 'Скопировать ссылку на товар'
-          btn.classList.remove('copied')
-        }, 2000)
-      })
     }
 
     function hideDetail() {
