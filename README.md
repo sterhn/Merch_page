@@ -15,6 +15,8 @@ No build step: it's one `index.html`.
 
 (The dashboard may warn about a "security definer view" — that's expected; the file explains why. To take the data offline later, run `drop view public_stock;`.)
 
+**Already ran an older version of this file?** Run it again as-is: it starts with `drop view if exists public_stock;`, so re-running recreates the view with the current column list (the page now also reads `description`).
+
 ### 2. Configure and deploy this repo
 
 1. In Supabase: **Settings → API**. Copy the **Project URL** and the **anon public** key (the same values you used for Merch Planner).
@@ -27,10 +29,11 @@ No build step: it's one `index.html`.
 
 ## What clients see
 
-- Every catalog item, grouped by type, with photo, sale price, and stock amount
-- Totals: number of items and total units in stock (they follow the search filter)
-- Search by name, type, or fandom
-- Sold-out items are dimmed and labeled "sold out"
+- Every catalog item, grouped by fandom, with photo, sale price, description, and stock amount
+- Totals: number of items and total units in stock (they follow the active search/filters)
+- Search by name, type, or fandom, plus filter chips by type and an "in stock only" toggle
+- Sold-out items are dimmed, labeled, and sorted to the end of each group
+- A tap on any card opens a detail view; a cart composes a ready-to-send Telegram order message
 
 Stock numbers are live from Supabase — the same `stock_qty` that Merch Planner updates automatically when you mark orders as sent.
 

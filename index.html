@@ -4,19 +4,49 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>HEHEARSE — мерч</title>
+  <meta name="description" content="Каталог мерча HEHEARSE: значки, стикеры и другое по любимым фандомам. Наличие обновляется автоматически." />
+  <meta name="theme-color" content="#110e16" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="HEHEARSE — мерч" />
+  <meta property="og:description" content="Каталог мерча по любимым фандомам. Наличие обновляется автоматически — выбирай и заказывай в Telegram." />
+  <meta property="og:url" content="https://sterhn.github.io/Merch_page/" />
+  <meta property="og:image" content="https://sterhn.github.io/Merch_page/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='85' fill='%235aa0a0'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
+    :root {
+      --bg: #110e16;
+      --surface: #1a1520;
+      --ink: #ede5da;
+      --muted: #8a7e72;
+      --faint: #5a5148;
+      --accent: #5aa0a0;
+      --accent-soft: rgba(90,160,160,0.25);
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+      --mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
+    }
     *, *::before, *::after { box-sizing: border-box; margin: 0; }
     body {
-      font-family: 'DM Sans', system-ui, sans-serif;
-      background: #110e16;
-      color: #ede5da;
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--ink);
       -webkit-font-smoothing: antialiased;
       min-height: 100vh;
       overflow-x: hidden;
     }
-    a { color: #5aa0a0; transition: color 0.2s; }
+    a { color: var(--accent); transition: color 0.2s; }
     a:hover { color: #7dbdbd; }
+    ::selection { background: rgba(90,160,160,0.35); color: var(--ink); }
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(138,126,114,0.25); border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(138,126,114,0.4); }
 
     /* Atmospheric background */
     .atmo { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
@@ -39,10 +69,11 @@
     .wrap { position: relative; z-index: 2; max-width: 860px; margin: 0 auto; padding: 48px 24px 120px; }
 
     /* Header */
-    .header { text-align: center; margin-bottom: 56px; padding-top: 24px; animation: fadeUp .8s ease both; }
+    .header { text-align: center; margin-bottom: 48px; padding-top: 24px; animation: fadeUp .8s ease both; }
     .header h1 {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 3.6rem; font-weight: 700; letter-spacing: .08em;
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 9vw, 3.6rem);
+      font-weight: 700; letter-spacing: .08em;
       text-transform: uppercase; margin: 0 0 8px;
       background: linear-gradient(90deg, #c8b8a8, #f0e8de 30%, #5aa0a0 50%, #f0e8de 70%, #c8b8a8);
       background-size: 200% 100%;
@@ -57,7 +88,7 @@
     .header-rule .line-l { background: linear-gradient(to right, transparent, rgba(90,160,160,0.4)); }
     .header-rule .line-r { background: linear-gradient(to left, transparent, rgba(90,160,160,0.4)); }
     .header-ornament {
-      font-size: 1rem; color: #5aa0a0; opacity: 0.7;
+      font-size: 1rem; color: var(--accent); opacity: 0.7;
       animation: ornamentPulse 3s ease-in-out infinite;
       text-shadow: 0 0 12px rgba(90,160,160,0.4);
     }
@@ -65,33 +96,63 @@
     .tg-link {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 10px 24px; border: 1px solid rgba(90,160,160,0.3);
-      color: #5aa0a0; text-decoration: none;
+      color: var(--accent); text-decoration: none;
       font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .12em;
       transition: all .3s; background: rgba(90,160,160,0.05);
     }
     .tg-link:hover { background: rgba(90,160,160,0.12); border-color: rgba(90,160,160,0.5); box-shadow: 0 0 30px rgba(90,160,160,0.1); color: #7dbdbd; }
     .tg-link svg { width: 14px; height: 14px; fill: currentColor; }
 
-    /* Search */
-    .search-wrap { margin-bottom: 48px; animation: fadeUp .8s ease both .15s; opacity: 0; }
+    /* Controls: search, filter chips, totals */
+    .controls { margin-bottom: 40px; animation: fadeUp .8s ease both .15s; opacity: 0; }
     #search {
       width: 100%; padding: 14px 20px;
       border: 1px solid rgba(90,160,160,0.2); border-radius: 2px;
       font-size: .9rem; font-weight: 500;
-      background: rgba(26,21,32,0.8); color: #ede5da;
-      outline: none; transition: all .3s;
-      font-family: 'DM Sans', system-ui, sans-serif;
+      background: rgba(26,21,32,0.8); color: var(--ink);
+      outline: none; transition: border-color .3s, box-shadow .3s;
+      font-family: var(--sans);
       backdrop-filter: blur(10px);
     }
-    #search::placeholder { color: #5a5148; }
+    #search::placeholder { color: var(--faint); }
     #search:focus { border-color: rgba(90,160,160,0.4); box-shadow: 0 0 20px rgba(90,160,160,0.08); }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .chip {
+      padding: 8px 14px; border: 1px solid rgba(138,126,114,0.25); border-radius: 2px;
+      background: transparent; color: var(--muted); cursor: pointer;
+      font-family: var(--sans); font-size: .68rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .1em;
+      transition: all .2s;
+    }
+    .chip:hover { border-color: var(--accent-soft); color: var(--accent); }
+    .chip.active {
+      border-color: rgba(90,160,160,0.5); color: var(--accent);
+      background: rgba(90,160,160,0.1);
+    }
+    .chip-stock { margin-left: auto; border-style: dashed; }
+    .totals {
+      margin-top: 14px; text-align: right;
+      font-family: var(--serif); font-style: italic;
+      font-size: .9rem; color: var(--faint); letter-spacing: .04em;
+    }
 
     /* Status */
     .status {
-      text-align: center; color: #8a7e72;
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      text-align: center; color: var(--muted);
+      font-family: var(--serif);
       font-style: italic; font-size: 1.05rem;
     }
+
+    /* Skeleton loading */
+    .sk-header { height: 22px; width: 180px; margin-bottom: 20px; }
+    .sk-card { aspect-ratio: 1 / 1.35; }
+    .sk {
+      background: linear-gradient(100deg, rgba(31,26,40,0.8) 40%, rgba(50,42,62,0.8) 50%, rgba(31,26,40,0.8) 60%);
+      background-size: 200% 100%;
+      animation: skShimmer 1.4s ease-in-out infinite;
+      border: 1px solid rgba(138,126,114,0.08);
+    }
+    @keyframes skShimmer { 0% { background-position: 120% 0; } 100% { background-position: -80% 0; } }
 
     /* Fandom groups */
     .fandom-group { margin-bottom: 48px; }
@@ -99,19 +160,33 @@
       display: flex; align-items: baseline; gap: 12px;
       margin-bottom: 20px; padding-bottom: 12px;
     }
+    .fandom-header .orn { font-size: .75rem; opacity: .7; align-self: center; }
     .fandom-header h2 {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.5rem; font-weight: 700; color: #ede5da;
+      font-family: var(--serif);
+      font-size: 1.5rem; font-weight: 700; color: var(--ink);
       margin: 0; letter-spacing: .04em;
+    }
+    .fandom-count {
+      font-family: var(--serif); font-style: italic;
+      font-size: .95rem; color: var(--faint);
     }
     .fandom-header .line { flex: 1; height: 1px; }
 
     /* Card grid */
     .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    @media (min-width: 640px) { .card-grid { grid-template-columns: repeat(3, 1fr); } }
     .card {
       background: rgba(31,26,40,0.6); border: 1px solid rgba(138,126,114,0.1);
       overflow: hidden; transition: transform .3s, box-shadow .3s, border-color .3s; position: relative;
     }
+    .card::before, .card::after {
+      content: ''; position: absolute; width: 14px; height: 14px; z-index: 3;
+      border: 0 solid var(--fc, var(--accent));
+      opacity: 0; transition: opacity .3s; pointer-events: none;
+    }
+    .card::before { top: 6px; left: 6px; border-top-width: 1px; border-left-width: 1px; }
+    .card::after { bottom: 6px; right: 6px; border-bottom-width: 1px; border-right-width: 1px; }
+    .card:hover::before, .card:hover::after { opacity: .8; }
     .card:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 20px rgba(90,160,160,0.08); border-color: rgba(90,160,160,0.25); }
     .card.sold-out { opacity: 0.5; }
     .card-img {
@@ -121,15 +196,21 @@
     .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease, filter .4s; }
     .card:hover .card-img img { transform: scale(1.06); }
     .card-img .ph {
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: var(--serif);
       font-size: 2rem; font-weight: 600; opacity: 0.4;
       transition: transform .4s ease;
     }
     .card:hover .card-img .ph { transform: scale(1.1); }
+    .card-idx {
+      position: absolute; top: 10px; left: 10px;
+      font-family: var(--mono); font-size: .6rem; letter-spacing: .1em;
+      color: var(--muted); background: rgba(17,14,22,0.6);
+      padding: 3px 6px; backdrop-filter: blur(8px);
+    }
     .stock-badge {
       position: absolute; top: 10px; right: 10px;
       padding: 4px 10px; backdrop-filter: blur(8px);
-      color: #8a7e72; font-size: .65rem; font-weight: 600;
+      color: var(--muted); font-size: .65rem; font-weight: 600;
       letter-spacing: .05em; text-transform: uppercase;
     }
     .stock-badge.in-stock { background: rgba(17,14,22,0.75); }
@@ -140,21 +221,21 @@
       letter-spacing: .12em; margin-bottom: 3px;
     }
     .card-name {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: .95rem; font-weight: 600; color: #ede5da;
+      font-family: var(--serif);
+      font-size: .95rem; font-weight: 600; color: var(--ink);
       margin-bottom: 8px; line-height: 1.3;
     }
     .card-bottom { display: flex; align-items: center; justify-content: space-between; }
-    .card-price { font-size: .85rem; font-weight: 700; color: #5aa0a0; }
+    .card-price { font-family: var(--serif); font-size: 1rem; font-weight: 700; color: var(--accent); }
     .add-btn {
-      min-width: 30px; height: 30px; padding: 0 8px;
+      min-width: 40px; height: 40px; padding: 0 10px;
       border: 1px solid rgba(138,126,114,0.25); background: transparent;
-      color: #8a7e72; font-size: .8rem; font-weight: 700; cursor: pointer;
+      color: var(--muted); font-size: .9rem; font-weight: 700; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      transition: all .2s; font-family: 'DM Sans', system-ui, sans-serif;
+      transition: all .2s; font-family: var(--sans);
     }
-    .add-btn:hover { border-color: rgba(90,160,160,0.5); color: #5aa0a0; background: rgba(90,160,160,0.08); }
-    .add-btn.in-cart { border-color: rgba(90,160,160,0.5); background: rgba(90,160,160,0.12); color: #5aa0a0; }
+    .add-btn:hover { border-color: rgba(90,160,160,0.5); color: var(--accent); background: rgba(90,160,160,0.08); }
+    .add-btn.in-cart { border-color: rgba(90,160,160,0.5); background: rgba(90,160,160,0.12); color: var(--accent); }
 
     /* Detail overlay */
     .detail-overlay {
@@ -166,7 +247,7 @@
     }
     .detail-overlay.open { opacity: 1; pointer-events: auto; }
     .detail-card {
-      background: #1a1520; border: 1px solid rgba(90,160,160,0.15);
+      background: var(--surface); border: 1px solid rgba(90,160,160,0.15);
       max-width: 360px; width: 100%; max-height: 85vh; overflow-y: auto;
       transform: translateY(30px) scale(0.95); transition: transform .35s cubic-bezier(.4,0,.2,1);
       position: relative;
@@ -174,19 +255,19 @@
     .detail-overlay.open .detail-card { transform: translateY(0) scale(1); }
     .detail-close {
       position: absolute; top: 12px; right: 12px; z-index: 2;
-      width: 32px; height: 32px; border: 1px solid rgba(138,126,114,0.3);
+      width: 36px; height: 36px; border: 1px solid rgba(138,126,114,0.3);
       background: rgba(17,14,22,0.8); backdrop-filter: blur(8px);
-      color: #8a7e72; font-size: 1rem; cursor: pointer;
+      color: var(--muted); font-size: 1rem; cursor: pointer;
       display: flex; align-items: center; justify-content: center; transition: all .2s;
     }
-    .detail-close:hover { background: rgba(138,126,114,0.15); color: #ede5da; }
+    .detail-close:hover { background: rgba(138,126,114,0.15); color: var(--ink); }
     .detail-img {
       width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
       overflow: hidden; position: relative;
     }
     .detail-img img { width: 100%; height: 100%; object-fit: cover; }
     .detail-img .ph {
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: var(--serif);
       font-size: 4rem; font-weight: 600; opacity: 0.3;
     }
     .detail-info { padding: 20px; }
@@ -195,16 +276,16 @@
       letter-spacing: .12em; margin-bottom: 4px;
     }
     .detail-fandom {
-      font-size: .65rem; color: #5a5148; letter-spacing: .08em;
+      font-size: .65rem; color: var(--faint); letter-spacing: .08em;
       margin-bottom: 8px;
     }
     .detail-name {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.4rem; font-weight: 700; color: #ede5da;
+      font-family: var(--serif);
+      font-size: 1.4rem; font-weight: 700; color: var(--ink);
       line-height: 1.3; margin-bottom: 10px;
     }
     .detail-desc {
-      font-size: .85rem; color: #8a7e72; line-height: 1.6;
+      font-size: .85rem; color: var(--muted); line-height: 1.6;
       margin-bottom: 16px;
     }
     .detail-bottom {
@@ -212,53 +293,57 @@
       padding-top: 14px; border-top: 1px solid rgba(138,126,114,0.1);
     }
     .detail-price {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.3rem; font-weight: 700; color: #5aa0a0;
+      font-family: var(--serif);
+      font-size: 1.3rem; font-weight: 700; color: var(--accent);
     }
     .detail-add {
-      padding: 8px 20px; border: 1px solid rgba(90,160,160,0.4);
-      background: rgba(90,160,160,0.08); color: #5aa0a0;
-      font-family: 'DM Sans', system-ui, sans-serif;
+      padding: 10px 20px; min-height: 40px; border: 1px solid rgba(90,160,160,0.4);
+      background: rgba(90,160,160,0.08); color: var(--accent);
+      font-family: var(--sans);
       font-size: .75rem; font-weight: 600; text-transform: uppercase;
       letter-spacing: .08em; cursor: pointer; transition: all .2s;
     }
     .detail-add:hover { background: rgba(90,160,160,0.18); border-color: rgba(90,160,160,0.6); }
     .detail-add.in-cart { background: rgba(90,160,160,0.15); }
-    .detail-sold { color: #5a5148; font-size: .75rem; font-style: italic; font-family: 'Cormorant Garamond', Georgia, serif; }
+    .detail-sold { color: var(--faint); font-size: .75rem; font-style: italic; font-family: var(--serif); }
 
     /* Animations */
     @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     .fade-in { opacity: 0; animation: fadeUp .5s ease both; }
-    .no-anim .fade-in,
-    .no-anim .fandom-group {
-      opacity: 1 !important;
-      transform: none !important;
-      animation: none !important;
-    }
 
     /* Footer */
     .footer {
       margin-top: 64px; padding-top: 24px; text-align: center;
-      border-top: 1px solid rgba(138,126,114,0.15);
     }
+    .footer-rule { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 16px; }
+    .footer-rule .line { flex: 1; max-width: 120px; height: 1px; }
+    .footer-rule .line-l { background: linear-gradient(to right, transparent, rgba(138,126,114,0.3)); }
+    .footer-rule .line-r { background: linear-gradient(to left, transparent, rgba(138,126,114,0.3)); }
+    .footer-rule .orn { font-size: .8rem; color: var(--faint); }
     .footer span {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: .8rem; font-style: italic; color: #5a5148; letter-spacing: .1em;
+      font-family: var(--serif);
+      font-size: .8rem; font-style: italic; color: var(--faint); letter-spacing: .1em;
     }
 
-    /* Cart bar */
+    /* Cart bar — ticket stub */
     .cart-bar {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
       background: linear-gradient(135deg, #1a2a2a 0%, #1a1f28 100%);
-      border-top: 1px solid rgba(90,160,160,0.25);
+      border-top: 1px dashed rgba(90,160,160,0.35);
       transform: translateY(100%); transition: transform .4s cubic-bezier(.4,0,.2,1);
       backdrop-filter: blur(20px);
+    }
+    .cart-bar::before {
+      content: ''; position: absolute; top: -1px; left: 0; right: 0; height: 8px;
+      background: radial-gradient(circle at 7px 0, var(--bg) 4px, transparent 4.5px);
+      background-size: 16px 8px; background-repeat: repeat-x;
+      pointer-events: none;
     }
     .cart-bar.visible { transform: translateY(0); }
     .cart-bar-inner {
       max-width: 860px; margin: 0 auto;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 24px; cursor: pointer;
+      padding: 16px 24px 14px; cursor: pointer;
     }
     .cart-bar-left { display: flex; align-items: center; gap: 12px; }
     .cart-badge {
@@ -268,13 +353,13 @@
       color: #fff; font-size: .8rem; font-weight: 700;
     }
     .cart-bar-label {
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: var(--serif);
       font-size: .9rem; font-weight: 600; text-transform: uppercase;
-      letter-spacing: .1em; color: #ede5da;
+      letter-spacing: .1em; color: var(--ink);
     }
     .cart-bar-total {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.15rem; font-weight: 700; color: #5aa0a0;
+      font-family: var(--serif);
+      font-size: 1.15rem; font-weight: 700; color: var(--accent);
     }
 
     /* Cart panel */
@@ -286,7 +371,7 @@
     .cart-overlay.open { opacity: 1; pointer-events: auto; }
     .cart-panel {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 201;
-      background: #1a1520; border-top: 1px solid rgba(90,160,160,0.2);
+      background: var(--surface); border-top: 1px solid rgba(90,160,160,0.2);
       max-height: 80vh; overflow-y: auto;
       transform: translateY(100%); transition: transform .4s cubic-bezier(.4,0,.2,1);
     }
@@ -294,16 +379,16 @@
     .cart-panel-inner { max-width: 860px; margin: 0 auto; padding: 24px 24px 32px; }
     .cart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
     .cart-title {
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: var(--serif);
       font-size: 1.3rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
     }
     .cart-close {
-      width: 36px; height: 36px; border: 1px solid rgba(138,126,114,0.3);
-      background: transparent; color: #8a7e72;
+      width: 40px; height: 40px; border: 1px solid rgba(138,126,114,0.3);
+      background: transparent; color: var(--muted);
       font-size: 1.1rem; cursor: pointer;
       display: flex; align-items: center; justify-content: center; transition: all .2s;
     }
-    .cart-close:hover { background: rgba(138,126,114,0.1); color: #ede5da; }
+    .cart-close:hover { background: rgba(138,126,114,0.1); color: var(--ink); }
     .cart-item {
       display: flex; align-items: center; gap: 14px;
       padding: 12px 0; border-bottom: 1px solid rgba(138,126,114,0.1);
@@ -311,25 +396,25 @@
     .cart-item:last-child { border-bottom: none; }
     .cart-item .info { flex: 1; min-width: 0; }
     .cart-item .name {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-weight: 600; font-size: .95rem; color: #ede5da;
+      font-family: var(--serif);
+      font-weight: 600; font-size: .95rem; color: var(--ink);
     }
-    .cart-item .type-tag { font-size: .6rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: #5a5148; }
-    .cart-item .cart-price { font-size: .8rem; font-weight: 700; color: #5aa0a0; margin-top: 2px; }
+    .cart-item .type-tag { font-size: .6rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--faint); }
+    .cart-item .cart-price { font-size: .8rem; font-weight: 700; color: var(--accent); margin-top: 2px; }
     .qty-controls { display: flex; align-items: center; flex-shrink: 0; }
     .qty-btn {
-      width: 32px; height: 32px; border: 1px solid rgba(138,126,114,0.25);
-      background: transparent; color: #8a7e72;
+      width: 40px; height: 40px; border: 1px solid rgba(138,126,114,0.25);
+      background: transparent; color: var(--muted);
       font-size: 1rem; font-weight: 700; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
     }
-    .qty-btn:hover { background: rgba(138,126,114,0.1); color: #ede5da; }
+    .qty-btn:hover { background: rgba(138,126,114,0.1); color: var(--ink); }
     .qty-val {
-      width: 36px; height: 32px;
+      width: 40px; height: 40px;
       border-top: 1px solid rgba(138,126,114,0.25);
       border-bottom: 1px solid rgba(138,126,114,0.25);
       display: flex; align-items: center; justify-content: center;
-      font-size: .85rem; font-weight: 700; color: #ede5da;
+      font-size: .85rem; font-weight: 700; color: var(--ink);
     }
     .cart-total-row {
       display: flex; justify-content: space-between; align-items: baseline;
@@ -337,19 +422,19 @@
       border-top: 1px solid rgba(90,160,160,0.2);
     }
     .cart-total-label {
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: var(--serif);
       font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
     }
     .cart-total-val {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.4rem; font-weight: 700; color: #5aa0a0;
+      font-family: var(--serif);
+      font-size: 1.4rem; font-weight: 700; color: var(--accent);
     }
     .send-btn {
       display: flex; align-items: center; justify-content: center; gap: 10px;
       width: 100%; padding: 14px; margin-top: 16px; border: none;
       background: linear-gradient(135deg, #4a8f8f 0%, #3a7575 100%);
       color: #f0e8de;
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: var(--serif);
       font-size: .95rem; font-weight: 700; text-transform: uppercase;
       letter-spacing: .1em; text-decoration: none; cursor: pointer; transition: all .3s;
     }
@@ -357,27 +442,38 @@
     .send-btn svg { width: 16px; height: 16px; fill: currentColor; }
     .cart-actions { display: flex; gap: 8px; margin-top: 10px; }
     .copy-btn {
-      flex: 1; padding: 10px; border: 1px solid rgba(90,160,160,0.25);
-      background: transparent; color: #5aa0a0;
+      flex: 1; padding: 12px 10px; border: 1px solid rgba(90,160,160,0.25);
+      background: transparent; color: var(--accent);
       font-size: .7rem; font-weight: 600; text-transform: uppercase;
       letter-spacing: .1em; cursor: pointer; transition: all .2s;
-      font-family: 'DM Sans', system-ui, sans-serif;
+      font-family: var(--sans);
     }
     .copy-btn:hover { border-color: rgba(90,160,160,0.5); background: rgba(90,160,160,0.08); }
     .copy-btn.copied { border-color: rgba(90,160,160,0.5); background: rgba(90,160,160,0.12); }
     .clear-btn {
-      flex: 1; padding: 10px;
+      flex: 1; padding: 12px 10px;
       border: 1px solid rgba(138,126,114,0.2); background: transparent;
-      color: #5a5148; font-size: .7rem; font-weight: 600;
+      color: var(--faint); font-size: .7rem; font-weight: 600;
       text-transform: uppercase; letter-spacing: .1em; cursor: pointer; transition: all .2s;
-      font-family: 'DM Sans', system-ui, sans-serif;
+      font-family: var(--sans);
     }
     .clear-btn:hover { border-color: rgba(255,60,60,0.4); color: #c45555; }
     .cart-empty {
-      text-align: center; padding: 24px 0; color: #5a5148;
-      font-style: italic; font-family: 'Cormorant Garamond', Georgia, serif;
+      text-align: center; padding: 24px 0; color: var(--faint);
+      font-style: italic; font-family: var(--serif);
     }
     .hidden { display: none !important; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .fade-in, .controls, .header { opacity: 1 !important; transform: none !important; animation: none !important; }
+      .card:hover { transform: none; }
+      .card:hover .card-img img, .card:hover .card-img .ph { transform: none; }
+    }
   </style>
 </head>
 <body>
@@ -402,16 +498,25 @@
       </a>
     </header>
 
-    <div class="search-wrap">
+    <div class="controls">
       <input id="search" type="search" placeholder="Поиск по названию или фандому…" />
+      <div id="chips" class="chips hidden"></div>
+      <div id="totals" class="totals hidden"></div>
     </div>
 
-    <p id="status" class="status">Загрузка…</p>
-    <div id="app" class="hidden">
+    <p id="status" class="status hidden"></p>
+    <div id="app">
       <div id="list"></div>
     </div>
 
-    <div class="footer"><span>hehearse.exe</span></div>
+    <div class="footer">
+      <div class="footer-rule">
+        <div class="line line-l"></div>
+        <span class="orn">&#10022;</span>
+        <div class="line line-r"></div>
+      </div>
+      <span>hehearse.exe</span>
+    </div>
   </div>
 
   <!-- Cart bar -->
@@ -431,7 +536,7 @@
     <div class="cart-panel-inner">
       <div class="cart-header">
         <span class="cart-title">Ваш заказ</span>
-        <button class="cart-close" onclick="toggleCart()">✕</button>
+        <button class="cart-close" onclick="toggleCart()" aria-label="Закрыть корзину">✕</button>
       </div>
       <div id="cart-items"></div>
       <div id="cart-footer" class="hidden">
@@ -454,7 +559,7 @@
   <!-- Detail overlay -->
   <div id="detail-overlay" class="detail-overlay" onclick="closeDetail(event)">
     <div class="detail-card" id="detail-card">
-      <button class="detail-close" onclick="closeDetail(event)">&#10005;</button>
+      <button class="detail-close" onclick="closeDetail(event)" aria-label="Закрыть">&#10005;</button>
       <div id="detail-img" class="detail-img"></div>
       <div id="detail-info" class="detail-info"></div>
     </div>
@@ -474,6 +579,7 @@
     if (!configured) {
       status.textContent =
         'Не настроено: добавьте переменные VITE_SUPABASE_URL и VITE_SUPABASE_ANON_KEY в настройках репозитория и сделайте редеплой (см. README).'
+      status.classList.remove('hidden')
     }
 
     const sb = configured
@@ -486,10 +592,34 @@
 
     const rub = (n) => new Intl.NumberFormat('ru-RU').format(n) + ' ₽'
 
+    const plural = (n, one, few, many) => {
+      const m10 = n % 10, m100 = n % 100
+      if (m10 === 1 && m100 !== 11) return one
+      if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few
+      return many
+    }
+
     let items = []
     let cart = {}
+    let typeList = []
+    let typeFilter = null
+    let stockOnly = false
+    let firstRender = true
 
     const fandomColors = ['#4a8f8f', '#5aa0a0', '#a64b6b', '#7b6ba4', '#8a6e4e', '#5a8a6e']
+    let fandomColor = new Map()
+
+    function buildFandomColors() {
+      fandomColor = new Map()
+      let idx = 0
+      for (const i of items) {
+        const key = i.fandom || 'Другое'
+        if (!fandomColor.has(key)) {
+          fandomColor.set(key, fandomColors[idx % fandomColors.length])
+          idx++
+        }
+      }
+    }
 
     function loadCart() {
       try {
@@ -535,20 +665,16 @@
       }
       saveCart()
       updateCartUI()
-      renderNoAnim()
+      updateAddBtn(id)
     }
 
     function clearCart() {
+      const ids = Object.keys(cart)
       cart = {}
       saveCart()
       updateCartUI()
-      renderNoAnim()
+      ids.forEach(updateAddBtn)
       toggleCart()
-    }
-
-    function renderNoAnim() {
-      $('list').classList.add('no-anim')
-      render()
     }
 
     function getCartItems() {
@@ -623,21 +749,33 @@
             <div class="cart-price">${i.sale_price != null ? esc(rub(i.sale_price * i.cartQty)) : ''}</div>
           </div>
           <div class="qty-controls">
-            <button class="qty-btn" onclick="setQty('${esc(i.id)}',${i.cartQty - 1})">−</button>
+            <button class="qty-btn" onclick="setQty('${esc(i.id)}',${i.cartQty - 1})" aria-label="Убавить">−</button>
             <span class="qty-val">${i.cartQty}</span>
-            <button class="qty-btn" onclick="setQty('${esc(i.id)}',${i.cartQty + 1})">+</button>
+            <button class="qty-btn" onclick="setQty('${esc(i.id)}',${i.cartQty + 1})" aria-label="Добавить">+</button>
           </div>
         </div>`
       }
       $('cart-items').innerHTML = html
     }
 
+    /* Overlay history: opening pushes a history entry, closing goes back,
+       so the phone's back button closes the overlay instead of the page. */
     let detailOpen = false
+    let cartOpen = false
+
+    window.addEventListener('popstate', () => {
+      if (detailOpen) hideDetail()
+      else if (cartOpen) hideCart()
+    })
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return
+      if (detailOpen || cartOpen) history.back()
+    })
+
     function openDetail(id) {
       const item = items.find((i) => i.id === id)
       if (!item) return
-      const colorIdx = [...new Set(items.map((i) => i.fandom || 'Другое'))].indexOf(item.fandom || 'Другое')
-      const color = fandomColors[Math.max(0, colorIdx) % fandomColors.length]
+      const color = fandomColor.get(item.fandom || 'Другое') || fandomColors[0]
       const qty = item.stock_qty ?? 0
       const soldOut = qty <= 0
       const inCart = cart[item.id] > 0
@@ -664,16 +802,43 @@
       info += '</div>'
       $('detail-info').innerHTML = info
 
-      detailOpen = true
+      if (!detailOpen) {
+        detailOpen = true
+        history.pushState({ overlay: 'detail' }, '')
+      }
       $('detail-overlay').classList.add('open')
       document.body.style.overflow = 'hidden'
     }
 
-    function closeDetail(e) {
-      if (e && e.target && !e.target.classList.contains('detail-overlay') && !e.target.classList.contains('detail-close')) return
+    function hideDetail() {
       detailOpen = false
       $('detail-overlay').classList.remove('open')
       if (!cartOpen) document.body.style.overflow = ''
+    }
+
+    function closeDetail(e) {
+      if (e && e.target && !e.target.classList.contains('detail-overlay') && !e.target.classList.contains('detail-close')) return
+      if (detailOpen) history.back()
+    }
+
+    function openCart() {
+      cartOpen = true
+      history.pushState({ overlay: 'cart' }, '')
+      $('cart-overlay').classList.add('open')
+      $('cart-panel').classList.add('open')
+      document.body.style.overflow = 'hidden'
+    }
+
+    function hideCart() {
+      cartOpen = false
+      $('cart-overlay').classList.remove('open')
+      $('cart-panel').classList.remove('open')
+      if (!detailOpen) document.body.style.overflow = ''
+    }
+
+    function toggleCart() {
+      if (cartOpen) history.back()
+      else openCart()
     }
 
     function copyOrder() {
@@ -692,20 +857,51 @@
       })
     }
 
-    let cartOpen = false
-    function toggleCart() {
-      cartOpen = !cartOpen
-      $('cart-overlay').classList.toggle('open', cartOpen)
-      $('cart-panel').classList.toggle('open', cartOpen)
-      document.body.style.overflow = cartOpen ? 'hidden' : ''
+    function setTypeFilter(idx) {
+      typeFilter = idx < 0 ? null : typeList[idx]
+      renderChips()
+      render()
+    }
+
+    function toggleStockOnly() {
+      stockOnly = !stockOnly
+      renderChips()
+      render()
+    }
+
+    function renderChips() {
+      let html = `<button class="chip${!typeFilter ? ' active' : ''}" onclick="setTypeFilter(-1)">Все</button>`
+      typeList.forEach((t, i) => {
+        html += `<button class="chip${typeFilter === t ? ' active' : ''}" onclick="setTypeFilter(${i})">${esc(t)}</button>`
+      })
+      html += `<button class="chip chip-stock${stockOnly ? ' active' : ''}" onclick="toggleStockOnly()">В наличии</button>`
+      $('chips').innerHTML = html
+      $('chips').classList.remove('hidden')
+    }
+
+    function renderSkeleton() {
+      let cards = ''
+      for (let i = 0; i < 6; i++) cards += '<div class="sk sk-card"></div>'
+      $('list').innerHTML = `<div class="fandom-group">
+        <div class="sk sk-header"></div>
+        <div class="card-grid">${cards}</div>
+      </div>`
     }
 
     function render() {
       const q = $('search').value.trim().toLowerCase()
-      const visible = q
-        ? items.filter((i) =>
-            [i.name, i.type, i.fandom].some((f) => f && f.toLowerCase().includes(q)))
-        : items
+      let visible = items
+      if (q) {
+        visible = visible.filter((i) =>
+          [i.name, i.type, i.fandom].some((f) => f && f.toLowerCase().includes(q)))
+      }
+      if (typeFilter) visible = visible.filter((i) => i.type === typeFilter)
+      if (stockOnly) visible = visible.filter((i) => (i.stock_qty ?? 0) > 0)
+
+      const totalUnits = visible.reduce((s, i) => s + Math.max(0, i.stock_qty ?? 0), 0)
+      $('totals').textContent =
+        `${visible.length} ${plural(visible.length, 'товар', 'товара', 'товаров')} · ${totalUnits} шт. в наличии`
+      $('totals').classList.remove('hidden')
 
       const groups = new Map()
       for (const i of visible) {
@@ -714,34 +910,45 @@
         groups.get(key).push(i)
       }
 
+      const animate = firstRender
+      firstRender = false
+
       let html = ''
       let groupIdx = 0
       for (const [fandom, list] of groups) {
-        const color = fandomColors[groupIdx % fandomColors.length]
-        const groupDelay = groupIdx * 100
-        html += `<div class="fandom-group fade-in" style="animation-delay:${groupDelay}ms">
+        const color = fandomColor.get(fandom) || fandomColors[0]
+        const groupDelay = animate ? groupIdx * 100 : 0
+        const fadeCls = animate ? ' fade-in' : ''
+        const sorted = [
+          ...list.filter((i) => (i.stock_qty ?? 0) > 0),
+          ...list.filter((i) => (i.stock_qty ?? 0) <= 0),
+        ]
+        html += `<div class="fandom-group${fadeCls}"${animate ? ` style="animation-delay:${groupDelay}ms"` : ''}>
           <div class="fandom-header" style="border-bottom:1px solid ${color}33">
+            <span class="orn" style="color:${color}">&#10022;</span>
             <h2>${esc(fandom)}</h2>
+            <span class="fandom-count">· ${sorted.length}</span>
             <div class="line" style="background:linear-gradient(to right,${color}33,transparent)"></div>
           </div>
           <div class="card-grid">`
 
-        for (let i = 0; i < list.length; i++) {
-          const item = list[i]
+        for (let i = 0; i < sorted.length; i++) {
+          const item = sorted[i]
           const qty = item.stock_qty ?? 0
           const soldOut = qty <= 0
           const inCart = cart[item.id] > 0
-          const delay = i * 60
+          const delay = animate ? i * 60 : 0
           const img = item.image_url
             ? `<img src="${esc(item.image_url)}" alt="" loading="lazy" />`
             : `<span class="ph" style="color:${color}">${esc((item.fandom || '★').charAt(0).toUpperCase())}</span>`
           const addBtn = !soldOut
-            ? `<button class="add-btn${inCart ? ' in-cart' : ''}" data-id="${esc(item.id)}" onclick="addToCart('${esc(item.id)}')">${inCart ? cart[item.id] : '+'}</button>`
+            ? `<button class="add-btn${inCart ? ' in-cart' : ''}" data-id="${esc(item.id)}" onclick="addToCart('${esc(item.id)}')" aria-label="В корзину">${inCart ? cart[item.id] : '+'}</button>`
             : ''
 
-          html += `<div class="card fade-in${soldOut ? ' sold-out' : ''}" style="animation-delay:${groupDelay + delay}ms">
+          html += `<div class="card${fadeCls}${soldOut ? ' sold-out' : ''}" style="--fc:${color}${animate ? `;animation-delay:${groupDelay + delay}ms` : ''}">
             <div class="card-img" onclick="openDetail('${esc(item.id)}')" style="cursor:pointer;background:${item.image_url ? 'none' : `linear-gradient(135deg,${color}22,${color}08)`}">
               ${img}
+              <span class="card-idx">${String(i + 1).padStart(2, '0')}</span>
               <div class="stock-badge ${soldOut ? 'out' : 'in-stock'}">${soldOut ? 'Нет в наличии' : qty + ' шт.'}</div>
             </div>
             <div class="card-info">
@@ -763,25 +970,33 @@
     }
 
     async function loadItems() {
+      renderSkeleton()
       const { data, error } = await sb
         .from('public_stock')
         .select('id, type, fandom, name, image_url, sale_price, stock_qty, description')
         .order('fandom', { ascending: true, nullsFirst: false })
         .order('name')
       if (error) {
+        $('list').innerHTML = ''
         status.textContent =
           'Не удалось загрузить: ' + error.message +
           ' — если ошибка про "public_stock", выполните supabase/public_stock_view.sql в SQL Editor Supabase (см. README).'
+        status.classList.remove('hidden')
         return
       }
       items = data
+      buildFandomColors()
+      typeList = [...new Set(items.map((i) => i.type).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, 'ru'))
       loadCart()
       Object.keys(cart).forEach((id) => {
-        if (!items.find((i) => i.id === id)) delete cart[id]
+        const item = items.find((i) => i.id === id)
+        const max = item ? (item.stock_qty ?? 0) : 0
+        if (max <= 0) delete cart[id]
+        else cart[id] = Math.min(cart[id], max)
       })
       saveCart()
-      status.classList.add('hidden')
-      $('app').classList.remove('hidden')
+      renderChips()
       render()
       updateCartUI()
     }
