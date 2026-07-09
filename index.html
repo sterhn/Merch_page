@@ -27,6 +27,7 @@
       --faint: #5a5148;
       --accent: #5aa0a0;
       --accent-soft: rgba(90,160,160,0.25);
+      --page-accent: #5aa0a0;
       --serif: 'Cormorant Garamond', Georgia, serif;
       --sans: 'DM Sans', system-ui, sans-serif;
       --mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
@@ -42,7 +43,7 @@
     }
     a { color: var(--accent); transition: color 0.2s; }
     a:hover { color: #7dbdbd; }
-    ::selection { background: rgba(90,160,160,0.35); color: var(--ink); }
+    ::selection { background: color-mix(in srgb, var(--page-accent) 35%, transparent); color: var(--ink); }
     ::-webkit-scrollbar { width: 10px; height: 10px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(138,126,114,0.25); border-radius: 5px; }
@@ -54,8 +55,8 @@
       position: absolute; filter: blur(80px);
       animation: warmGlow 8s ease-in-out infinite;
     }
-    .atmo-1 { top: -20%; right: -10%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(74,143,143,0.15) 0%, transparent 70%); }
-    .atmo-2 { bottom: -10%; left: -15%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(90,160,160,0.10) 0%, transparent 70%); animation-delay: 3s; animation-duration: 10s; }
+    .atmo-1 { top: -20%; right: -10%; width: 600px; height: 600px; background: radial-gradient(circle, color-mix(in srgb, var(--page-accent) 15%, transparent) 0%, transparent 70%); }
+    .atmo-2 { bottom: -10%; left: -15%; width: 500px; height: 500px; background: radial-gradient(circle, color-mix(in srgb, var(--page-accent) 10%, transparent) 0%, transparent 70%); animation-delay: 3s; animation-duration: 10s; }
     .atmo-3 { top: 40%; left: 50%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(166,75,107,0.06) 0%, transparent 70%); animation-delay: 6s; animation-duration: 12s; }
     @keyframes warmGlow { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.5; } }
 
@@ -75,7 +76,7 @@
       font-size: clamp(2.2rem, 9vw, 3.6rem);
       font-weight: 700; letter-spacing: .08em;
       text-transform: uppercase; margin: 0 0 8px;
-      background: linear-gradient(90deg, #c8b8a8, #f0e8de 30%, #5aa0a0 50%, #f0e8de 70%, #c8b8a8);
+      background: linear-gradient(90deg, #c8b8a8, #f0e8de 30%, var(--page-accent) 50%, #f0e8de 70%, #c8b8a8);
       background-size: 200% 100%;
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -85,12 +86,18 @@
     @keyframes headerShimmer { 0%, 100% { background-position: 100% 0; } 50% { background-position: 0% 0; } }
     .header-rule { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 24px; }
     .header-rule .line { flex: 1; max-width: 120px; height: 1px; }
-    .header-rule .line-l { background: linear-gradient(to right, transparent, rgba(90,160,160,0.4)); }
-    .header-rule .line-r { background: linear-gradient(to left, transparent, rgba(90,160,160,0.4)); }
+    .header-rule .line-l { background: linear-gradient(to right, transparent, color-mix(in srgb, var(--page-accent) 40%, transparent)); }
+    .header-rule .line-r { background: linear-gradient(to left, transparent, color-mix(in srgb, var(--page-accent) 40%, transparent)); }
     .header-ornament {
-      font-size: 1rem; color: var(--accent); opacity: 0.7;
+      font-size: 1rem; color: var(--page-accent); opacity: 0.7;
       animation: ornamentPulse 3s ease-in-out infinite;
-      text-shadow: 0 0 12px rgba(90,160,160,0.4);
+      text-shadow: 0 0 12px color-mix(in srgb, var(--page-accent) 40%, transparent);
+      transition: color .6s;
+    }
+    .epigraph {
+      font-family: var(--serif); font-style: italic;
+      font-size: .95rem; color: var(--muted); letter-spacing: .06em;
+      margin: -6px 0 22px;
     }
     @keyframes ornamentPulse { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.15); } }
     .tg-link {
@@ -214,7 +221,41 @@
       letter-spacing: .05em; text-transform: uppercase;
     }
     .stock-badge.in-stock { background: rgba(17,14,22,0.75); }
-    .stock-badge.out { background: rgba(180,60,60,0.85); color: #f0e8de; }
+
+    /* Sold-out rubber stamp */
+    .stamp {
+      position: absolute; left: 50%; top: 50%; z-index: 2;
+      transform: translate(-50%, -50%) rotate(-12deg);
+      border: 2px solid rgba(196,85,85,0.85); border-radius: 3px;
+      color: rgba(228,124,124,0.95); background: rgba(17,14,22,0.35);
+      padding: 5px 12px; font-size: .68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .18em; white-space: nowrap;
+      box-shadow: inset 0 0 6px rgba(196,85,85,0.25);
+      text-shadow: 0 0 1px rgba(228,124,124,0.6);
+      pointer-events: none;
+    }
+    .detail-img .stamp {
+      font-size: 1.05rem; padding: 9px 22px; border-width: 3px; letter-spacing: .24em;
+    }
+
+    /* Holographic foil shine */
+    .holo {
+      position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      opacity: 0; transition: opacity .4s;
+      background: linear-gradient(115deg,
+        transparent 20%,
+        rgba(255,120,180,0.28) 36%,
+        rgba(120,220,255,0.28) 44%,
+        rgba(255,230,140,0.24) 52%,
+        rgba(160,255,180,0.24) 60%,
+        transparent 76%);
+      background-size: 250% 250%;
+      background-position: calc(var(--hx, 50) * 1%) calc(var(--hy, 50) * 1%);
+      mix-blend-mode: color-dodge;
+      filter: saturate(1.4);
+    }
+    .card:hover .card-img .holo { opacity: .45; }
+    .detail-overlay.open .detail-img .holo { opacity: .4; }
     .card-info { padding: 10px 12px 12px; }
     .card-type {
       font-size: .55rem; font-weight: 600; text-transform: uppercase;
@@ -243,7 +284,7 @@
       background: rgba(11,9,14,0.85); backdrop-filter: blur(14px);
       display: flex; align-items: center; justify-content: center;
       opacity: 0; pointer-events: none; transition: opacity .3s;
-      padding: 20px;
+      padding: 20px; perspective: 1000px;
     }
     .detail-overlay.open { opacity: 1; pointer-events: auto; }
     .detail-card {
@@ -252,7 +293,10 @@
       transform: translateY(30px) scale(0.95); transition: transform .35s cubic-bezier(.4,0,.2,1);
       position: relative;
     }
-    .detail-overlay.open .detail-card { transform: translateY(0) scale(1); }
+    .detail-overlay.open .detail-card {
+      transform: translateY(0) scale(1) rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg));
+    }
+    .detail-card.tilting { transition: transform .08s linear; }
     .detail-close {
       position: absolute; top: 12px; right: 12px; z-index: 2;
       width: 36px; height: 36px; border: 1px solid rgba(138,126,114,0.3);
@@ -306,6 +350,24 @@
     .detail-add:hover { background: rgba(90,160,160,0.18); border-color: rgba(90,160,160,0.6); }
     .detail-add.in-cart { background: rgba(90,160,160,0.15); }
     .detail-sold { color: var(--faint); font-size: .75rem; font-style: italic; font-family: var(--serif); }
+    .detail-share {
+      width: 100%; margin-top: 14px; padding: 10px;
+      border: 1px dashed rgba(138,126,114,0.3); background: transparent;
+      color: var(--muted); font-family: var(--sans);
+      font-size: .68rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .12em; cursor: pointer; transition: all .2s;
+    }
+    .detail-share:hover { border-color: var(--accent-soft); color: var(--accent); }
+    .detail-share.copied { border-style: solid; border-color: rgba(90,160,160,0.5); color: var(--accent); }
+
+    /* Star flying to cart */
+    .fly-star {
+      position: fixed; z-index: 400; pointer-events: none;
+      color: var(--accent); font-size: 1.2rem;
+      text-shadow: 0 0 10px rgba(90,160,160,0.8);
+    }
+    .cart-badge.pulse { animation: badgePulse .5s ease; }
+    @keyframes badgePulse { 0% { transform: scale(1); } 40% { transform: scale(1.35); } 100% { transform: scale(1); } }
 
     /* Animations */
     @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -473,6 +535,8 @@
       .fade-in, .controls, .header { opacity: 1 !important; transform: none !important; animation: none !important; }
       .card:hover { transform: none; }
       .card:hover .card-img img, .card:hover .card-img .ph { transform: none; }
+      .holo, .fly-star { display: none !important; }
+      .detail-overlay.open .detail-card { transform: none; }
     }
   </style>
 </head>
@@ -492,6 +556,7 @@
         <span class="header-ornament">&#10022;</span>
         <div class="line line-r"></div>
       </div>
+      <p class="epigraph" id="epigraph"></p>
       <a class="tg-link" href="https://t.me/hehearse_exe" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0h-.056zm4.962 7.224c.1-.002.321.023.465.14a.5.5 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
         Telegram
@@ -592,6 +657,17 @@
 
     const rub = (n) => new Intl.NumberFormat('ru-RU').format(n) + ' ₽'
 
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    const EPIGRAPHS = [
+      'маленькие артефакты больших историй',
+      'для тех, кто узнаёт своих по значкам',
+      'собрано вручную, с любовью к деталям',
+      'мерч, который находит своих',
+      'носи свои миры с собой',
+    ]
+    $('epigraph').textContent = EPIGRAPHS[Math.floor(Math.random() * EPIGRAPHS.length)]
+
     const plural = (n, one, few, many) => {
       const m10 = n % 10, m100 = n % 100
       if (m10 === 1 && m100 !== 11) return one
@@ -631,14 +707,41 @@
       localStorage.setItem('hehearse_cart', JSON.stringify(cart))
     }
 
-    function addToCart(id) {
+    function addToCart(id, sourceEl) {
       const item = items.find((i) => i.id === id)
       if (!item || (item.stock_qty ?? 0) <= 0) return
       const max = item.stock_qty ?? 0
-      cart[id] = Math.min((cart[id] || 0) + 1, max)
+      const before = cart[id] || 0
+      cart[id] = Math.min(before + 1, max)
       saveCart()
       updateCartUI()
       updateAddBtn(id)
+      if (sourceEl && cart[id] > before) flyToCart(sourceEl)
+    }
+
+    function flyToCart(fromEl) {
+      if (prefersReduced) return
+      const from = fromEl.getBoundingClientRect()
+      const to = $('cart-count').getBoundingClientRect()
+      const star = document.createElement('span')
+      star.className = 'fly-star'
+      star.textContent = '✦'
+      star.style.left = from.left + from.width / 2 + 'px'
+      star.style.top = from.top + from.height / 2 + 'px'
+      document.body.appendChild(star)
+      const dx = to.left + to.width / 2 - (from.left + from.width / 2)
+      const dy = to.top + to.height / 2 - (from.top + from.height / 2)
+      star.animate([
+        { transform: 'translate(-50%,-50%) scale(1) rotate(0deg)', opacity: 1 },
+        { transform: `translate(calc(-50% + ${dx * 0.5}px), calc(-50% + ${dy * 0.5 - 50}px)) scale(1.5) rotate(120deg)`, opacity: 1, offset: 0.5 },
+        { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(0.3) rotate(240deg)`, opacity: 0.2 },
+      ], { duration: 650, easing: 'cubic-bezier(.3,0,.4,1)' }).onfinish = () => {
+        star.remove()
+        const badge = $('cart-count')
+        badge.classList.remove('pulse')
+        void badge.offsetWidth
+        badge.classList.add('pulse')
+      }
     }
 
     function updateAddBtn(id) {
@@ -780,9 +883,11 @@
       const soldOut = qty <= 0
       const inCart = cart[item.id] > 0
 
-      const imgHtml = item.image_url
+      const imgHtml = (item.image_url
         ? `<img src="${esc(item.image_url)}" alt="" />`
-        : `<span class="ph" style="color:${color}">${esc((item.fandom || '★').charAt(0).toUpperCase())}</span>`
+        : `<span class="ph" style="color:${color}">${esc((item.fandom || '★').charAt(0).toUpperCase())}</span>`)
+        + '<div class="holo"></div>'
+        + (soldOut ? '<div class="stamp">Нет в наличии</div>' : '')
       $('detail-img').style.background = item.image_url ? 'none' : `linear-gradient(135deg,${color}22,${color}08)`
       $('detail-img').innerHTML = imgHtml
 
@@ -797,23 +902,93 @@
       if (soldOut) {
         info += `<span class="detail-sold">Нет в наличии</span>`
       } else {
-        info += `<button class="detail-add${inCart ? ' in-cart' : ''}" onclick="addToCart('${esc(item.id)}');openDetail('${esc(item.id)}')">${inCart ? 'В корзине: ' + cart[item.id] : 'В корзину'}</button>`
+        info += `<button class="detail-add${inCart ? ' in-cart' : ''}" onclick="addToCart('${esc(item.id)}', this);openDetail('${esc(item.id)}')">${inCart ? 'В корзине: ' + cart[item.id] : 'В корзину'}</button>`
       }
       info += '</div>'
+      info += `<button class="detail-share" onclick="copyItemLink('${esc(item.id)}', this)">Скопировать ссылку на товар</button>`
       $('detail-info').innerHTML = info
 
       if (!detailOpen) {
         detailOpen = true
-        history.pushState({ overlay: 'detail' }, '')
+        history.pushState({ overlay: 'detail' }, '', '#item=' + encodeURIComponent(item.id))
       }
       $('detail-overlay').classList.add('open')
       document.body.style.overflow = 'hidden'
+      enableGyro()
+    }
+
+    function copyItemLink(id, btn) {
+      const url = location.origin + location.pathname + '#item=' + encodeURIComponent(id)
+      navigator.clipboard.writeText(url).then(() => {
+        btn.textContent = 'Ссылка скопирована ✦'
+        btn.classList.add('copied')
+        setTimeout(() => {
+          btn.textContent = 'Скопировать ссылку на товар'
+          btn.classList.remove('copied')
+        }, 2000)
+      })
     }
 
     function hideDetail() {
       detailOpen = false
       $('detail-overlay').classList.remove('open')
+      const dc = $('detail-card')
+      dc.classList.remove('tilting')
+      dc.style.setProperty('--rx', '0deg')
+      dc.style.setProperty('--ry', '0deg')
       if (!cartOpen) document.body.style.overflow = ''
+    }
+
+    /* Holo tilt: pointer on desktop, gyroscope on mobile */
+    function setTilt(el, px, py) {
+      el.style.setProperty('--rx', ((px - 0.5) * 8).toFixed(2) + 'deg')
+      el.style.setProperty('--ry', ((0.5 - py) * 8).toFixed(2) + 'deg')
+      el.style.setProperty('--hx', (px * 100).toFixed(1))
+      el.style.setProperty('--hy', (py * 100).toFixed(1))
+    }
+
+    if (!prefersReduced) {
+      const dc = $('detail-card')
+      dc.addEventListener('pointermove', (e) => {
+        if (e.pointerType !== 'mouse') return
+        const r = dc.getBoundingClientRect()
+        dc.classList.add('tilting')
+        setTilt(dc, (e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height)
+      })
+      dc.addEventListener('pointerleave', () => {
+        dc.classList.remove('tilting')
+        dc.style.setProperty('--rx', '0deg')
+        dc.style.setProperty('--ry', '0deg')
+      })
+      $('list').addEventListener('pointermove', (e) => {
+        if (e.pointerType !== 'mouse') return
+        const img = e.target.closest('.card-img')
+        if (!img) return
+        const r = img.getBoundingClientRect()
+        img.style.setProperty('--hx', ((e.clientX - r.left) / r.width * 100).toFixed(1))
+        img.style.setProperty('--hy', ((e.clientY - r.top) / r.height * 100).toFixed(1))
+      })
+    }
+
+    let gyroBound = false
+    function gyroHandler(e) {
+      if (!detailOpen || e.beta == null) return
+      const dc = $('detail-card')
+      const px = Math.max(0, Math.min(1, 0.5 + (e.gamma || 0) / 60))
+      const py = Math.max(0, Math.min(1, 0.5 + (45 - e.beta) / 90))
+      dc.classList.add('tilting')
+      setTilt(dc, px, py)
+    }
+    function enableGyro() {
+      if (gyroBound || prefersReduced || typeof DeviceOrientationEvent === 'undefined') return
+      gyroBound = true
+      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+          .then((s) => { if (s === 'granted') window.addEventListener('deviceorientation', gyroHandler) })
+          .catch(() => {})
+      } else {
+        window.addEventListener('deviceorientation', gyroHandler)
+      }
     }
 
     function closeDetail(e) {
@@ -903,6 +1078,15 @@
         `${visible.length} ${plural(visible.length, 'товар', 'товара', 'товаров')} · ${totalUnits} шт. в наличии`
       $('totals').classList.remove('hidden')
 
+      // Single visible fandom → the whole page takes on its color
+      const visibleFandoms = new Set(visible.map((i) => i.fandom || 'Другое'))
+      if (visibleFandoms.size === 1) {
+        document.documentElement.style.setProperty(
+          '--page-accent', fandomColor.get([...visibleFandoms][0]) || '')
+      } else {
+        document.documentElement.style.removeProperty('--page-accent')
+      }
+
       const groups = new Map()
       for (const i of visible) {
         const key = i.fandom || 'Другое'
@@ -942,14 +1126,15 @@
             ? `<img src="${esc(item.image_url)}" alt="" loading="lazy" />`
             : `<span class="ph" style="color:${color}">${esc((item.fandom || '★').charAt(0).toUpperCase())}</span>`
           const addBtn = !soldOut
-            ? `<button class="add-btn${inCart ? ' in-cart' : ''}" data-id="${esc(item.id)}" onclick="addToCart('${esc(item.id)}')" aria-label="В корзину">${inCart ? cart[item.id] : '+'}</button>`
+            ? `<button class="add-btn${inCart ? ' in-cart' : ''}" data-id="${esc(item.id)}" onclick="addToCart('${esc(item.id)}', this)" aria-label="В корзину">${inCart ? cart[item.id] : '+'}</button>`
             : ''
 
           html += `<div class="card${fadeCls}${soldOut ? ' sold-out' : ''}" style="--fc:${color}${animate ? `;animation-delay:${groupDelay + delay}ms` : ''}">
             <div class="card-img" onclick="openDetail('${esc(item.id)}')" style="cursor:pointer;background:${item.image_url ? 'none' : `linear-gradient(135deg,${color}22,${color}08)`}">
               ${img}
+              <div class="holo"></div>
               <span class="card-idx">${String(i + 1).padStart(2, '0')}</span>
-              <div class="stock-badge ${soldOut ? 'out' : 'in-stock'}">${soldOut ? 'Нет в наличии' : qty + ' шт.'}</div>
+              ${soldOut ? '<div class="stamp">Нет в наличии</div>' : `<div class="stock-badge in-stock">${qty} шт.</div>`}
             </div>
             <div class="card-info">
               ${item.type ? `<div class="card-type" style="color:${color}">${esc(item.type)}</div>` : ''}
@@ -999,6 +1184,16 @@
       renderChips()
       render()
       updateCartUI()
+
+      // Deep link: #item=<id> opens that item's detail view
+      const hash = location.hash.match(/^#item=(.+)$/)
+      if (hash) {
+        const id = decodeURIComponent(hash[1])
+        if (items.find((i) => i.id === id)) {
+          history.replaceState(null, '', location.pathname + location.search)
+          openDetail(id)
+        }
+      }
     }
 
     if (configured) {
