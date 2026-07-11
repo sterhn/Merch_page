@@ -794,13 +794,24 @@
     let detailOpen = false
     let cartOpen = false
 
+    /* history.back() is async: without this guard a second close call
+       (the X button's click bubbling to the overlay, a double-tap, or a
+       held Escape) fires back() again and navigates out of the site. */
+    let overlayClosing = false
+    function closeOverlayViaBack() {
+      if (overlayClosing) return
+      overlayClosing = true
+      history.back()
+    }
+
     window.addEventListener('popstate', () => {
+      overlayClosing = false
       if (detailOpen) hideDetail()
       else if (cartOpen) hideCart()
     })
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Escape') return
-      if (detailOpen || cartOpen) history.back()
+      if (detailOpen || cartOpen) closeOverlayViaBack()
     })
 
     function openDetail(id) {
@@ -839,6 +850,7 @@
 
       if (!detailOpen) {
         detailOpen = true
+        overlayClosing = false
         history.pushState({ overlay: 'detail' }, '', '#item=' + encodeURIComponent(item.id))
       }
       $('detail-overlay').classList.add('open')
@@ -853,11 +865,12 @@
 
     function closeDetail(e) {
       if (e && e.target && !e.target.classList.contains('detail-overlay') && !e.target.classList.contains('detail-close')) return
-      if (detailOpen) history.back()
+      if (detailOpen) closeOverlayViaBack()
     }
 
     function openCart() {
       cartOpen = true
+      overlayClosing = false
       history.pushState({ overlay: 'cart' }, '')
       $('cart-overlay').classList.add('open')
       $('cart-panel').classList.add('open')
@@ -872,7 +885,7 @@
     }
 
     function toggleCart() {
-      if (cartOpen) history.back()
+      if (cartOpen) closeOverlayViaBack()
       else openCart()
     }
 
