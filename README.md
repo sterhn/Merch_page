@@ -15,7 +15,7 @@ No build step: it's one `index.html`.
 
 (The dashboard may warn about a "security definer view" — that's expected; the file explains why. To take the data offline later, run `drop view public_stock;`.)
 
-**Already ran an older version of this file?** Run it again as-is: it starts with `drop view if exists public_stock;`, so re-running recreates the view with the current column list (the page now also reads `description`).
+**Already ran an older version of this file?** Run it again as-is: it starts with `drop view if exists public_stock;`, so re-running recreates the view with the current column list (the page now also reads `description` and `product_photo_url` — the large product photo shown in the item detail view).
 
 ### 2. Configure and deploy this repo
 
@@ -33,7 +33,7 @@ No build step: it's one `index.html`.
 - Totals: number of items and total units in stock (they follow the active search/filters)
 - Search by name, type, or fandom, plus filter chips by type and an "in stock only" toggle
 - Sold-out items are dimmed, labeled, and sorted to the end of each group
-- A tap on any card opens a detail view; a cart composes a ready-to-send Telegram order message
+- A tap on any card opens a detail view with the real product photo (when one is set in Merch Planner) and description; a cart composes a ready-to-send Telegram order message
 
 Stock numbers are live from Supabase — the same `stock_qty` that Merch Planner updates automatically when you mark orders as sent.
 

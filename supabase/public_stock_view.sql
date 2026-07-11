@@ -7,13 +7,15 @@
 -- profit, orders, customers, expenses…) stays private. Supabase's dashboard
 -- may flag it as a "security definer view" — that is expected here.
 --
--- Already created the view before this file included `description`?
--- Re-run the whole file: the `drop view` below removes the old version first.
+-- Already created the view before this file included `description` or
+-- `product_photo_url`? Re-run the whole file: the `drop view` below removes
+-- the old version first.
 
 drop view if exists public_stock;
 
 create view public_stock as
-  select id, type, fandom, name, image_url, sale_price, stock_qty, description
+  select id, type, fandom, name, image_url, product_photo_url,
+         sale_price, stock_qty, description
   from items;
 
 grant select on public_stock to anon;
