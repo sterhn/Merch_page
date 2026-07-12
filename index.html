@@ -448,7 +448,22 @@
     }
     .send-btn:hover { background: linear-gradient(135deg, #5aa0a0 0%, #4a8f8f 100%); transform: translateY(-1px); color: #f0e8de; }
     .send-btn svg { width: 16px; height: 16px; fill: currentColor; }
+    .order-hint {
+      margin-top: 12px; text-align: center;
+      font-family: var(--serif); font-style: italic;
+      font-size: .78rem; color: var(--muted); line-height: 1.5;
+    }
     .cart-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .vk-btn {
+      flex: 1; padding: 12px 10px; border: 1px solid rgba(82,139,255,0.3);
+      background: transparent; color: #7da7e8;
+      font-size: .7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .1em; cursor: pointer; transition: all .2s;
+      font-family: var(--sans); text-decoration: none;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .vk-btn:hover { border-color: rgba(82,139,255,0.55); background: rgba(82,139,255,0.08); color: #9dbdf0; }
+    .vk-btn svg { width: 14px; height: 14px; fill: currentColor; }
     .copy-btn {
       flex: 1; padding: 12px 10px; border: 1px solid rgba(90,160,160,0.25);
       background: transparent; color: var(--accent);
@@ -544,14 +559,19 @@
           <span class="cart-total-label">Итого</span>
           <span class="cart-total-val" id="cart-total">0 ₽</span>
         </div>
-        <a id="send-order" class="send-btn" target="_blank" rel="noopener">
+        <a id="send-order" class="send-btn" href="https://t.me/hehearse_exe?direct" target="_blank" rel="noopener" onclick="copyOrder()" title="Текст заказа скопируется автоматически — вставьте его в чат и отправьте">
           <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0h-.056zm4.962 7.224c.1-.002.321.023.465.14a.5.5 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-          Отправить заказ в ТГ
+          Написать в Telegram
         </a>
         <div class="cart-actions">
+          <a class="vk-btn" href="https://vk.me/hehehearyou" target="_blank" rel="noopener" onclick="copyOrder()" title="Текст заказа скопируется автоматически — вставьте его в чат и отправьте">
+            <svg viewBox="0 0 24 24"><path d="M13.162 18.994c.609 0 .858-.406.851-.915-.031-1.917.714-2.949 2.059-1.604 1.488 1.488 1.796 2.519 3.603 2.519h3.2c.808 0 1.126-.26 1.126-.668 0-.863-1.421-2.386-2.625-3.504-1.686-1.565-1.765-1.602-.313-3.486 1.801-2.339 4.157-5.336 2.073-5.336h-3.981c-.772 0-.828.435-1.103 1.083-.995 2.347-2.886 5.387-3.604 4.922-.751-.485-.407-2.406-.35-5.261.015-.754.011-1.271-1.141-1.539-.629-.145-1.241-.205-1.809-.205-2.273 0-3.841.953-2.95 1.119 1.571.293 1.42 3.692 1.054 5.16-.638 2.556-3.036-2.024-4.035-4.305-.241-.548-.315-.974-1.175-.974H1.093c-.492 0-.787.16-.787.516 0 .602 2.96 6.72 5.786 9.77 2.756 2.975 5.48 2.708 7.07 2.708z"/></svg>
+            VK
+          </a>
           <button class="copy-btn" id="copy-btn" onclick="copyOrder()">Копировать текст</button>
           <button class="clear-btn" onclick="clearCart()">Очистить</button>
         </div>
+        <div class="order-hint">При нажатии текст заказа копируется сам — просто вставьте его в чат и отправьте &#10022;</div>
       </div>
     </div>
   </div>
@@ -569,7 +589,6 @@
   <script>
     const SUPABASE_URL = '__SUPABASE_URL__'
     const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__'
-    const TG_CHANNEL = 'mshewill'
 
     const $ = (id) => document.getElementById(id)
     const status = $('status')
@@ -768,9 +787,6 @@
       $('cart-footer').classList.remove('hidden')
       $('cart-total').textContent = rub(total)
 
-      const url = 'https://t.me/' + TG_CHANNEL + '?text=' + encodeURIComponent(buildTgMessage())
-      $('send-order').href = url
-
       let html = ''
       for (const i of ci) {
         html += `<div class="cart-item">
@@ -889,20 +905,18 @@
       else openCart()
     }
 
+    /* Neither Telegram channel DMs (t.me/...?direct) nor vk.me support
+       pre-filled text in the link, so every order button copies the message
+       (with the import: payload) to the clipboard instead. */
     function copyOrder() {
-      const ci = getCartItems()
-      if (!ci.length) return
-      let msg = 'Привет! Хочу заказать:\n\n'
-      for (const i of ci) {
-        msg += `• ${i.name}` + (i.type ? ` (${i.type})` : '') + ` × ${i.cartQty}` + (i.sale_price ? ` — ${rub(i.sale_price * i.cartQty)}` : '') + '\n'
-      }
-      msg += `\nИтого: ${rub(getCartTotal())}`
+      const msg = buildTgMessage()
+      if (!msg) return
       navigator.clipboard.writeText(msg).then(() => {
         const btn = $('copy-btn')
         btn.textContent = 'Скопировано!'
         btn.classList.add('copied')
         setTimeout(() => { btn.textContent = 'Копировать текст'; btn.classList.remove('copied') }, 2000)
-      })
+      }).catch(() => {})
     }
 
     function setFandomFilter(idx) {
