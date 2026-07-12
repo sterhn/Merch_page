@@ -92,12 +92,17 @@
       flex: 1 1 calc(50% - 5px); min-width: 150px;
       padding: 14px 16px; cursor: pointer;
       background: rgba(31,26,40,0.5); border: 1px solid rgba(138,126,114,0.15);
-      font-family: var(--serif); font-size: 1.15rem; font-weight: 700;
+      font-family: var(--serif); font-size: var(--fs, 1.15rem); font-weight: 700;
       letter-spacing: .04em; color: var(--ink); text-align: left;
       display: flex; align-items: baseline; gap: 10px;
       transition: all .25s;
     }
     .fandom-btn .orn { font-size: .75rem; color: var(--fc, var(--accent)); align-self: center; opacity: .8; }
+    .fandom-btn .cnt {
+      margin-left: auto; align-self: center;
+      font-family: var(--mono); font-size: .6rem; font-weight: 400;
+      letter-spacing: .08em; color: var(--muted);
+    }
     .fandom-btn:hover { border-color: color-mix(in srgb, var(--fc, var(--accent)) 45%, transparent); }
     .fandom-btn.active {
       border-color: color-mix(in srgb, var(--fc, var(--accent)) 60%, transparent);
@@ -927,11 +932,21 @@
     }
 
     function renderFandomChips() {
+      /* Title size scales with how many items the fandom has (largest = 1.35rem,
+         smallest = 1rem) — the buttons themselves stay equal for easy tapping. */
+      const counts = new Map()
+      for (const it of items) {
+        const key = it.fandom || 'Другое'
+        counts.set(key, (counts.get(key) || 0) + 1)
+      }
+      const maxCount = Math.max(1, ...counts.values())
       let html = ''
       fandomList.forEach((f, i) => {
         const color = fandomColor.get(f)
-        html += `<button class="fandom-btn${fandomFilter === f ? ' active' : ''}" style="--fc:${color}" onclick="setFandomFilter(${i})">
-          <span class="orn">&#10022;</span>${esc(f)}
+        const n = counts.get(f) || 0
+        const fs = (1 + 0.35 * (n / maxCount)).toFixed(3)
+        html += `<button class="fandom-btn${fandomFilter === f ? ' active' : ''}" style="--fc:${color};--fs:${fs}rem" onclick="setFandomFilter(${i})">
+          <span class="orn">&#10022;</span>${esc(f)}<span class="cnt">${n}</span>
         </button>`
       })
       const wrap = $('fandoms')
