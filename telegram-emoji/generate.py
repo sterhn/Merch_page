@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Generate a Telegram custom-emoji pack (100x100 transparent PNGs)
-in the HEHEARSE merch page style: dark-mystical, teal + cream + tan + gold + rose,
-hand-drawn doodle shapes, Neucha handwritten Cyrillic."""
+in the HEHEARSE merch page style: dark-mystical elegance, teal + cream +
+tan + gold + rose, crisp geometric shapes, Cormorant Garamond serif glyphs."""
 
 import os
+import math
 import cairosvg
 from PIL import Image, ImageDraw, ImageFont
 
@@ -11,7 +12,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "pack")
 os.makedirs(OUT, exist_ok=True)
 
-FONT_PATH = os.path.join(HERE, "neucha.ttf")
+FONT_PATH = os.path.join(HERE, "cormorant.ttf")  # Cormorant Garamond 700 — the site's --serif
 
 # ---- palette (from index.html of the merch page, lightened slightly for dark chat bg)
 TEAL   = "#5aa0a0"   # --accent
@@ -39,17 +40,27 @@ def save_svg(name, body):
 
 # ---------- font glyphs ----------
 
-def glyph(name, ch, color, target_h=76, max_w=92):
-    font = ImageFont.truetype(FONT_PATH, 600)
-    img = Image.new("RGBA", (1200, 1200), (0, 0, 0, 0))
+FONT = ImageFont.truetype(FONT_PATH, 600)
+FEATURES = ["lnum"]  # lining figures — uniform digit height
+
+
+def _render(ch, color):
+    img = Image.new("RGBA", (1400, 1400), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    d.text((100, 100), ch, font=font, fill=color)
-    bbox = img.getbbox()
-    g = img.crop(bbox)
-    scale = target_h / g.height
-    if g.width * scale > max_w:
-        scale = max_w / g.width
-    w, h = max(1, round(g.width * scale)), max(1, round(g.height * scale))
+    d.text((150, 150), ch, font=FONT, fill=color, features=FEATURES)
+    return img.crop(img.getbbox())
+
+
+def _ref_scale(ref_ch, target_h):
+    return target_h / _render(ref_ch, "#fff").height
+
+
+def glyph(name, ch, color, scale, max_dim=96):
+    g = _render(ch, color)
+    s = scale
+    if max(g.width, g.height) * s > max_dim:
+        s = max_dim / max(g.width, g.height)
+    w, h = max(1, round(g.width * s)), max(1, round(g.height * s))
     g = g.resize((w, h), Image.LANCZOS)
     canvas = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
     canvas.paste(g, ((SIZE - w) // 2, (SIZE - h) // 2), g)
@@ -57,13 +68,13 @@ def glyph(name, ch, color, target_h=76, max_w=92):
     print("chr ", name)
 
 
-# ---------- doodle shapes ----------
+# ---------- geometric shapes ----------
 
-ORN = ("M50 6 C54 34 66 46 94 50 C66 54 54 66 50 94 "
-       "C46 66 34 54 6 50 C34 46 46 34 50 6 Z")  # the site's four-point star
+# the site's ✦ ornament — sharp four-point star with gently concave sides
+ORN = ("M50 3 Q55 45 97 50 Q55 55 50 97 Q45 55 3 50 Q45 45 50 3 Z")
 
-HEART = ("M50 88 C20 64 10 46 14 30 C17 17 32 12 42 20 C46 23 49 27 50 30 "
-         "C51 27 54 23 58 20 C68 12 83 17 86 30 C90 46 80 64 50 88 Z")
+# clean two-arc heart with a crisp V point
+HEART = "M50 88 L18 56 A20 20 0 1 1 50 32 A20 20 0 1 1 82 56 Z"
 
 def heart_at(x, y, s, color):
     return (f'<g transform="translate({x} {y}) scale({s}) translate(-50 -50)">'
@@ -73,188 +84,166 @@ def orn_at(x, y, s, color, rot=0):
     return (f'<g transform="translate({x} {y}) rotate({rot}) scale({s}) translate(-50 -50)">'
             f'<path d="{ORN}" fill="{color}"/></g>')
 
-STROKE = 'fill="none" stroke-linecap="round" stroke-linejoin="round"'
+def star_points(cx=50, cy=52, r_out=46, r_in=17.8, rot=-90):
+    pts = []
+    for i in range(10):
+        r = r_out if i % 2 == 0 else r_in
+        a = math.radians(rot + i * 36)
+        pts.append(f"{cx + r * math.cos(a):.1f},{cy + r * math.sin(a):.1f}")
+    return " ".join(pts)
+
+STROKE = 'fill="none" stroke-linecap="butt" stroke-linejoin="miter"'
+
 
 def doodles():
     # -- the site's ✦ ornament, three colors
     for cname, c in (("teal", TEAL), ("cream", CREAM), ("gold", GOLD)):
         save_svg(f"ornament_{cname}", f'<path d="{ORN}" fill="{c}"/>')
 
-    # -- sparkle clusters
+    # -- sparkle clusters (compositions of the ✦)
     save_svg("sparkles_teal",
-             orn_at(42, 52, 0.72, TEAL) + orn_at(80, 26, 0.30, TEAL_L, 15)
-             + f'<circle cx="76" cy="66" r="5" fill="{CREAM}"/>'
-             + f'<circle cx="18" cy="22" r="4" fill="{TEAL_L}"/>')
+             orn_at(40, 54, 0.74, TEAL) + orn_at(78, 24, 0.34, TEAL_L)
+             + f'<circle cx="78" cy="66" r="4.5" fill="{CREAM}"/>'
+             + f'<circle cx="16" cy="20" r="3.5" fill="{TEAL_L}"/>')
     save_svg("sparkles_gold",
-             orn_at(56, 44, 0.72, GOLD) + orn_at(20, 70, 0.30, CREAM, -12)
-             + f'<circle cx="24" cy="24" r="5" fill="{TAN}"/>'
-             + f'<circle cx="84" cy="78" r="4" fill="{GOLD}"/>')
+             orn_at(58, 44, 0.74, GOLD) + orn_at(20, 72, 0.32, CREAM)
+             + f'<circle cx="24" cy="22" r="4.5" fill="{TAN}"/>'
+             + f'<circle cx="86" cy="80" r="3.5" fill="{GOLD}"/>')
     save_svg("sparkles_mixed",
-             orn_at(34, 38, 0.55, TEAL) + orn_at(72, 60, 0.42, GOLD, 10)
-             + orn_at(66, 20, 0.24, CREAM, -8)
-             + f'<circle cx="26" cy="78" r="4.5" fill="{ROSE}"/>')
+             orn_at(34, 38, 0.56, TEAL) + orn_at(72, 62, 0.42, GOLD)
+             + orn_at(68, 18, 0.24, CREAM)
+             + f'<circle cx="24" cy="78" r="4" fill="{ROSE}"/>')
 
     # -- hearts
     for cname, c in (("teal", TEAL), ("rose", ROSE), ("cream", CREAM)):
         save_svg(f"heart_{cname}", f'<path d="{HEART}" fill="{c}"/>')
     for cname, c in (("teal", TEAL), ("rose", ROSE)):
         save_svg(f"heart_outline_{cname}",
-                 f'<g transform="translate(50 50) scale(0.92) translate(-50 -50)">'
-                 f'<path d="{HEART}" {STROKE} stroke="{c}" stroke-width="8"/></g>')
+                 f'<g transform="translate(50 50) scale(0.9) translate(-50 -50)">'
+                 f'<path d="{HEART}" {STROKE} stroke="{c}" stroke-width="7"/></g>')
     save_svg("hearts_cluster",
-             heart_at(38, 44, 0.62, TEAL) + heart_at(74, 66, 0.36, CREAM)
-             + heart_at(72, 26, 0.26, ROSE))
+             heart_at(38, 44, 0.62, TEAL) + heart_at(74, 68, 0.36, CREAM)
+             + heart_at(74, 26, 0.26, ROSE))
 
-    # -- five-point doodle stars
-    star_pts = "50,7 61,37 92,39 68,59 77,90 50,72 23,90 32,59 8,39 39,37"
+    # -- five-point stars, crisp
     for cname, c in (("teal", TEAL), ("gold", GOLD)):
-        save_svg(f"star_{cname}",
-                 f'<polygon points="{star_pts}" fill="{c}" stroke="{c}" '
-                 f'stroke-width="6" stroke-linejoin="round"/>')
+        save_svg(f"star_{cname}", f'<polygon points="{star_points()}" fill="{c}"/>')
     save_svg("stars_cluster",
-             f'<g transform="translate(34 36) scale(0.52) translate(-50 -50)">'
-             f'<polygon points="{star_pts}" fill="{TEAL}" stroke="{TEAL}" stroke-width="6" stroke-linejoin="round"/></g>'
-             f'<g transform="translate(74 62) scale(0.36) translate(-50 -50)">'
-             f'<polygon points="{star_pts}" fill="{GOLD}" stroke="{GOLD}" stroke-width="6" stroke-linejoin="round"/></g>'
-             f'<g transform="translate(70 20) scale(0.2) translate(-50 -50)">'
-             f'<polygon points="{star_pts}" fill="{CREAM}" stroke="{CREAM}" stroke-width="6" stroke-linejoin="round"/></g>')
+             f'<polygon points="{star_points(34, 38, 26, 10)}" fill="{TEAL}"/>'
+             f'<polygon points="{star_points(74, 64, 18, 7)}" fill="{GOLD}"/>'
+             f'<polygon points="{star_points(72, 20, 10, 3.9)}" fill="{CREAM}"/>')
 
-    # -- checks / crosses / plus
-    CHECK = "M14 55 C24 61 33 71 38 80 C50 52 66 30 88 16"
+    # -- checks / crosses / plus: straight strokes, sharp ends
+    CHECK = "M16 54 L38 78 L84 20"
     for cname, c in (("teal", TEAL), ("cream", CREAM)):
-        save_svg(f"check_{cname}", f'<path d="{CHECK}" {STROKE} stroke="{c}" stroke-width="11"/>')
+        save_svg(f"check_{cname}", f'<path d="{CHECK}" {STROKE} stroke="{c}" stroke-width="10"/>')
     save_svg("check_circle",
              f'<circle cx="50" cy="50" r="45" fill="{CREAM}"/>'
-             f'<g transform="translate(50 52) scale(0.62) translate(-50 -50)">'
-             f'<path d="{CHECK}" {STROKE} stroke="{TEAL_D}" stroke-width="15"/></g>')
+             f'<path d="M29 51 L43 66 L72 32" {STROKE} stroke="{TEAL_D}" stroke-width="9"/>')
     for cname, c in (("rose", ROSE), ("teal", TEAL)):
         save_svg(f"cross_{cname}",
-                 f'<path d="M22 20 C40 40 60 60 80 82" {STROKE} stroke="{c}" stroke-width="11"/>'
-                 f'<path d="M78 18 C60 40 42 60 20 80" {STROKE} stroke="{c}" stroke-width="11"/>')
+                 f'<path d="M22 22 L78 78 M78 22 L22 78" {STROKE} stroke="{c}" stroke-width="10"/>')
     for cname, c in (("teal", TEAL), ("cream", CREAM)):
         save_svg(f"plus_{cname}",
-                 f'<path d="M50 14 C51 38 49 62 50 86" {STROKE} stroke="{c}" stroke-width="11"/>'
-                 f'<path d="M14 50 C40 48 64 52 86 50" {STROKE} stroke="{c}" stroke-width="11"/>')
+                 f'<path d="M50 12 L50 88 M12 50 L88 50" {STROKE} stroke="{c}" stroke-width="10"/>')
 
-    # -- arrows
-    def arrow_right(c):
-        return (f'<path d="M8 66 C26 42 54 34 82 44" {STROKE} stroke="{c}" stroke-width="9"/>'
-                f'<path d="M82 44 L64 30 M82 44 L62 56" {STROKE} stroke="{c}" stroke-width="9"/>')
-    save_svg("arrow_right_teal", arrow_right(TEAL))
-    save_svg("arrow_right_cream", arrow_right(CREAM))
-    save_svg("arrow_up_teal",
-             f'<path d="M48 88 C44 62 45 36 52 12" {STROKE} stroke="{TEAL}" stroke-width="9"/>'
-             f'<path d="M52 12 L34 30 M52 12 L68 30" {STROKE} stroke="{TEAL}" stroke-width="9"/>')
-    save_svg("arrow_down_cream",
-             f'<path d="M52 12 C56 38 55 64 48 88" {STROKE} stroke="{CREAM}" stroke-width="9"/>'
-             f'<path d="M48 88 L32 70 M48 88 L66 70" {STROKE} stroke="{CREAM}" stroke-width="9"/>')
+    # -- arrows: straight shaft + solid triangular head
+    def arrow(c, rot):
+        return (f'<g transform="rotate({rot} 50 50)">'
+                f'<rect x="8" y="45.5" width="56" height="9" fill="{c}"/>'
+                f'<polygon points="62,29 92,50 62,71" fill="{c}"/></g>')
+    save_svg("arrow_right_teal", arrow(TEAL, 0))
+    save_svg("arrow_right_cream", arrow(CREAM, 0))
+    save_svg("arrow_up_teal", arrow(TEAL, -90))
+    save_svg("arrow_down_cream", arrow(CREAM, 90))
 
     # -- moon & sun
     save_svg("moon",
              f'<path d="M58 6 A44 44 0 1 0 58 94 A54 54 0 0 1 58 6 Z" fill="{TAN}"/>'
-             + orn_at(76, 28, 0.24, CREAM, 12) + orn_at(84, 58, 0.16, CREAM, -10))
+             + orn_at(76, 28, 0.26, CREAM) + orn_at(84, 58, 0.16, CREAM))
     rays = "".join(
-        f'<path d="M50 50 L{50 + 46 * dx:.0f} {50 + 46 * dy:.0f}" {STROKE} stroke="{GOLD}" stroke-width="7" transform="translate({4 * dx:.1f} {4 * dy:.1f})"/>'
-        for dx, dy in [(1, 0), (0.71, 0.71), (0, 1), (-0.71, 0.71), (-1, 0), (-0.71, -0.71), (0, -1), (0.71, -0.71)])
+        f'<g transform="rotate({a} 50 50)"><rect x="47.5" y="2" width="5" height="16" fill="{GOLD}"/></g>'
+        for a in range(0, 360, 45))
     save_svg("sun",
-             f'<g transform="scale(0.9) translate(5.5 5.5)">{rays}'
-             f'<circle cx="50" cy="50" r="24" fill="{CREAM}"/>'
-             f'<path d="M50 38 C58 40 60 50 54 54 C48 58 42 52 46 47 C49 43 54 44 53 49" '
-             f'{STROKE} stroke="{GOLD}" stroke-width="5"/></g>')
+             rays + f'<circle cx="50" cy="50" r="23" fill="{CREAM}"/>'
+             f'<circle cx="50" cy="50" r="23" fill="none" stroke="{GOLD}" stroke-width="3"/>')
 
-    # -- dots (irregular hand blobs)
-    BLOB = ("M50 18 C70 14 84 30 82 52 C80 74 64 86 46 82 "
-            "C28 78 16 62 20 44 C24 28 36 21 50 18 Z")
+    # -- dots: perfect circles
     for cname, c in (("teal", TEAL), ("cream", CREAM), ("rose", ROSE), ("gold", GOLD)):
-        save_svg(f"dot_{cname}",
-                 f'<g transform="translate(50 50) scale(0.6) translate(-50 -50)">'
-                 f'<path d="{BLOB}" fill="{c}"/></g>')
+        save_svg(f"dot_{cname}", f'<circle cx="50" cy="50" r="26" fill="{c}"/>')
 
-    # -- bars & dividers
+    # -- bars & dividers: sharp rectangles (site uses 2px radius)
     for cname, c in (("teal", TEAL), ("cream", CREAM)):
-        save_svg(f"bar_{cname}",
-                 f'<rect x="41" y="12" width="18" height="76" rx="8" fill="{c}" '
-                 f'transform="rotate(2 50 50)"/>')
+        save_svg(f"bar_{cname}", f'<rect x="42" y="10" width="16" height="80" rx="2" fill="{c}"/>')
     for cname, c in (("teal", TEAL), ("cream", CREAM), ("tan", TAN)):
-        save_svg(f"line_{cname}",
-                 f'<rect x="5" y="44" width="90" height="12" rx="6" fill="{c}" '
-                 f'transform="rotate(-1.5 50 50)"/>')
+        save_svg(f"line_{cname}", f'<rect x="4" y="45" width="92" height="10" rx="2" fill="{c}"/>')
+    # header-rule divider: line ✦ line, like the site header
     for cname, c in (("teal", TEAL), ("cream", CREAM)):
         save_svg(f"wave_{cname}",
-                 f'<path d="M5 52 Q13 40 21 50 T37 50 T53 50 T69 50 T85 50 Q90 50 95 46" '
-                 f'{STROKE} stroke="{c}" stroke-width="8"/>')
+                 f'<rect x="2" y="48.5" width="30" height="3" fill="{c}"/>'
+                 f'<rect x="68" y="48.5" width="30" height="3" fill="{c}"/>'
+                 + orn_at(50, 50, 0.32, c))
 
-    # -- brackets
+    # -- square brackets, sharp corners
     save_svg("bracket_left",
-             f'<path d="M64 11 C46 12 33 13 32 21 L30 78 C30 86 44 88 62 89" '
-             f'{STROKE} stroke="{CREAM}" stroke-width="9"/>')
+             f'<path d="M64 12 L34 12 L34 88 L64 88" {STROKE} stroke="{CREAM}" stroke-width="8"/>')
     save_svg("bracket_right",
-             f'<path d="M36 11 C54 12 67 13 68 21 L70 78 C70 86 56 88 38 89" '
-             f'{STROKE} stroke="{CREAM}" stroke-width="9"/>')
+             f'<path d="M36 12 L66 12 L66 88 L36 88" {STROKE} stroke="{CREAM}" stroke-width="8"/>')
     save_svg("bracket_left_teal",
-             f'<path d="M64 11 C46 12 33 13 32 21 L30 78 C30 86 44 88 62 89" '
-             f'{STROKE} stroke="{TEAL}" stroke-width="9"/>')
+             f'<path d="M64 12 L34 12 L34 88 L64 88" {STROKE} stroke="{TEAL}" stroke-width="8"/>')
     save_svg("bracket_right_teal",
-             f'<path d="M36 11 C54 12 67 13 68 21 L70 78 C70 86 56 88 38 89" '
-             f'{STROKE} stroke="{TEAL}" stroke-width="9"/>')
+             f'<path d="M36 12 L66 12 L66 88 L36 88" {STROKE} stroke="{TEAL}" stroke-width="8"/>')
 
-    # -- faces
+    # -- faces: minimal, precise
+    RCAP = 'fill="none" stroke-linecap="round"'
     save_svg("face_happy",
-             f'<circle cx="30" cy="34" r="6.5" fill="{TEAL}"/>'
-             f'<circle cx="70" cy="34" r="6.5" fill="{TEAL}"/>'
-             f'<path d="M20 56 C30 76 70 76 80 56" {STROKE} stroke="{TEAL}" stroke-width="10"/>')
+             f'<circle cx="30" cy="34" r="6" fill="{TEAL}"/>'
+             f'<circle cx="70" cy="34" r="6" fill="{TEAL}"/>'
+             f'<path d="M22 56 A28 28 0 0 0 78 56" {RCAP} stroke="{TEAL}" stroke-width="8"/>')
     save_svg("face_content",
-             f'<path d="M20 38 C26 28 36 28 42 38" {STROKE} stroke="{CREAM}" stroke-width="8"/>'
-             f'<path d="M58 38 C64 28 74 28 80 38" {STROKE} stroke="{CREAM}" stroke-width="8"/>'
-             f'<path d="M32 60 C40 71 60 71 68 60" {STROKE} stroke="{CREAM}" stroke-width="8"/>')
+             f'<path d="M20 38 A11 11 0 0 1 42 38" {RCAP} stroke="{CREAM}" stroke-width="7"/>'
+             f'<path d="M58 38 A11 11 0 0 1 80 38" {RCAP} stroke="{CREAM}" stroke-width="7"/>'
+             f'<path d="M34 60 A16 16 0 0 0 66 60" {RCAP} stroke="{CREAM}" stroke-width="7"/>')
     save_svg("face_sad",
-             f'<circle cx="30" cy="38" r="6.5" fill="{TEAL_D}"/>'
-             f'<circle cx="70" cy="38" r="6.5" fill="{TEAL_D}"/>'
-             f'<path d="M22 74 C32 58 68 58 78 74" {STROKE} stroke="{TEAL_D}" stroke-width="10"/>')
+             f'<circle cx="30" cy="38" r="6" fill="{TEAL_D}"/>'
+             f'<circle cx="70" cy="38" r="6" fill="{TEAL_D}"/>'
+             f'<path d="M24 74 A28 28 0 0 1 76 74" {RCAP} stroke="{TEAL_D}" stroke-width="8"/>')
     save_svg("face_love",
-             heart_at(30, 34, 0.30, ROSE) + heart_at(70, 34, 0.30, ROSE)
-             + f'<path d="M24 58 C34 76 66 76 76 58" {STROKE} stroke="{ROSE}" stroke-width="9"/>')
+             heart_at(30, 34, 0.28, ROSE) + heart_at(70, 34, 0.28, ROSE)
+             + f'<path d="M26 58 A26 26 0 0 0 74 58" {RCAP} stroke="{ROSE}" stroke-width="8"/>')
 
-    # -- lightbulb (idea)
+    # -- lightbulb (idea): clean circle bulb + straight rays
     save_svg("lightbulb",
-             f'<path d="M50 24 C64 24 74 34 74 47 C74 56 68 61 64 66 C61 70 60 74 60 78 L41 78 '
-             f'C41 74 40 70 37 66 C33 61 27 56 27 47 C27 34 37 24 50 24 Z" '
-             f'{STROKE} stroke="{CREAM}" stroke-width="7"/>'
-             f'<path d="M43 78 C43 70 45 62 50 58 C55 62 57 70 57 78" {STROKE} stroke="{CREAM}" stroke-width="5"/>'
-             f'<path d="M42 86 L59 86" {STROKE} stroke="{CREAM}" stroke-width="6"/>'
-             f'<path d="M50 4 L50 13 M22 10 L27 19 M78 10 L73 19 M8 34 L17 38 M92 34 L83 38" '
-             f'{STROKE} stroke="{GOLD}" stroke-width="6"/>')
+             f'<circle cx="50" cy="44" r="22" fill="none" stroke="{CREAM}" stroke-width="6"/>'
+             f'<path d="M41 64 L41 74 L59 74 L59 64" {STROKE} stroke="{CREAM}" stroke-width="6"/>'
+             f'<rect x="42" y="80" width="16" height="5" fill="{CREAM}"/>'
+             f'<path d="M50 4 L50 14 M20 12 L26 21 M80 12 L74 21 M8 38 L18 41 M92 38 L82 41" '
+             f'{STROKE} stroke="{GOLD}" stroke-width="5"/>')
 
-    # -- asterisk bursts
-    import math
+    # -- bursts: thin straight rays
     def burst(c, rot=0):
-        lines = ""
-        for i in range(6):
-            a = math.radians(rot + i * 60)
-            x1, y1 = 50 + 13 * math.cos(a), 50 + 13 * math.sin(a)
-            x2, y2 = 50 + 42 * math.cos(a), 50 + 42 * math.sin(a)
-            lines += f'<path d="M{x1:.1f} {y1:.1f} L{x2:.1f} {y2:.1f}" {STROKE} stroke="{c}" stroke-width="9"/>'
-        return lines
-    save_svg("burst_teal", burst(TEAL, 8))
+        return "".join(
+            f'<g transform="rotate({rot + i * 60} 50 50)"><rect x="46.5" y="8" width="7" height="30" fill="{c}"/></g>'
+            for i in range(6))
+    save_svg("burst_teal", burst(TEAL, 10))
     save_svg("burst_cream", burst(CREAM, -10))
 
-    # -- bookmark flags
+    # -- bookmark flags: straight pennant
     for cname, c in (("teal", TEAL), ("rose", ROSE)):
         save_svg(f"flag_{cname}",
-                 f'<path d="M30 10 C44 12 58 12 71 10 L72 86 C65 76 58 71 50 64 '
-                 f'C43 71 36 78 29 87 Z" fill="{c}"/>')
+                 f'<polygon points="30,10 70,10 70,86 50,64 30,86" fill="{c}"/>')
 
-    # -- envelope with heart
+    # -- envelope with heart: sharp rectangle, straight flap
     save_svg("envelope",
-             f'<rect x="12" y="26" width="76" height="52" rx="4" {STROKE} stroke="{TEAL}" stroke-width="7"/>'
-             f'<path d="M14 30 C26 42 38 52 50 56 C62 52 74 42 86 30" {STROKE} stroke="{TEAL}" stroke-width="7"/>'
-             + heart_at(50, 20, 0.22, ROSE))
+             f'<rect x="12" y="28" width="76" height="50" rx="2" fill="none" stroke="{TEAL}" stroke-width="6"/>'
+             f'<path d="M15 31 L50 58 L85 31" {STROKE} stroke="{TEAL}" stroke-width="6"/>'
+             + heart_at(50, 18, 0.20, ROSE))
 
 
 # ---------- run ----------
 
 def main():
-    # Cyrillic alphabet — teal, the page accent
+    # Cyrillic alphabet — teal, the page accent, in the site's serif
     names = {
         "А": "a", "Б": "b", "В": "v", "Г": "g", "Д": "d", "Е": "e", "Ё": "yo",
         "Ж": "zh", "З": "z", "И": "i", "Й": "j", "К": "k", "Л": "l", "М": "m",
@@ -262,14 +251,16 @@ def main():
         "Ф": "f", "Х": "h", "Ц": "ts", "Ч": "ch", "Ш": "sh", "Щ": "shch",
         "Ъ": "hard", "Ы": "y", "Ь": "soft", "Э": "e2", "Ю": "yu", "Я": "ya",
     }
+    cap = _ref_scale("А", 76)   # common scale so all caps share one height
     for ch, tr in names.items():
-        glyph(f"letter_{tr}", ch, TEAL)
-    # digits — cream
+        glyph(f"letter_{tr}", ch, TEAL, cap)
+    # digits — cream, lining figures at the same cap height
+    dig = _ref_scale("0", 76)
     for i in range(10):
-        glyph(f"digit_{i}", str(i), CREAM)
+        glyph(f"digit_{i}", str(i), CREAM, dig)
     # punctuation
-    glyph("exclaim", "!", ROSE)
-    glyph("question", "?", TEAL_L)
+    glyph("exclaim", "!", ROSE, cap)
+    glyph("question", "?", TEAL_L, cap)
 
     doodles()
 
