@@ -96,9 +96,9 @@ STROKE = 'fill="none" stroke-linecap="butt" stroke-linejoin="miter"'
 
 
 def doodles():
-    # -- the site's ✦ ornament, three colors
+    # -- the site's ✦ ornament, three colors — small, as an inline accent
     for cname, c in (("teal", TEAL), ("cream", CREAM), ("gold", GOLD)):
-        save_svg(f"ornament_{cname}", f'<path d="{ORN}" fill="{c}"/>')
+        save_svg(f"ornament_{cname}", orn_at(50, 50, 0.5, c))
 
     # -- sparkle clusters (compositions of the ✦)
     save_svg("sparkles_teal",
@@ -114,20 +114,20 @@ def doodles():
              + orn_at(68, 18, 0.24, CREAM)
              + f'<circle cx="24" cy="78" r="4" fill="{ROSE}"/>')
 
-    # -- hearts
+    # -- hearts — small inline accents
     for cname, c in (("teal", TEAL), ("rose", ROSE), ("cream", CREAM)):
-        save_svg(f"heart_{cname}", f'<path d="{HEART}" fill="{c}"/>')
+        save_svg(f"heart_{cname}", heart_at(50, 50, 0.5, c))
     for cname, c in (("teal", TEAL), ("rose", ROSE)):
         save_svg(f"heart_outline_{cname}",
-                 f'<g transform="translate(50 50) scale(0.9) translate(-50 -50)">'
-                 f'<path d="{HEART}" {STROKE} stroke="{c}" stroke-width="7"/></g>')
+                 f'<g transform="translate(50 50) scale(0.5) translate(-50 -50)">'
+                 f'<path d="{HEART}" {STROKE} stroke="{c}" stroke-width="11"/></g>')
     save_svg("hearts_cluster",
              heart_at(38, 44, 0.62, TEAL) + heart_at(74, 68, 0.36, CREAM)
              + heart_at(74, 26, 0.26, ROSE))
 
-    # -- five-point stars, crisp
+    # -- five-point stars, crisp — small
     for cname, c in (("teal", TEAL), ("gold", GOLD)):
-        save_svg(f"star_{cname}", f'<polygon points="{star_points()}" fill="{c}"/>')
+        save_svg(f"star_{cname}", f'<polygon points="{star_points(50, 51, 25, 9.7)}" fill="{c}"/>')
     save_svg("stars_cluster",
              f'<polygon points="{star_points(34, 38, 26, 10)}" fill="{TEAL}"/>'
              f'<polygon points="{star_points(74, 64, 18, 7)}" fill="{GOLD}"/>'
@@ -168,9 +168,9 @@ def doodles():
              rays + f'<circle cx="50" cy="50" r="23" fill="{CREAM}"/>'
              f'<circle cx="50" cy="50" r="23" fill="none" stroke="{GOLD}" stroke-width="3"/>')
 
-    # -- dots: perfect circles
+    # -- dots: perfect circles, small
     for cname, c in (("teal", TEAL), ("cream", CREAM), ("rose", ROSE), ("gold", GOLD)):
-        save_svg(f"dot_{cname}", f'<circle cx="50" cy="50" r="26" fill="{c}"/>')
+        save_svg(f"dot_{cname}", f'<circle cx="50" cy="50" r="13" fill="{c}"/>')
 
     # -- bars & dividers: sharp rectangles (site uses 2px radius)
     for cname, c in (("teal", TEAL), ("cream", CREAM)):
