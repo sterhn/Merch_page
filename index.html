@@ -20,11 +20,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
+      color-scheme: dark;
       --bg: #110e16;
       --surface: #1a1520;
       --ink: #ede5da;
-      --muted: #8a7e72;
-      --faint: #5a5148;
+      /* Both greys are tuned to clear WCAG AA on --bg: muted ≈ 5.9:1, faint ≈ 4.5:1 */
+      --muted: #9b8f81;
+      --faint: #857a6e;
       --accent: #5aa0a0;
       --accent-soft: rgba(90,160,160,0.25);
       --page-accent: #5aa0a0;
@@ -33,6 +35,9 @@
       --mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; }
+    /* Reserve the scrollbar gutter so locking the body when an overlay opens
+       doesn't shift the whole page sideways. */
+    html { scrollbar-gutter: stable; }
     body {
       font-family: var(--sans);
       background: var(--bg);
@@ -41,8 +46,10 @@
       min-height: 100vh;
       overflow-x: hidden;
     }
+    body.scroll-locked { overflow: hidden; }
     a { color: var(--accent); transition: color 0.2s; }
     a:hover { color: #7dbdbd; }
+    :focus-visible { outline: 2px solid var(--page-accent); outline-offset: 2px; }
     ::selection { background: color-mix(in srgb, var(--page-accent) 35%, transparent); color: var(--ink); }
     ::-webkit-scrollbar { width: 10px; height: 10px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -115,7 +122,7 @@
     .chip {
       padding: 5px 10px; border: 1px solid rgba(138,126,114,0.18); border-radius: 2px;
       background: transparent; color: var(--muted); cursor: pointer;
-      font-family: var(--sans); font-size: .6rem; font-weight: 600;
+      font-family: var(--sans); font-size: .66rem; font-weight: 600;
       text-transform: uppercase; letter-spacing: .08em;
       transition: all .2s;
     }
@@ -159,10 +166,10 @@
     .fandom-header .line { flex: 1; height: 1px; }
     .fandom-full { margin: -12px 0 18px; padding-left: 24px; line-height: 1.6; }
     .fandom-en {
-      font-size: .7rem; color: var(--muted); letter-spacing: .08em;
+      font-size: .74rem; color: var(--muted); letter-spacing: .08em;
     }
     .fandom-ru {
-      font-size: .62rem; color: var(--faint); letter-spacing: .06em;
+      font-size: .68rem; color: var(--faint); letter-spacing: .06em;
     }
 
     /* Card grid */
@@ -171,6 +178,7 @@
     .card {
       background: rgba(31,26,40,0.6); border: 1px solid rgba(138,126,114,0.1);
       overflow: hidden; transition: transform .3s, box-shadow .3s, border-color .3s; position: relative;
+      display: flex; flex-direction: column;
     }
     .card::before, .card::after {
       content: ''; position: absolute; width: 14px; height: 14px; z-index: 3;
@@ -183,10 +191,14 @@
     .card:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 40px rgba(0,0,0,0.3); border-color: rgba(90,160,160,0.25); }
     .card.sold-out { opacity: 0.5; }
     .card.sold-out .card-img img, .card.sold-out .card-img .ph { filter: grayscale(1); }
+    /* A real <button> so the card art is reachable by keyboard and screen readers */
     .card-img {
       width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
       overflow: hidden; position: relative; cursor: pointer;
+      padding: 0; border: none; background: none; font: inherit; color: inherit;
+      flex-shrink: 0;
     }
+    .card-img:focus-visible { outline-offset: -3px; }
     .card-img img { width: 100%; height: 100%; object-fit: contain; transition: transform .4s ease, filter .4s; }
     .card:hover .card-img img { transform: scale(1.06); }
     .card-img .ph {
@@ -224,9 +236,9 @@
     .detail-img .stamp {
       font-size: 1.05rem; padding: 9px 22px; border-width: 3px; letter-spacing: .24em;
     }
-    .card-info { padding: 10px 12px 12px; }
+    .card-info { padding: 10px 12px 12px; flex: 1; display: flex; flex-direction: column; }
     .card-type {
-      font-size: .55rem; font-weight: 600; text-transform: uppercase;
+      font-size: .62rem; font-weight: 600; text-transform: uppercase;
       letter-spacing: .12em; margin-bottom: 3px;
     }
     .card-name {
@@ -234,7 +246,9 @@
       font-size: .95rem; font-weight: 600; color: var(--ink);
       margin-bottom: 8px; line-height: 1.3;
     }
-    .card-bottom { display: flex; align-items: center; justify-content: space-between; }
+    /* margin-top:auto keeps price + add button on one line across a row of
+       cards whose names wrap to different heights */
+    .card-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 4px; }
     .card-price { font-family: var(--serif); font-size: 1rem; font-weight: 700; color: var(--accent); }
     .add-btn {
       min-width: 40px; height: 40px; padding: 0 10px;
@@ -257,11 +271,12 @@
     .detail-overlay.open { opacity: 1; pointer-events: auto; }
     .detail-card {
       background: var(--surface); border: 1px solid rgba(90,160,160,0.15);
-      max-width: 360px; width: 100%; max-height: 85vh; overflow-y: auto;
+      max-width: 360px; width: 100%; max-height: 85vh; overflow-y: auto; overscroll-behavior: contain;
       transform: translateY(30px) scale(0.95); transition: transform .35s cubic-bezier(.4,0,.2,1);
       position: relative;
     }
     .detail-overlay.open .detail-card { transform: translateY(0) scale(1); }
+    @media (min-width: 640px) { .detail-card { max-width: 420px; } }
     .detail-close {
       position: absolute; top: 12px; right: 12px; z-index: 2;
       width: 36px; height: 36px; border: 1px solid rgba(138,126,114,0.3);
@@ -353,11 +368,15 @@
       pointer-events: none;
     }
     .cart-bar.visible { transform: translateY(0); }
+    /* A real <button>: the bar was a click-only <div>, unreachable by keyboard */
     .cart-bar-inner {
-      max-width: 860px; margin: 0 auto;
+      max-width: 860px; margin: 0 auto; width: 100%;
       display: flex; align-items: center; justify-content: space-between;
       padding: 16px 24px 14px; cursor: pointer;
+      padding-bottom: calc(14px + env(safe-area-inset-bottom));
+      background: none; border: none; font: inherit; color: inherit; text-align: left;
     }
+    .cart-bar-inner:focus-visible { outline-offset: -3px; }
     .cart-bar-left { display: flex; align-items: center; gap: 12px; }
     .cart-badge {
       display: inline-flex; align-items: center; justify-content: center;
@@ -385,11 +404,14 @@
     .cart-panel {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 201;
       background: var(--surface); border-top: 1px solid rgba(90,160,160,0.2);
-      max-height: 80vh; overflow-y: auto;
+      max-height: 80vh; overflow-y: auto; overscroll-behavior: contain;
       transform: translateY(100%); transition: transform .4s cubic-bezier(.4,0,.2,1);
     }
     .cart-panel.open { transform: translateY(0); }
-    .cart-panel-inner { max-width: 860px; margin: 0 auto; padding: 24px 24px 32px; }
+    .cart-panel-inner {
+      max-width: 860px; margin: 0 auto;
+      padding: 24px 24px calc(32px + env(safe-area-inset-bottom));
+    }
     .cart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
     .cart-title {
       font-family: var(--serif);
@@ -412,7 +434,15 @@
       font-family: var(--serif);
       font-weight: 600; font-size: .95rem; color: var(--ink);
     }
-    .cart-item .type-tag { font-size: .6rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--faint); }
+    .cart-item .type-tag { font-size: .65rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--faint); }
+    /* Thumbnail so a long order stays scannable at a glance */
+    .cart-item .thumb {
+      width: 46px; height: 46px; flex-shrink: 0; overflow: hidden;
+      border: 1px solid rgba(138,126,114,0.15);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cart-item .thumb img { width: 100%; height: 100%; object-fit: contain; }
+    .cart-item .thumb .ph { font-family: var(--serif); font-size: 1.1rem; font-weight: 600; opacity: .5; }
     .cart-item .cart-price { font-size: .8rem; font-weight: 700; color: var(--accent); margin-top: 2px; }
     .qty-controls { display: flex; align-items: center; flex-shrink: 0; }
     .qty-btn {
@@ -491,6 +521,34 @@
       font-style: italic; font-family: var(--serif);
     }
     .hidden { display: none !important; }
+    /* display:none would stop screen readers announcing the live region */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; overflow: hidden;
+      clip-path: inset(50%); white-space: nowrap;
+    }
+
+    /* Empty result state */
+    .empty-state { text-align: center; padding: 32px 0; }
+    .reset-btn {
+      margin-top: 14px; padding: 10px 20px;
+      border: 1px solid rgba(138,126,114,0.25); background: transparent;
+      color: var(--muted); font-family: var(--sans); font-size: .7rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .1em; cursor: pointer; transition: all .2s;
+    }
+    .reset-btn:hover { border-color: var(--accent-soft); color: var(--accent); }
+
+    /* Toast — the order flow depends on a clipboard copy the user can't otherwise see */
+    .toast {
+      position: fixed; left: 50%; bottom: 96px; z-index: 400;
+      transform: translate(-50%, 12px); opacity: 0;
+      padding: 11px 20px; max-width: min(90vw, 420px);
+      background: rgba(26,21,32,0.97); border: 1px solid rgba(90,160,160,0.35);
+      color: var(--ink); font-size: .78rem; line-height: 1.45; text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+      pointer-events: none; transition: opacity .25s, transform .25s;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .toast.warn { border-color: rgba(196,85,85,0.5); }
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -519,12 +577,12 @@
       </a>
     </header>
 
-    <div class="controls">
-      <div id="fandoms" class="fandoms hidden"></div>
-      <div id="chips" class="chips hidden"></div>
-    </div>
+    <nav class="controls" aria-label="Фильтры каталога">
+      <div id="fandoms" class="fandoms hidden" aria-label="Фандомы"></div>
+      <div id="chips" class="chips hidden" aria-label="Тип товара"></div>
+    </nav>
 
-    <p id="status" class="status hidden"></p>
+    <p id="status" class="status hidden" role="status"></p>
     <div id="app">
       <div id="list"></div>
     </div>
@@ -541,22 +599,23 @@
 
   <!-- Cart bar -->
   <div id="cart-bar" class="cart-bar">
-    <div class="cart-bar-inner" onclick="toggleCart()">
-      <div class="cart-bar-left">
+    <button type="button" class="cart-bar-inner" onclick="toggleCart()" aria-haspopup="dialog">
+      <span class="cart-bar-left">
         <span class="cart-badge" id="cart-count">0</span>
         <span class="cart-bar-label">Корзина</span>
-      </div>
+      </span>
       <span class="cart-bar-total" id="cart-bar-total">0 ₽</span>
-    </div>
+    </button>
   </div>
+  <p id="cart-live" class="sr-only" role="status" aria-live="polite"></p>
 
   <!-- Cart panel -->
   <div id="cart-overlay" class="cart-overlay" onclick="toggleCart()"></div>
-  <div id="cart-panel" class="cart-panel">
+  <div id="cart-panel" class="cart-panel" role="dialog" aria-modal="true" aria-labelledby="cart-title" aria-hidden="true">
     <div class="cart-panel-inner">
       <div class="cart-header">
-        <span class="cart-title">Ваш заказ</span>
-        <button class="cart-close" onclick="toggleCart()" aria-label="Закрыть корзину">✕</button>
+        <span class="cart-title" id="cart-title">Ваш заказ</span>
+        <button type="button" class="cart-close" onclick="toggleCart()" aria-label="Закрыть корзину">✕</button>
       </div>
       <div id="cart-items"></div>
       <div id="cart-footer" class="hidden">
@@ -573,8 +632,8 @@
             <svg viewBox="0 0 24 24"><path d="M13.162 18.994c.609 0 .858-.406.851-.915-.031-1.917.714-2.949 2.059-1.604 1.488 1.488 1.796 2.519 3.603 2.519h3.2c.808 0 1.126-.26 1.126-.668 0-.863-1.421-2.386-2.625-3.504-1.686-1.565-1.765-1.602-.313-3.486 1.801-2.339 4.157-5.336 2.073-5.336h-3.981c-.772 0-.828.435-1.103 1.083-.995 2.347-2.886 5.387-3.604 4.922-.751-.485-.407-2.406-.35-5.261.015-.754.011-1.271-1.141-1.539-.629-.145-1.241-.205-1.809-.205-2.273 0-3.841.953-2.95 1.119 1.571.293 1.42 3.692 1.054 5.16-.638 2.556-3.036-2.024-4.035-4.305-.241-.548-.315-.974-1.175-.974H1.093c-.492 0-.787.16-.787.516 0 .602 2.96 6.72 5.786 9.77 2.756 2.975 5.48 2.708 7.07 2.708z"/></svg>
             VK
           </a>
-          <button class="copy-btn" id="copy-btn" onclick="copyOrder()">Копировать текст</button>
-          <button class="clear-btn" onclick="clearCart()">Очистить</button>
+          <button type="button" class="copy-btn" id="copy-btn" onclick="copyOrder()">Копировать текст</button>
+          <button type="button" class="clear-btn" onclick="clearCart()">Очистить</button>
         </div>
         <div class="order-hint">При нажатии текст заказа копируется сам — просто вставьте его в чат и отправьте &#10022;</div>
       </div>
@@ -582,13 +641,15 @@
   </div>
 
   <!-- Detail overlay -->
-  <div id="detail-overlay" class="detail-overlay" onclick="closeDetail(event)">
+  <div id="detail-overlay" class="detail-overlay" onclick="closeDetail(event)" role="dialog" aria-modal="true" aria-labelledby="detail-name" aria-hidden="true">
     <div class="detail-card" id="detail-card">
-      <button class="detail-close" onclick="closeDetail(event)" aria-label="Закрыть">&#10005;</button>
+      <button type="button" class="detail-close" onclick="closeDetail(event)" aria-label="Закрыть">&#10005;</button>
       <div id="detail-img" class="detail-img"></div>
       <div id="detail-info" class="detail-info"></div>
     </div>
   </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -598,17 +659,37 @@
     const $ = (id) => document.getElementById(id)
     const status = $('status')
 
-    const configured =
-      SUPABASE_URL && SUPABASE_ANON_KEY && !SUPABASE_URL.startsWith('__')
-    if (!configured) {
-      status.textContent =
-        'Не настроено: добавьте переменные VITE_SUPABASE_URL и VITE_SUPABASE_ANON_KEY в настройках репозитория и сделайте редеплой (см. README).'
+    const showStatus = (text) => {
+      status.textContent = text
       status.classList.remove('hidden')
     }
 
-    const sb = configured
+    const configured =
+      SUPABASE_URL && SUPABASE_ANON_KEY && !SUPABASE_URL.startsWith('__')
+    /* The Supabase client comes from a CDN — if that request is blocked the
+       page used to die on a TypeError and show nothing at all. */
+    const sdkReady = !!(window.supabase && window.supabase.createClient)
+
+    if (!configured) {
+      showStatus('Не настроено: добавьте переменные VITE_SUPABASE_URL и VITE_SUPABASE_ANON_KEY в настройках репозитория и сделайте редеплой (см. README).')
+    } else if (!sdkReady) {
+      showStatus('Не удалось загрузить каталог: библиотека не подгрузилась. Проверьте соединение и обновите страницу.')
+    }
+
+    const sb = configured && sdkReady
       ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
       : null
+
+    /* Toast: the order flow hinges on a clipboard copy the user can't see,
+       and stock caps silently swallow taps — both need visible feedback. */
+    let toastTimer
+    function toast(text, kind) {
+      const el = $('toast')
+      el.textContent = text
+      el.className = 'toast show' + (kind ? ' ' + kind : '')
+      clearTimeout(toastTimer)
+      toastTimer = setTimeout(() => { el.className = 'toast' + (kind ? ' ' + kind : '') }, 2600)
+    }
 
     const esc = (s) =>
       String(s).replace(/[&<>"']/g, (c) =>
@@ -675,8 +756,12 @@
         if (saved) cart = JSON.parse(saved)
       } catch {}
     }
+    /* Safari's private mode throws on setItem — losing persistence is fine,
+       taking the whole "add to cart" click down with it is not. */
     function saveCart() {
-      localStorage.setItem('hehearse_cart', JSON.stringify(cart))
+      try {
+        localStorage.setItem('hehearse_cart', JSON.stringify(cart))
+      } catch {}
     }
 
     function addToCart(id) {
@@ -693,11 +778,14 @@
         badge.classList.remove('pulse')
         void badge.offsetWidth
         badge.classList.add('pulse')
+      } else {
+        toast(`Больше нет в наличии — доступно ${max} шт.`, 'warn')
       }
     }
 
     function updateAddBtn(id) {
-      const btn = document.querySelector(`.add-btn[data-id="${id}"]`)
+      const sel = window.CSS && CSS.escape ? CSS.escape(id) : id
+      const btn = document.querySelector(`.add-btn[data-id="${sel}"]`)
       if (!btn) return
       const qty = cart[id] || 0
       if (qty > 0) {
@@ -716,6 +804,7 @@
       if (qty <= 0) {
         delete cart[id]
       } else {
+        if (qty > max) toast(`Больше нет в наличии — доступно ${max} шт.`, 'warn')
         cart[id] = Math.min(qty, max)
       }
       saveCart()
@@ -775,12 +864,22 @@
       return msg
     }
 
+    const plural = (n, one, few, many) => {
+      const m10 = n % 10, m100 = n % 100
+      if (m10 === 1 && m100 !== 11) return one
+      if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few
+      return many
+    }
+
     function updateCartUI() {
       const count = getCartCount()
       const total = getCartTotal()
       $('cart-count').textContent = count
       $('cart-bar-total').textContent = rub(total)
       $('cart-bar').classList.toggle('visible', count > 0)
+      $('cart-live').textContent = count
+        ? `В корзине ${count} ${plural(count, 'товар', 'товара', 'товаров')} на ${rub(total)}`
+        : ''
 
       const ci = getCartItems()
       if (!ci.length) {
@@ -794,16 +893,23 @@
 
       let html = ''
       for (const i of ci) {
+        const color = fandomColor.get(i.fandom || 'Другое') || fandomColors[0]
+        const thumb = i.image_url || i.product_photo_url
         html += `<div class="cart-item">
+          <div class="thumb"${thumb ? '' : ` style="background:linear-gradient(135deg,${color}22,${color}08)"`}>
+            ${thumb
+              ? `<img src="${esc(thumb)}" alt="" loading="lazy" decoding="async" data-fallback="${esc((i.fandom || '★').charAt(0).toUpperCase())}" data-fallback-color="${color}" />`
+              : `<span class="ph" style="color:${color}">${esc((i.fandom || '★').charAt(0).toUpperCase())}</span>`}
+          </div>
           <div class="info">
             <div class="name">${esc(i.name)}</div>
             ${i.type ? `<div class="type-tag">${esc(i.type)}</div>` : ''}
             <div class="cart-price">${i.sale_price != null ? esc(rub(i.sale_price * i.cartQty)) : ''}</div>
           </div>
           <div class="qty-controls">
-            <button class="qty-btn" onclick="setQty('${esc(i.id)}',${i.cartQty - 1})" aria-label="Убавить">−</button>
-            <span class="qty-val">${i.cartQty}</span>
-            <button class="qty-btn" onclick="setQty('${esc(i.id)}',${i.cartQty + 1})" aria-label="Добавить">+</button>
+            <button type="button" class="qty-btn" data-act="qty" data-id="${esc(i.id)}" data-qty="${i.cartQty - 1}" aria-label="Убавить количество: ${esc(i.name)}">−</button>
+            <span class="qty-val" aria-live="off">${i.cartQty}</span>
+            <button type="button" class="qty-btn" data-act="qty" data-id="${esc(i.id)}" data-qty="${i.cartQty + 1}" aria-label="Добавить ещё: ${esc(i.name)}">+</button>
           </div>
         </div>`
       }
@@ -831,9 +937,57 @@
       else if (cartOpen) hideCart()
     })
     document.addEventListener('keydown', (e) => {
-      if (e.key !== 'Escape') return
-      if (detailOpen || cartOpen) closeOverlayViaBack()
+      if (e.key === 'Escape' && (detailOpen || cartOpen)) { closeOverlayViaBack(); return }
+      if (e.key === 'Tab') trapFocus(e)
     })
+
+    /* Modal plumbing: without this the overlays were only visually modal —
+       everything behind them stayed tabbable, and focus never entered the
+       dialog or came back to the card that opened it. */
+    const FOCUSABLE = 'a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])'
+    let lastFocused = null
+
+    function setInert(el, on) {
+      if (!el) return
+      el.inert = on
+      el.setAttribute('aria-hidden', on ? 'true' : 'false')
+    }
+
+    function applyInert() {
+      const anyOpen = detailOpen || cartOpen
+      setInert($('detail-overlay'), !detailOpen)
+      setInert($('cart-panel'), !cartOpen)
+      setInert(document.querySelector('.wrap'), anyOpen)
+      setInert($('cart-bar'), anyOpen)
+      document.body.classList.toggle('scroll-locked', anyOpen)
+    }
+
+    function dialogRoot() {
+      return detailOpen ? $('detail-card') : cartOpen ? $('cart-panel') : null
+    }
+
+    /* Fallback for browsers without `inert` — keeps Tab inside the dialog */
+    function trapFocus(e) {
+      const root = dialogRoot()
+      if (!root) return
+      const f = [...root.querySelectorAll(FOCUSABLE)].filter((el) => el.offsetParent !== null)
+      if (!f.length) return
+      const first = f[0], last = f[f.length - 1]
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus() }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus() }
+    }
+
+    function focusDialog() {
+      const root = dialogRoot()
+      if (!root) return
+      const target = root.querySelector(FOCUSABLE)
+      if (target) target.focus()
+    }
+
+    function restoreFocus() {
+      if (lastFocused && document.contains(lastFocused)) lastFocused.focus()
+      lastFocused = null
+    }
 
     function openDetail(id) {
       const item = items.find((i) => i.id === id)
@@ -845,9 +999,10 @@
 
       /* Prefer the real product photo in the detail view; fall back to the catalog art */
       const detailPhoto = item.product_photo_url || item.image_url
+      const fallbackLetter = esc((item.fandom || '★').charAt(0).toUpperCase())
       const imgHtml = (detailPhoto
-        ? `<img src="${esc(detailPhoto)}" alt="" />`
-        : `<span class="ph" style="color:${color}">${esc((item.fandom || '★').charAt(0).toUpperCase())}</span>`)
+        ? `<img src="${esc(detailPhoto)}" alt="${esc(item.name)}" data-fallback="${fallbackLetter}" data-fallback-color="${color}" />`
+        : `<span class="ph" style="color:${color}">${fallbackLetter}</span>`)
         + (soldOut ? '<div class="stamp">Нет в наличии</div>' : '')
       $('detail-img').style.background = detailPhoto ? 'none' : `linear-gradient(135deg,${color}22,${color}08)`
       $('detail-img').classList.toggle('sold', soldOut)
@@ -856,7 +1011,7 @@
       let info = ''
       if (item.type) info += `<div class="detail-type" style="color:${color}">${esc(item.type)}</div>`
       if (item.fandom) info += `<div class="detail-fandom">${esc(item.fandom)}</div>`
-      info += `<div class="detail-name">${esc(item.name)}</div>`
+      info += `<h2 class="detail-name" id="detail-name">${esc(item.name)}</h2>`
       if (item.description) info += `<div class="detail-desc">${esc(item.description)}</div>`
       info += `<div class="detail-bottom">`
       if (item.sale_price != null) info += `<span class="detail-price">${esc(rub(item.sale_price))}</span>`
@@ -864,24 +1019,28 @@
       if (soldOut) {
         info += `<span class="detail-sold">Нет в наличии</span>`
       } else {
-        info += `<button class="detail-add${inCart ? ' in-cart' : ''}" onclick="addToCart('${esc(item.id)}');openDetail('${esc(item.id)}')">${inCart ? 'В корзине: ' + cart[item.id] : 'В корзину'}</button>`
+        info += `<button type="button" class="detail-add${inCart ? ' in-cart' : ''}" data-act="detail-add" data-id="${esc(item.id)}">${inCart ? 'В корзине: ' + cart[item.id] : 'В корзину'}</button>`
       }
       info += '</div>'
       $('detail-info').innerHTML = info
 
-      if (!detailOpen) {
+      const wasOpen = detailOpen
+      if (!wasOpen) {
+        lastFocused = document.activeElement
         detailOpen = true
         overlayClosing = false
         history.pushState({ overlay: 'detail' }, '', '#item=' + encodeURIComponent(item.id))
       }
       $('detail-overlay').classList.add('open')
-      document.body.style.overflow = 'hidden'
+      applyInert()
+      if (!wasOpen) focusDialog()
     }
 
     function hideDetail() {
       detailOpen = false
       $('detail-overlay').classList.remove('open')
-      if (!cartOpen) document.body.style.overflow = ''
+      applyInert()
+      restoreFocus()
     }
 
     function closeDetail(e) {
@@ -890,19 +1049,22 @@
     }
 
     function openCart() {
+      lastFocused = document.activeElement
       cartOpen = true
       overlayClosing = false
       history.pushState({ overlay: 'cart' }, '')
       $('cart-overlay').classList.add('open')
       $('cart-panel').classList.add('open')
-      document.body.style.overflow = 'hidden'
+      applyInert()
+      focusDialog()
     }
 
     function hideCart() {
       cartOpen = false
       $('cart-overlay').classList.remove('open')
       $('cart-panel').classList.remove('open')
-      if (!detailOpen) document.body.style.overflow = ''
+      applyInert()
+      restoreFocus()
     }
 
     function toggleCart() {
@@ -913,15 +1075,44 @@
     /* Neither Telegram channel DMs (t.me/...?direct) nor vk.me support
        pre-filled text in the link, so every order button copies the message
        (with the import: payload) to the clipboard instead. */
+    /* In-app browsers (Telegram, VK) often refuse the async Clipboard API, and
+       the link navigates away regardless — so fall back to execCommand and
+       always tell the user which of the two happened. */
+    function legacyCopy(text) {
+      const ta = document.createElement('textarea')
+      ta.value = text
+      ta.setAttribute('readonly', '')
+      ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none'
+      document.body.appendChild(ta)
+      ta.select()
+      ta.setSelectionRange(0, text.length)
+      let ok = false
+      try { ok = document.execCommand('copy') } catch { ok = false }
+      ta.remove()
+      return ok
+    }
+
+    function onCopied() {
+      const btn = $('copy-btn')
+      btn.textContent = 'Скопировано!'
+      btn.classList.add('copied')
+      setTimeout(() => { btn.textContent = 'Копировать текст'; btn.classList.remove('copied') }, 2000)
+      toast('Текст заказа скопирован — вставьте его в чат ✦')
+    }
+
+    function onCopyFailed() {
+      toast('Не удалось скопировать автоматически. Откройте «Копировать текст» и скопируйте вручную.', 'warn')
+    }
+
     function copyOrder() {
       const msg = buildTgMessage()
       if (!msg) return
-      navigator.clipboard.writeText(msg).then(() => {
-        const btn = $('copy-btn')
-        btn.textContent = 'Скопировано!'
-        btn.classList.add('copied')
-        setTimeout(() => { btn.textContent = 'Копировать текст'; btn.classList.remove('copied') }, 2000)
-      }).catch(() => {})
+      const fallback = () => { if (legacyCopy(msg)) onCopied(); else onCopyFailed() }
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(msg).then(onCopied).catch(fallback)
+      } else {
+        fallback()
+      }
     }
 
     function setFandomFilter(idx) {
@@ -945,8 +1136,9 @@
         const color = fandomColor.get(f)
         const n = counts.get(f) || 0
         const fs = (1 + 0.35 * (n / maxCount)).toFixed(3)
-        html += `<button class="fandom-btn${fandomFilter === f ? ' active' : ''}" style="--fc:${color};--fs:${fs}rem" onclick="setFandomFilter(${i})">
-          <span class="orn">&#10022;</span>${esc(f)}<span class="cnt">${n}</span>
+        const on = fandomFilter === f
+        html += `<button type="button" class="fandom-btn${on ? ' active' : ''}" style="--fc:${color};--fs:${fs}rem" data-act="fandom" data-idx="${i}" aria-pressed="${on}">
+          <span class="orn" aria-hidden="true">&#10022;</span>${esc(f)}<span class="cnt">${n}<span class="sr-only"> ${plural(n, 'товар', 'товара', 'товаров')}</span></span>
         </button>`
       })
       const wrap = $('fandoms')
@@ -968,11 +1160,12 @@
     }
 
     function renderChips() {
-      let html = `<button class="chip${!typeFilter ? ' active' : ''}" onclick="setTypeFilter(-1)">Все</button>`
+      let html = `<button type="button" class="chip${!typeFilter ? ' active' : ''}" data-act="type" data-idx="-1" aria-pressed="${!typeFilter}">Все</button>`
       typeList.forEach((t, i) => {
-        html += `<button class="chip${typeFilter === t ? ' active' : ''}" onclick="setTypeFilter(${i})">${esc(t)}</button>`
+        const on = typeFilter === t
+        html += `<button type="button" class="chip${on ? ' active' : ''}" data-act="type" data-idx="${i}" aria-pressed="${on}">${esc(t)}</button>`
       })
-      html += `<button class="chip chip-stock${stockOnly ? ' active' : ''}" onclick="toggleStockOnly()">В наличии</button>`
+      html += `<button type="button" class="chip chip-stock${stockOnly ? ' active' : ''}" data-act="stock" aria-pressed="${stockOnly}">В наличии</button>`
       $('chips').innerHTML = html
       $('chips').classList.remove('hidden')
     }
@@ -980,7 +1173,9 @@
     function renderSkeleton() {
       let cards = ''
       for (let i = 0; i < 6; i++) cards += '<div class="sk sk-card"></div>'
-      $('list').innerHTML = `<div class="fandom-group">
+      const list = $('list')
+      list.setAttribute('aria-busy', 'true')
+      list.innerHTML = `<div class="fandom-group">
         <div class="sk sk-header"></div>
         <div class="card-grid">${cards}</div>
       </div>`
@@ -1040,19 +1235,20 @@
           const soldOut = qty <= 0
           const inCart = cart[item.id] > 0
           const delay = animate ? i * 60 : 0
+          const fallbackLetter = esc((item.fandom || '★').charAt(0).toUpperCase())
           const img = item.image_url
-            ? `<img src="${esc(item.image_url)}" alt="" loading="lazy" />`
-            : `<span class="ph" style="color:${color}">${esc((item.fandom || '★').charAt(0).toUpperCase())}</span>`
+            ? `<img src="${esc(item.image_url)}" alt="${esc(item.name)}" loading="lazy" decoding="async" data-fallback="${fallbackLetter}" data-fallback-color="${color}" />`
+            : `<span class="ph" style="color:${color}">${fallbackLetter}</span>`
           const addBtn = !soldOut
-            ? `<button class="add-btn${inCart ? ' in-cart' : ''}" data-id="${esc(item.id)}" onclick="addToCart('${esc(item.id)}')" aria-label="В корзину">${inCart ? cart[item.id] : '+'}</button>`
+            ? `<button type="button" class="add-btn${inCart ? ' in-cart' : ''}" data-act="add" data-id="${esc(item.id)}" aria-label="Добавить в корзину: ${esc(item.name)}">${inCart ? cart[item.id] : '+'}</button>`
             : ''
 
           html += `<div class="card${fadeCls}${soldOut ? ' sold-out' : ''}" style="--fc:${color}${animate ? `;animation-delay:${groupDelay + delay}ms` : ''}">
-            <div class="card-img" onclick="openDetail('${esc(item.id)}')" style="cursor:pointer;background:${item.image_url ? 'none' : `linear-gradient(135deg,${color}22,${color}08)`}">
+            <button type="button" class="card-img" data-act="detail" data-id="${esc(item.id)}" aria-label="Подробнее: ${esc(item.name)}" aria-haspopup="dialog" style="background:${item.image_url ? 'none' : `linear-gradient(135deg,${color}22,${color}08)`}">
               ${img}
-              <span class="card-idx">${String(i + 1).padStart(2, '0')}</span>
-              ${soldOut ? '<div class="stamp">Нет в наличии</div>' : `<div class="stock-badge in-stock">${qty} шт.</div>`}
-            </div>
+              <span class="card-idx" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
+              ${soldOut ? '<span class="stamp">Нет в наличии</span>' : `<span class="stock-badge in-stock">${qty} шт.</span>`}
+            </button>
             <div class="card-info">
               ${item.type ? `<div class="card-type" style="color:${color}">${esc(item.type)}</div>` : ''}
               <div class="card-name">${esc(item.name)}</div>
@@ -1068,27 +1264,87 @@
         groupIdx++
       }
 
-      $('list').innerHTML = html || '<p class="status">Ничего не найдено.</p>'
+      if (!html) {
+        const filtered = fandomFilter || typeFilter || stockOnly
+        html = `<div class="empty-state">
+          <p class="status">Ничего не найдено.</p>
+          ${filtered ? '<button type="button" class="reset-btn" data-act="reset">Сбросить фильтры</button>' : ''}
+        </div>`
+      }
+      $('list').innerHTML = html
+      $('list').removeAttribute('aria-busy')
     }
+
+    function resetFilters() {
+      fandomFilter = null
+      typeFilter = null
+      stockOnly = false
+      renderFandomChips()
+      renderChips()
+      render()
+    }
+
+    /* One delegated listener instead of inline onclick handlers carrying
+       interpolated item ids — ids never have to survive an HTML attribute. */
+    document.addEventListener('click', (e) => {
+      const el = e.target.closest('[data-act]')
+      if (!el) return
+      const id = el.dataset.id
+      switch (el.dataset.act) {
+        case 'add': addToCart(id); break
+        case 'qty': setQty(id, Number(el.dataset.qty)); break
+        case 'detail': openDetail(id); break
+        case 'detail-add':
+          addToCart(id)
+          openDetail(id)
+          /* openDetail re-renders the panel, so re-focus the button we clicked */
+          $('detail-info').querySelector('.detail-add')?.focus()
+          break
+        case 'fandom': setFandomFilter(Number(el.dataset.idx)); break
+        case 'type': setTypeFilter(Number(el.dataset.idx)); break
+        case 'stock': toggleStockOnly(); break
+        case 'reset': resetFilters(); break
+      }
+    })
+
+    /* A dead image URL used to leave a broken-image icon in the card */
+    document.addEventListener('error', (e) => {
+      const img = e.target
+      if (img.tagName !== 'IMG' || !img.dataset.fallback) return
+      const color = img.dataset.fallbackColor || fandomColors[0]
+      const ph = document.createElement('span')
+      ph.className = 'ph'
+      ph.style.color = color
+      ph.textContent = img.dataset.fallback
+      const box = img.parentElement
+      if (box) box.style.background = `linear-gradient(135deg,${color}22,${color}08)`
+      img.replaceWith(ph)
+    }, true)
 
     async function loadItems() {
       renderSkeleton()
-      const { data, error } = await sb
-        .from('public_stock')
-        /* '*' so the page keeps working whether or not the view already exposes
-           newer columns like product_photo_url (see supabase/public_stock_view.sql) */
-        .select('*')
-        .order('fandom', { ascending: true, nullsFirst: false })
-        .order('name')
+      let data, error
+      try {
+        ({ data, error } = await sb
+          .from('public_stock')
+          /* '*' so the page keeps working whether or not the view already exposes
+             newer columns like product_photo_url (see supabase/public_stock_view.sql) */
+          .select('*')
+          .order('fandom', { ascending: true, nullsFirst: false })
+          .order('name'))
+      } catch (e) {
+        /* A dropped connection rejects instead of returning an error object,
+           which used to leave the skeleton spinning forever. */
+        error = { message: e && e.message ? e.message : 'нет соединения' }
+      }
       if (error) {
         $('list').innerHTML = ''
-        status.textContent =
+        showStatus(
           'Не удалось загрузить: ' + error.message +
-          ' — если ошибка про "public_stock", выполните supabase/public_stock_view.sql в SQL Editor Supabase (см. README).'
-        status.classList.remove('hidden')
+          ' — если ошибка про "public_stock", выполните supabase/public_stock_view.sql в SQL Editor Supabase (см. README).')
         return
       }
-      items = data
+      items = data || []
       buildFandomColors()
       fandomList = [...fandomColor.keys()]
       typeList = [...new Set(items.map((i) => i.type).filter(Boolean))]
@@ -1117,7 +1373,8 @@
       }
     }
 
-    if (configured) {
+    applyInert()
+    if (sb) {
       loadItems()
     }
   </script>

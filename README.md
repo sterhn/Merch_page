@@ -30,10 +30,10 @@ No build step: it's one `index.html`.
 ## What clients see
 
 - Every catalog item, grouped by fandom, with photo, sale price, description, and stock amount
-- Totals: number of items and total units in stock (they follow the active search/filters)
-- Search by name, type, or fandom, plus filter chips by type and an "in stock only" toggle
+- Fandom buttons as the main navigation (each shows how many items it has), plus filter chips by type and an "in stock only" toggle
 - Sold-out items are dimmed, labeled, and sorted to the end of each group
 - A tap on any card opens a detail view with the real product photo (when one is set in Merch Planner) and description; a cart composes a ready-to-send Telegram order message
+- Works with a keyboard and a screen reader: cards and the cart bar are real buttons, the overlays are proper modal dialogs, and text meets WCAG AA contrast
 
 Stock numbers are live from Supabase — the same `stock_qty` that Merch Planner updates automatically when you mark orders as sent.
 
