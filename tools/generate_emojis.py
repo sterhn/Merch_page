@@ -94,6 +94,8 @@ ICON_SVGS = {
     "alert_circle": '<path fill="{color}" fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 5a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0V8a1 1 0 0 1 1-1zm1 9a1 1 0 1 0-2 0 1 1 0 1 0 2 0z" clip-rule="evenodd"/>',
     "emoji_happy": '<circle cx="12" cy="12" r="10" fill="{color}"/><circle cx="9" cy="10" r="1.2" fill="#110e16"/><circle cx="15" cy="10" r="1.2" fill="#110e16"/><path fill="none" stroke="#110e16" stroke-linecap="round" stroke-width="1.5" d="M8.5 14.5c1 1.5 2.5 2 3.5 2s2.5-.5 3.5-2"/>',
     "emoji_sad": '<circle cx="12" cy="12" r="10" fill="{color}"/><circle cx="9" cy="10" r="1.2" fill="#110e16"/><circle cx="15" cy="10" r="1.2" fill="#110e16"/><path fill="none" stroke="#110e16" stroke-linecap="round" stroke-width="1.5" d="M8.5 16c1-1.5 2.5-2 3.5-2s2.5.5 3.5 2"/>',
+    "redo": '<path fill="none" stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 9v5h-5M4 16c.497-4.5 3.367-8 8-8 2.73 0 5.929 2.268 7.294 5.5"/>',
+    "undo": '<path fill="none" stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 9v5h5m11 2c-.497-4.5-3.367-8-8-8-2.73 0-5.929 2.268-7.294 5.5"/>',
 }
 
 ICON_EMOJI_MAP = {
@@ -129,6 +131,8 @@ ICON_EMOJI_MAP = {
     "alert_circle": "⚠️",
     "emoji_happy": "😊",
     "emoji_sad": "😢",
+    "redo": "🔄",
+    "undo": "🔄",
 }
 
 
@@ -225,27 +229,25 @@ def render_mini_star(color_hex, output_path, arm=8):
 
 
 def render_fandom_label(text, color_hex, font_path, output_path):
-    """Render a fandom abbreviation with bracket ornaments."""
+    """Render a fandom abbreviation with bracket ornaments, auto-scaled to fit."""
     img = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
     rgb = hex_to_rgb(color_hex)
 
-    font_size = 36
-    if len(text) > 3:
-        font_size = 30
-
-    try:
-        font = ImageFont.truetype(str(font_path), font_size)
-    except (OSError, IOError):
-        font = ImageFont.load_default()
-
-    bracket_font_size = font_size + 4
-    try:
-        bfont = ImageFont.truetype(str(font_path), bracket_font_size)
-    except (OSError, IOError):
-        bfont = font
-
     full_text = f"[ {text} ]"
+    max_w = SIZE * 0.88
+
+    for fs in range(36, 14, -2):
+        try:
+            font = ImageFont.truetype(str(font_path), fs)
+        except (OSError, IOError):
+            font = ImageFont.load_default()
+            break
+        bbox = font.getbbox(full_text)
+        w = bbox[2] - bbox[0]
+        if w <= max_w:
+            break
+
     bbox = font.getbbox(full_text)
     w = bbox[2] - bbox[0]
     h = bbox[3] - bbox[1]
@@ -408,6 +410,8 @@ def main():
         ("chat_2_text", "teal_accent", "💬"),
         ("eye", "teal_accent", "👁️"),
         ("alert_circle", "teal_accent", "⚠️"),
+        ("redo", "teal_accent", "🔄"),
+        ("undo", "teal_accent", "🔄"),
     ]
     for icon_name, color_name, emoji in symbol_icons:
         fn = f"sym_{icon_name}_{color_name}.png"
@@ -469,7 +473,7 @@ def main():
         }
         manifest.append(entry)
         if not args.dry_run:
-            render_icon_emoji("star", COLORS[color_name], out_dir / fn)
+            render_icon_emoji("star", COLORS[color_name], out_dir / fn, icon_size=52)
         count += 1
 
     # --- Hearts in 3 colors (small & cute) ---
@@ -557,8 +561,8 @@ def main():
     print("Generating fandom markers...")
     fandoms = [
         ("ORV", "teal", "📖"),
+        ("GSGW", "berry", "👻"),
         ("MSCH", "gold", "⚔️"),
-        ("GS", "berry", "👻"),
         ("OC", "lavender", "🎨"),
     ]
     for text, color_name, emoji in fandoms:
