@@ -62,20 +62,21 @@ DIGIT_EMOJI_MAP = ["0️⃣", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️�
 # viewBox is 0 0 24 24 for all
 ICON_SVGS = {
     "heart": '<path fill="{color}" stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 4c-3.2 0-5 2.667-5 4 0-1.333-1.8-4-5-4S3 6.667 3 8c0 7 9 12 9 12s9-5 9-12c0-1.333-.8-4-4-4z"/>',
-    "star": '<path fill="{color}" stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.674 6.45.673-3.285 2.225 2.51 3.027-.294-1.768 3.062 1.743 2.639-3.286-.673-2.51 2.225.19-3.156-3.062-1.768 2.768-1.26z"/>',
+    "star": '<path fill="{color}" d="M12 1C12.8 5.5 18.5 11.2 23 12C18.5 12.8 12.8 18.5 12 23C11.2 18.5 5.5 12.8 1 12C5.5 11.2 11.2 5.5 12 1Z"/>',
     "bookmark": '<path fill="{color}" fill-rule="evenodd" d="M7 2a3 3 0 0 0-3 3v15.138a1.5 1.5 0 0 0 2.244 1.303l5.26-3.006a1 1 0 0 1 .992 0l5.26 3.006A1.5 1.5 0 0 0 20 20.138V5a3 3 0 0 0-3-3H7z" clip-rule="evenodd"/>',
     "lightning": '<path fill="{color}" stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 14 14 3v7h6L10 21v-7H4z"/>',
     "arrow_right": '<path stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="m19 12-6-6m6 6-6 6m6-6H5"/>',
     "arrow_left": '<path stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="m5 12 6-6m-6 6 6 6m-6-6h14"/>',
+    "arrow_up": '<path stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="m12 5 6 6m-6-6-6 6m6-6v14"/>',
+    "arrow_down": '<path stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="m12 19 6-6m-6 6-6-6m6 6V5"/>',
+    "chevron_up": '<path stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="m17 14-5-5-5 5"/>',
+    "chevron_down": '<path stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="m17 10-5 5-5-5"/>',
     "plus": '<path stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 12h7m7 0h-7m0 0V5m0 7v7"/>',
     "minus": '<path stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 12h14"/>',
     "question": '<path fill="{color}" fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 7a1 1 0 0 0-1 1 1 1 0 1 1-2 0 3 3 0 1 1 4.44 2.633 1.404 1.404 0 0 0-.383.288.303.303 0 0 0-.057.085v.494a1 1 0 1 1-2 0V13c0-.58.253-1.047.539-1.38.281-.33.63-.572.94-.742A1 1 0 0 0 12 9zm.999 4.011v-.004.005zM12 15a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H12z" clip-rule="evenodd"/>',
     "exclamation": '<path fill="{color}" fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 5a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0V8a1 1 0 0 1 1-1zm1 9a1 1 0 1 0-2 0 1 1 0 1 0 2 0z" clip-rule="evenodd"/>',
-    "dollar": '<path fill="{color}" fill-rule="evenodd" d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12zm12-6a1 1 0 1 0-2 0v1a3 3 0 0 0 0 6h2a1 1 0 1 1 0 2H9a1 1 0 1 0 0 2h2v1a1 1 0 1 0 2 0v-1a3 3 0 1 0 0-6h-2a1 1 0 1 1 0-2h4a1 1 0 1 0 0-2h-2V6z" clip-rule="evenodd"/>',
     "chat": '<path fill="{color}" stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9 9 0 1 0-7.605-4.185L3 21l4.185-1.395A8.958 8.958 0 0 0 12 21z"/>',
-    "three_dots": '<path stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 12h.01M8 12h.01M16 12h.01"/>',
     "eye": '<path fill="{color}" fill-rule="evenodd" d="M4.19 7.262C5.94 5.577 8.517 4 12 4c3.483 0 6.06 1.577 7.81 3.262a15.086 15.086 0 0 1 3.001 4.11c.193.399.193.857 0 1.255a15.086 15.086 0 0 1-3 4.111C18.06 18.423 15.483 20 12 20c-3.483 0-6.06-1.577-7.81-3.262a15.088 15.088 0 0 1-3.001-4.11 1.435 1.435 0 0 1 0-1.255 15.088 15.088 0 0 1 3-4.111zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" clip-rule="evenodd"/>',
-    "tag": '<path fill="{color}" fill-rule="evenodd" d="M2 5a3 3 0 0 1 3-3h6.172a3 3 0 0 1 2.12.879l8 8a3 3 0 0 1 0 4.242l-6.17 6.172a3 3 0 0 1-4.243 0l-8-8A3 3 0 0 1 2 11.172V5zm5 1a1 1 0 0 0 0 2h.001a1 1 0 0 0 0-2H7z" clip-rule="evenodd"/>',
     "code": '<path stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="m8 7-5 5 5 5m8 0 5-5-5-5"/>',
 }
 
@@ -86,15 +87,16 @@ ICON_EMOJI_MAP = {
     "lightning": "⚡",
     "arrow_right": "➡️",
     "arrow_left": "⬅️",
+    "arrow_up": "⬆️",
+    "arrow_down": "⬇️",
+    "chevron_up": "⬆️",
+    "chevron_down": "⬇️",
     "plus": "➕",
     "minus": "➖",
     "question": "❓",
     "exclamation": "❗",
-    "dollar": "💲",
     "chat": "💬",
-    "three_dots": "💬",
     "eye": "👁️",
-    "tag": "🏷️",
     "code": "💻",
 }
 
@@ -166,6 +168,29 @@ def render_dot(color_hex, output_path, radius=12):
         fill=(*rgb, 255),
     )
     img.save(str(output_path), "PNG")
+
+
+def render_mini_star(color_hex, output_path, arm=8):
+    """Render a tiny four-pointed star (✦) centered on canvas."""
+    if cairosvg is None:
+        print(f"  [SKIP] cairosvg not installed, skipping mini star")
+        return False
+    cx, cy = SIZE / 2, SIZE / 2
+    svg = (
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{SIZE}" height="{SIZE}">'
+        f'<path fill="{color_hex}" d="'
+        f'M{cx} {cy - arm} '
+        f'C{cx + arm * 0.15} {cy - arm * 0.15} {cx + arm * 0.15} {cy - arm * 0.15} {cx + arm} {cy} '
+        f'C{cx + arm * 0.15} {cy + arm * 0.15} {cx + arm * 0.15} {cy + arm * 0.15} {cx} {cy + arm} '
+        f'C{cx - arm * 0.15} {cy + arm * 0.15} {cx - arm * 0.15} {cy + arm * 0.15} {cx - arm} {cy} '
+        f'C{cx - arm * 0.15} {cy - arm * 0.15} {cx - arm * 0.15} {cy - arm * 0.15} {cx} {cy - arm} Z'
+        f'"/></svg>'
+    )
+    png_data = cairosvg.svg2png(bytestring=svg.encode("utf-8"),
+                                 output_width=SIZE, output_height=SIZE)
+    with open(str(output_path), "wb") as f:
+        f.write(png_data)
+    return True
 
 
 def render_fandom_label(text, color_hex, font_path, output_path):
@@ -244,7 +269,7 @@ def generate_preview_html(manifest, output_path, emoji_dir=None):
         categories.setdefault(cat, []).append(entry)
 
     cat_order = ["letter", "number", "icon_symbol", "icon_decorative",
-                 "icon_star", "icon_heart", "icon_dot", "fandom"]
+                 "icon_star", "icon_heart", "icon_dot", "icon_mini_star", "fandom"]
     for cat in cat_order:
         if cat not in categories:
             continue
@@ -337,12 +362,14 @@ def main():
     symbol_icons = [
         ("question", "teal_accent", "❓"),
         ("exclamation", "teal_accent", "❗"),
-        ("dollar", "teal_accent", "💲"),
-        ("tag", "teal_accent", "🏷️"),
         ("plus", "teal_accent", "➕"),
         ("minus", "teal_accent", "➖"),
         ("arrow_right", "teal_accent", "➡️"),
         ("arrow_left", "teal_accent", "⬅️"),
+        ("arrow_up", "teal_accent", "⬆️"),
+        ("arrow_down", "teal_accent", "⬇️"),
+        ("chevron_up", "teal_accent", "⬆️"),
+        ("chevron_down", "teal_accent", "⬇️"),
         ("code", "teal_accent", "💻"),
         ("chat", "teal_accent", "💬"),
         ("eye", "teal_accent", "👁️"),
@@ -437,6 +464,27 @@ def main():
         manifest.append(entry)
         if not args.dry_run:
             render_dot(COLORS[color_name], out_dir / fn)
+        count += 1
+
+    # --- Mini stars (tiny four-pointed ✦) ---
+    print("Generating mini stars...")
+    mini_star_colors = [
+        ("teal", "✦"), ("teal_accent", "✦"), ("gold", "✦"),
+        ("berry", "✦"), ("lavender", "✦"), ("sage", "✦"), ("cream", "✦"),
+    ]
+    for color_name, emoji in mini_star_colors:
+        fn = f"mini_star_{color_name}.png"
+        entry = {
+            "filename": fn,
+            "character": "mini_star",
+            "color_name": color_name,
+            "color_hex": COLORS[color_name],
+            "category": "icon_mini_star",
+            "emoji_list": [emoji],
+        }
+        manifest.append(entry)
+        if not args.dry_run:
+            render_mini_star(COLORS[color_name], out_dir / fn)
         count += 1
 
     # --- Fandom markers ---
