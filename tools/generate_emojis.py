@@ -50,10 +50,10 @@ CYRILLIC_TRANSLIT = [
     "sha", "shcha", "hard", "y", "soft", "e_rev", "yu", "ya",
 ]
 CYRILLIC_EMOJI_MAP = [
-    "🇦", "🅱️", "🔤", "🔤", "🔤", "🔤", "🔤", "🔤", "🔤",
-    "ℹ️", "🔤", "🔤", "🔤", "Ⓜ️", "🔤", "⭕", "🔤",
-    "🔤", "🔤", "🔤", "🔤", "🔤", "🔤", "🔤", "🔤",
-    "🔤", "🔤", "🔤", "🔤", "🔤", "🔤", "🔤", "🔤",
+    "✍️", "✍️", "✍️", "✍️", "✍️", "✍️", "✍️", "✍️", "✍️",
+    "✍️", "✍️", "✍️", "✍️", "✍️", "✍️", "✍️", "✍️",
+    "✍️", "✍️", "✍️", "✍️", "✍️", "✍️", "✍️", "✍️",
+    "✍️", "✍️", "✍️", "✍️", "✍️", "✍️", "✍️", "✍️",
 ]
 
 DIGITS = list("0123456789")
@@ -518,8 +518,8 @@ def main():
     # --- Mini stars (tiny four-pointed ✦) ---
     print("Generating mini stars...")
     mini_star_colors = [
-        ("teal", "✦"), ("teal_accent", "✦"), ("gold", "✦"),
-        ("berry", "✦"), ("lavender", "✦"), ("sage", "✦"), ("cream", "✦"),
+        ("teal", "✨"), ("teal_accent", "✨"), ("gold", "✨"),
+        ("berry", "✨"), ("lavender", "✨"), ("sage", "✨"), ("cream", "✨"),
     ]
     for color_name, emoji in mini_star_colors:
         fn = f"mini_star_{color_name}.png"
