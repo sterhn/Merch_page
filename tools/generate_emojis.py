@@ -512,8 +512,10 @@ def main():
     print("Generating fandom markers...")
     fandoms = [
         ("ORV", "teal", "📖"),
-        ("GSGW", "berry", "👻"),
-        ("MSCH", "gold", "⚔️"),
+        ("GS", "berry", "👻"),
+        ("GW", "berry", "👻"),
+        ("MS", "gold", "⚔️"),
+        ("CH", "gold", "⚔️"),
         ("OC", "lavender", "🎨"),
     ]
     for text, color_name, emoji in fandoms:
