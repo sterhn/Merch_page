@@ -210,8 +210,13 @@ def download_font(url, cache_path):
     return cache_path
 
 
-def generate_preview_html(manifest, output_path):
-    """Generate an HTML preview grid."""
+def generate_preview_html(manifest, output_path, emoji_dir=None):
+    """Generate an HTML preview grid with embedded base64 images."""
+    import base64
+
+    if emoji_dir is None:
+        emoji_dir = output_path.parent
+
     html = [
         "<!DOCTYPE html><html><head><meta charset='utf-8'>",
         "<title>HEHEARSE Emoji Preview</title>",
@@ -239,15 +244,21 @@ def generate_preview_html(manifest, output_path):
         categories.setdefault(cat, []).append(entry)
 
     cat_order = ["letter", "number", "icon_symbol", "icon_decorative",
-                 "icon_star", "icon_heart", "icon_dots", "fandom"]
+                 "icon_star", "icon_heart", "icon_dot", "fandom"]
     for cat in cat_order:
         if cat not in categories:
             continue
         html.append(f"<h2>{cat.replace('_', ' ')}</h2><div class='grid'>")
         for e in categories[cat]:
             fn = e["filename"]
+            fp = emoji_dir / fn
+            if fp.exists():
+                b64 = base64.b64encode(fp.read_bytes()).decode("ascii")
+                src = f"data:image/png;base64,{b64}"
+            else:
+                src = fn
             html.append(
-                f"<div class='item'><img src='{fn}'><span>{fn[:-4]}</span></div>"
+                f"<div class='item'><img src='{src}'><span>{fn[:-4]}</span></div>"
             )
         html.append("</div>")
 
@@ -389,7 +400,7 @@ def main():
             render_icon_emoji("star", COLORS[color_name], out_dir / fn)
         count += 1
 
-    # --- Hearts in 3 colors ---
+    # --- Hearts in 3 colors (small & cute) ---
     print("Generating hearts...")
     heart_colors = [("teal", "💚"), ("berry", "❤️"), ("lavender", "💜")]
     for color_name, emoji in heart_colors:
@@ -404,38 +415,24 @@ def main():
         }
         manifest.append(entry)
         if not args.dry_run:
-            render_icon_emoji("heart", COLORS[color_name], out_dir / fn)
+            render_icon_emoji("heart", COLORS[color_name], out_dir / fn, icon_size=48)
         count += 1
 
-    # --- Three-dot bullets ---
-    print("Generating three-dot bullets...")
-    dot_colors = [("teal_accent", "⬛"), ("cream", "⬜"), ("berry", "🟥"), ("gold", "🟨")]
-    for color_name, emoji in dot_colors:
-        fn = f"dots_{color_name}.png"
-        entry = {
-            "filename": fn,
-            "character": "three_dots",
-            "color_name": color_name,
-            "color_hex": COLORS[color_name],
-            "category": "icon_dots",
-            "emoji_list": [emoji],
-        }
-        manifest.append(entry)
-        if not args.dry_run:
-            render_icon_emoji("three_dots", COLORS[color_name], out_dir / fn)
-        count += 1
-
-    # --- Dot bullets ---
+    # --- Dot bullets in all colors ---
     print("Generating dot bullets...")
-    for color_name in ["teal_accent", "cream"]:
+    dot_colors = [
+        ("teal", "🟢"), ("teal_accent", "🟢"), ("gold", "🟡"),
+        ("berry", "🔴"), ("lavender", "🟣"), ("sage", "🟢"), ("cream", "⚪"),
+    ]
+    for color_name, emoji in dot_colors:
         fn = f"dot_{color_name}.png"
         entry = {
             "filename": fn,
             "character": "dot",
             "color_name": color_name,
             "color_hex": COLORS[color_name],
-            "category": "icon_decorative",
-            "emoji_list": ["⚫"],
+            "category": "icon_dot",
+            "emoji_list": [emoji],
         }
         manifest.append(entry)
         if not args.dry_run:
