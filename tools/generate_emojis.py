@@ -96,6 +96,25 @@ ICON_SVGS = {
     "emoji_sad": '<circle cx="12" cy="12" r="10" fill="{color}"/><circle cx="9" cy="10" r="1.2" fill="#110e16"/><circle cx="15" cy="10" r="1.2" fill="#110e16"/><path fill="none" stroke="#110e16" stroke-linecap="round" stroke-width="1.5" d="M8.5 16c1-1.5 2.5-2 3.5-2s2.5.5 3.5 2"/>',
     "redo": '<path fill="none" stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 9v5h-5M4 16c.497-4.5 3.367-8 8-8 2.73 0 5.929 2.268 7.294 5.5"/>',
     "undo": '<path fill="none" stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 9v5h5m11 2c-.497-4.5-3.367-8-8-8-2.73 0-5.929 2.268-7.294 5.5"/>',
+    # Decorative icons — Majesticons solid (MIT)
+    "key": '<path fill="{color}" fill-rule="evenodd" d="M8 9a7 7 0 1 1 5.562 6.852L12 17.414a2 2 0 0 1-1.414.586H10a2 2 0 0 1-2 2 2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2.586A2 2 0 0 1 2.586 16l5.562-5.562A7.026 7.026 0 0 1 8 9zm7-3a1 1 0 1 0 0 2 1 1 0 0 1 1 1 1 1 0 1 0 2 0 3 3 0 0 0-3-3z" clip-rule="evenodd"/>',
+    "crown": '<path fill="{color}" fill-rule="evenodd" d="M12 3a1 1 0 0 1 .832.445l3.471 5.207 4.182-2.51a1 1 0 0 1 1.503 1.01l-2 13A1 1 0 0 1 19 21H5a1 1 0 0 1-.988-.848l-2-13a1 1 0 0 1 1.503-1.01l4.182 2.51 3.471-5.207A1 1 0 0 1 12 3zm-1 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zm1-3a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" clip-rule="evenodd"/>',
+    "skull": '<path fill="{color}" fill-rule="evenodd" d="M22 11a9.96 9.96 0 0 1-2 6v2a3 3 0 0 1-3 3v-1a1 1 0 1 0-2 0v1h-2v-1a1 1 0 1 0-2 0v1H9v-1a1 1 0 1 0-2 0v1a3 3 0 0 1-3-3v-2a9.96 9.96 0 0 1-2-6c0-2.779 1.136-5.058 2.99-6.627C6.828 2.817 9.318 2 12 2c2.682 0 5.172.817 7.01 2.373C20.863 5.942 22 8.22 22 11zM8 9a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm4.894 5.415C12.725 14.16 12.38 14 12 14s-.725.16-.894.415l-1 1.5a.591.591 0 0 0 .043.73c.183.22.504.355.851.355h2c.347 0 .668-.135.85-.356a.591.591 0 0 0 .044-.73l-1-1.5zM14 11a2 2 0 1 1 4 0 2 2 0 0 1-4 0z" clip-rule="evenodd"/>',
+    "leaf": '<path fill="{color}" fill-rule="evenodd" d="M20.156 6.473a2.639 2.639 0 0 0-2.63-2.629C15.049 3.817 9.909 4.193 6.5 7.6c-2.796 2.796-2.915 7.3-.157 10.057 2.758 2.758 7.26 2.639 10.057-.157 3.407-3.408 3.783-8.548 3.756-11.027zm-4.62 1.991a1 1 0 0 1 0 1.415l-.978.977.587.195a1 1 0 0 1-.633 1.898l-1.535-.512-1.247 1.247.586.196a1 1 0 0 1-.632 1.897l-1.173-.39a3.01 3.01 0 0 1-.344-.14l-2.41 2.41-3.121 3.121a1 1 0 0 1-1.414-1.414l3.121-3.121 2.41-2.41a3.009 3.009 0 0 1-.14-.344l-.39-1.173a1 1 0 0 1 1.897-.632l.196.586 1.247-1.247-.512-1.535a1 1 0 0 1 1.898-.633l.195.587.977-.978a1 1 0 0 1 1.414 0z" clip-rule="evenodd"/>',
+    "chain": '<path fill="none" stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 8h2c1.333 0 4 .8 4 4s-2.667 4-4 4h-2M9 8H7c-1.333 0-4 .8-4 4s2.667 4 4 4h2m-1-4h8"/>',
+    "evil_eye": '<path fill="{color}" fill-rule="evenodd" d="M4.19 7.262C5.94 5.577 8.517 4 12 4c3.483 0 6.06 1.577 7.81 3.262a15.086 15.086 0 0 1 3.001 4.11c.193.399.193.857 0 1.255a15.086 15.086 0 0 1-3 4.111C18.06 18.423 15.483 20 12 20c-3.483 0-6.06-1.577-7.81-3.262a15.088 15.088 0 0 1-3.001-4.11 1.435 1.435 0 0 1 0-1.255 15.088 15.088 0 0 1 3-4.111zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" clip-rule="evenodd"/><circle cx="12" cy="12" r="1.5" fill="#110e16"/>',
+    # Decorative icons — Lucide (ISC license)
+    "flame": '<path fill="none" stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/>',
+    "hourglass": '<g fill="none" stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></g>',
+    "swords": '<g fill="none" stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m13 19 6-6"/><path d="M14.5 17.5 3.586 6.586A2 2 0 013 5.172V3h2.172a2 2 0 011.414.586L17.5 14.5"/><path d="m14.828 6.172 2.586-2.586A2 2 0 0118.828 3H21v2.172a2 2 0 01-.586 1.414l-2.586 2.586"/><path d="m16 16 4 4"/><path d="m19 21 2-2"/><path d="m5 14 4 4"/><path d="m5 21-2-2"/><path d="M7.5 16.5 4 20"/></g>',
+    "cat": '<g fill="none" stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.07 1 2.24 1 3.44C21 17.9 16.97 21 12 21s-9-3-9-7.56c0-1.25.5-2.4 1-3.44 0 0-1.89-6.42-.5-7 1.39-.58 4.72.23 6.5 2.23A9.04 9.04 0 0 1 12 5Z"/><path d="M8 14v.5"/><path d="M16 14v.5"/><path d="M11.25 16.25h1.5L12 17l-.75-.75Z"/></g>',
+    "ribbon": '<g fill="none" stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 11.22C11 9.997 10 9 10 8a2 2 0 0 1 4 0c0 1-.998 2.002-2.01 3.22"/><path d="m12 18 2.57-3.5"/><path d="M6.243 9.016a7 7 0 0 1 11.507-.009"/><path d="M9.35 14.53 12 11.22"/><path d="M9.35 14.53C7.728 12.246 6 10.221 6 7a6 5 0 0 1 12 0c-.005 3.22-1.778 5.235-3.43 7.5l3.557 4.527a1 1 0 0 1-.203 1.43l-1.894 1.36a1 1 0 0 1-1.384-.215L12 18l-2.679 3.593a1 1 0 0 1-1.39.213l-1.865-1.353a1 1 0 0 1-.203-1.422z"/></g>',
+    "sparkles": '<g fill="none" stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/><path d="M20 2v4"/><path d="M22 4h-4"/><circle cx="4" cy="20" r="2"/></g>',
+    "ghost": '<g fill="none" stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M15 10v1"/><path d="M7.528 20.472a1.6 1.6 0 012.277 0l1.057 1.056a1.6 1.6 0 002.276 0l1.057-1.056a1.6 1.6 0 012.277 0l1.114 1.114a1.4 1.4 0 002.414-1V10a8 8 0 00-16 0v10.586a1.4 1.4 0 002.414 1z"/><path d="M9 10v1"/></g>',
+    "feather": '<g fill="none" stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M14.086 18.412A2 2 0 0112.67 19H5v-7.672a2 2 0 01.586-1.414L11.75 3.75a6 6 0 118.49 8.49z"/><path d="M16 8 2 22"/><path d="M17.488 15H9"/></g>',
+    # Decorative icons — Tabler (MIT license)
+    "crystal_ball": '<g fill="none" stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M6.73 17.018a8 8 0 1 1 10.54 0"/><path d="M5 19a2 2 0 0 0 2 2h10a2 2 0 1 0 0-4h-10a2 2 0 0 0-2 2"/><path d="M11 7a3 3 0 0 0-3 3"/></g>',
+    "spider": '<path fill="{color}" d="M19 3a1 1 0 0 1 1 1v2a1 1 0 0 1-.293.707l-3.293 3.293h3.17l1.209-1.207a1 1 0 0 1 1.414 1.414l-1.5 1.5a1 1 0 0 1-.707.293h-3.585l4.292 4.293a1 1 0 0 1 .293.707v2a1 1 0 0 1-2 0v-1.585l-2.016-2.016a5 5 0 0 1-9.968 0l-2.016 2.015v1.586a1 1 0 0 1-.883.993l-.117.007a1 1 0 0 1-1-1v-2a1 1 0 0 1 .293-.707l4.291-4.293h-3.584a1 1 0 0 1-.707-.293l-1.5-1.5a1 1 0 0 1 1.414-1.414l1.208 1.207h3.17l-3.292-3.293a1 1 0 0 1-.293-.707v-2a1 1 0 1 1 2 0v1.585l3.025 3.025a3 3 0 0 1 5.95 0l3.025-3.026v-1.584a1 1 0 0 1 .883-.993z"/>',
 }
 
 ICON_EMOJI_MAP = {
@@ -205,7 +224,7 @@ def render_dot(color_hex, output_path, radius=12):
     img.save(str(output_path), "PNG")
 
 
-def render_fandom_label(text, color_hex, font_path, output_path):
+def render_fandom_label(text, color_hex, font_path, output_path, align="center"):
     """Render a fandom abbreviation with bracket ornaments, auto-scaled to fit."""
     img = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
@@ -228,7 +247,13 @@ def render_fandom_label(text, color_hex, font_path, output_path):
     bbox = font.getbbox(full_text)
     w = bbox[2] - bbox[0]
     h = bbox[3] - bbox[1]
-    x = (SIZE - w) / 2 - bbox[0]
+    pad = SIZE * 0.04
+    if align == "right":
+        x = SIZE - w - pad - bbox[0]
+    elif align == "left":
+        x = pad - bbox[0]
+    else:
+        x = (SIZE - w) / 2 - bbox[0]
     y = (SIZE - h) / 2 - bbox[1]
 
     draw.text((x, y), full_text, fill=(*rgb, 200), font=font)
@@ -415,6 +440,22 @@ def main():
         ("mail", "teal_accent", "📧"),
         ("send", "teal_accent", "📨"),
         ("ticket", "teal_accent", "🎫"),
+        ("key", "teal_accent", "🗝️"),
+        ("flame", "teal_accent", "🕯️"),
+        ("hourglass", "teal_accent", "⏳"),
+        ("crystal_ball", "teal_accent", "🔮"),
+        ("swords", "teal_accent", "⚔️"),
+        ("crown", "teal_accent", "👑"),
+        ("skull", "teal_accent", "💀"),
+        ("spider", "teal_accent", "🕷️"),
+        ("cat", "teal_accent", "🐈"),
+        ("chain", "teal_accent", "⛓️"),
+        ("leaf", "teal_accent", "🌿"),
+        ("ribbon", "teal_accent", "🎀"),
+        ("sparkles", "teal_accent", "✨"),
+        ("ghost", "teal_accent", "👻"),
+        ("evil_eye", "teal_accent", "🧿"),
+        ("feather", "teal_accent", "🪶"),
     ]
     for icon_name, color_name, emoji in deco_icons:
         fn = f"deco_{icon_name}_{color_name}.png"
@@ -511,14 +552,14 @@ def main():
     # --- Fandom markers ---
     print("Generating fandom markers...")
     fandoms = [
-        ("ORV", "teal", "📖"),
-        ("GS", "berry", "👻"),
-        ("GW", "berry", "👻"),
-        ("MS", "gold", "⚔️"),
-        ("CH", "gold", "⚔️"),
-        ("OC", "lavender", "🎨"),
+        ("ORV", "teal", "📖", "center"),
+        ("GS", "berry", "👻", "right"),
+        ("GW", "berry", "👻", "left"),
+        ("MS", "gold", "⚔️", "right"),
+        ("CH", "gold", "⚔️", "left"),
+        ("OC", "lavender", "🎨", "center"),
     ]
-    for text, color_name, emoji in fandoms:
+    for text, color_name, emoji, align in fandoms:
         fn = f"fandom_{text.lower()}.png"
         entry = {
             "filename": fn,
@@ -530,7 +571,7 @@ def main():
         }
         manifest.append(entry)
         if not args.dry_run:
-            render_fandom_label(text, COLORS[color_name], sans_font, out_dir / fn)
+            render_fandom_label(text, COLORS[color_name], sans_font, out_dir / fn, align=align)
         count += 1
 
     # Write manifest
