@@ -176,9 +176,10 @@ def main():
             api_call(token, "deleteStickerFromSet",
                      {"sticker": sticker["file_id"]})
             time.sleep(0.05)
-        existing = None
+        # Set still exists (name occupied), just empty — use addStickerToSet
+        existing = {"stickers": [], "_force_cleared": True}
 
-    if existing:
+    if existing and not existing.get("_force_cleared"):
         existing_count = len(existing.get("stickers", []))
         print(f"\n  Set exists with {existing_count}/{len(manifest)} stickers")
         if existing_count >= len(manifest):
