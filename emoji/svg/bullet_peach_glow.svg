@@ -20,5 +20,5 @@
       <feMergeNode in="shade"/><feMergeNode in="grain"/>
     </feMerge>
   </filter></defs>
-  <g filter="url(#bullet_peach_glow-ink)"><g transform="translate(50 50) scale(.92) translate(-50 -50)"><path d="M50 32 Q52.16 47.84 68 50 Q52.16 52.16 50 68 Q47.84 52.16 32 50 Q47.84 47.84 50 32 Z" fill="#f4c3ad" /><path d="M72.3 59.0 L76.9 60.9 M59.4 72.1 L61.3 76.7 M41.0 72.3 L39.1 76.9 M27.9 59.4 L23.3 61.3 M27.7 41.0 L23.1 39.1 M40.6 27.9 L38.7 23.3 M59.0 27.7 L60.9 23.1 M72.1 40.6 L76.7 38.7 " fill="none" stroke="#f4c3ad" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></g></g>
+  <g filter="url(#bullet_peach_glow-ink)"><g transform="translate(50 50) scale(.92) translate(-50 -50)"><g transform="translate(50 50) rotate(0) scale(1) translate(-50 -50)"><path d="M50 36 Q51.68 48.32 64 50 Q51.68 51.68 50 64 Q48.32 51.68 36 50 Q48.32 48.32 50 36 Z" fill="#f4c3ad" /></g><path d="M68.5 57.5 L72.3 59.0 M57.8 68.4 L59.4 72.1 M42.5 68.5 L41.0 72.3 M31.6 57.8 L27.9 59.4 M31.5 42.5 L27.7 41.0 M42.2 31.6 L40.6 27.9 M57.5 31.5 L59.0 27.7 M68.4 42.2 L72.1 40.6 " fill="none" stroke="#f4c3ad" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></g></g>
 </svg>

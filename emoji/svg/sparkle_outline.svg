@@ -20,5 +20,5 @@
       <feMergeNode in="shade"/><feMergeNode in="grain"/>
     </feMerge>
   </filter></defs>
-  <g filter="url(#sparkle_outline-ink)"><g transform="translate(50 50) scale(.92) translate(-50 -50)"><path d="M50 10 Q58 42 90 50 Q58 58 50 90 Q42 58 10 50 Q42 42 50 10 Z" fill="none" stroke="#ddd6ca" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" /></g></g>
+  <g filter="url(#sparkle_outline-ink)"><g transform="translate(50 50) scale(.92) translate(-50 -50)"><g transform="translate(50 50) rotate(0) scale(1) translate(-50 -50)"><path d="M50 21 Q55.8 44.2 79 50 Q55.8 55.8 50 79 Q44.2 55.8 21 50 Q44.2 44.2 50 21 Z" fill="none" stroke="#ddd6ca" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" /></g></g></g>
 </svg>

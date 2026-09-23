@@ -20,5 +20,5 @@
       <feMergeNode in="shade"/><feMergeNode in="grain"/>
     </feMerge>
   </filter></defs>
-  <g filter="url(#bullet_twin-ink)"><g transform="translate(50 50) scale(.92) translate(-50 -50)"><path d="M44 29 Q46.04 43.96 61 46 Q46.04 48.04 44 63 Q41.96 48.04 27 46 Q41.96 43.96 44 29 Z" fill="#5fa3a1" /><path d="M64 55 Q65.08 62.92 73 64 Q65.08 65.08 64 73 Q62.92 65.08 55 64 Q62.92 62.92 64 55 Z" fill="#ddd6ca" /></g></g>
+  <g filter="url(#bullet_twin-ink)"><g transform="translate(50 50) scale(.92) translate(-50 -50)"><path d="M45 33 Q46.68 45.32 59 47 Q46.68 48.68 45 61 Q43.32 48.68 31 47 Q43.32 45.32 45 33 Z" fill="#5fa3a1" /><path d="M62 56 Q62.84 62.16 69 63 Q62.84 63.84 62 70 Q61.16 63.84 55 63 Q61.16 62.16 62 56 Z" fill="#ddd6ca" /></g></g>
 </svg>
