@@ -6,7 +6,9 @@
 // the cel-shade crescent, grain and glow, then renders to Telegram's 100×100.
 // Per-design switches: `shade: false` for line art and lettering,
 // `glow: true` for the glowing peach pieces, `ink: false` to skip the outline
-// (keep it on for anything pale).
+// (keep it on for anything pale), `size` to scale the drawing down, and
+// `bleed: true` for pieces that must meet the tile edges (dividers, logo) so
+// they join up when sent side by side.
 //
 // Animated designs define `anim(t, u)` instead of `art(u)`: t runs 0 → 1 over
 // one loop and must come back to where it started. `art` then defaults to
@@ -45,8 +47,8 @@ const ring = (cx, cy, r, c, w = 6.5) =>
 const rect = (x, y, w, h, rx, c, extra = '') =>
   `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${c}" ${extra}/>`;
 // Lettering uses Concrete, the site's display face
-const txt = (t, x, y, size, c, x2 = '') =>
-  `<text x="${x}" y="${y}" font-family="Concrete" font-size="${size}" fill="${c}" text-anchor="middle" ${x2}>${t}</text>`;
+const txt = (t, x, y, size, c, anchor = 'middle') =>
+  `<text x="${x}" y="${y}" font-family="Concrete" font-size="${size}" fill="${c}" text-anchor="${anchor}">${t}</text>`;
 const line = (d, w = 2.2) => s(d, C.ink, w); // inner ink detail lines
 // Scale / rotate a group around a point
 const tr = (cx, cy, k, rot, inner) =>
@@ -55,11 +57,6 @@ const tr = (cx, cy, k, rot, inner) =>
 // Looping motion helpers (t in 0..1)
 const TAU = Math.PI * 2;
 const wave = (t, phase = 0) => Math.sin(TAU * (t + phase));
-// A pop that swells up and fades once per loop, peaking at `at`
-const pop = (t, at, width = 0.22) => {
-  let d = Math.abs(((t - at + 1.5) % 1) - 0.5);
-  return d > width ? 0 : Math.cos((d / width) * (Math.PI / 2)) ** 2;
-};
 
 // Shapes
 const HEART = 'M50 86 C26 70 10 54 12 36 C14 20 34 14 50 30 C66 14 86 20 88 36 C90 54 74 70 50 86 Z';
@@ -90,10 +87,10 @@ const sparks = (cx, cy, r1, r2, n = 8, c = C.peach, w = 2.6, rot = 0, x = '') =>
   }
   return s(d, c, w, x);
 };
-// A tiny white twinkle that pops in and out
-const twinkle = (cx, cy, r, amount) =>
-  amount > 0.02 ? f(sparkle(cx, cy, r * amount, 0.1), C.shine) : '';
 const HEART_GLINT = 'M24 36 C24 30 28 26 34 25';
+
+// Wordmark size: "HEHEARSE" in Concrete fills the tile edge to edge at this size
+const LOGO_SIZE = 19.5;
 
 // The site header's shimmer gradient (#c8b8a8 → #f0e8de → teal → #f0e8de → #c8b8a8),
 // split across the two logo tiles so they read as one wordmark side by side.
@@ -155,28 +152,25 @@ const shakerBits = (t) => {
     .join('');
 };
 
-// Sky pieces, animated (static PNG = frame 0)
-const twinkleStar = (t) =>
-  tr(50, 52, 1 + 0.1 * wave(t), 6 * wave(t, 0.25), filledStar(star(50, 53, 30, 13.5), C.gold, 5) + glint('M40 46 L46 44', 3)) +
-  twinkle(76, 26, 10, pop(t, 0.35)) + twinkle(26, 74, 8, pop(t, 0.8));
-
 export const designs = [
   // ── Hearts ─────────────────────────────────────────────
-  { id: 'heart_teal', emoji: '🩵', art: () => f(HEART, C.teal) + glint(HEART_GLINT) },
-  { id: 'heart_bone', emoji: '🤍', art: () => f(HEART, C.bone) + glint(HEART_GLINT) },
-  { id: 'heart_wine', emoji: '❤️', art: () => f(HEART, C.wine) + glint(HEART_GLINT) },
+  { id: 'heart_teal', size: 0.8, emoji: '🩵', art: () => f(HEART, C.teal) + glint(HEART_GLINT) },
+  { id: 'heart_bone', size: 0.8, emoji: '🤍', art: () => f(HEART, C.bone) + glint(HEART_GLINT) },
+  { id: 'heart_wine', size: 0.8, emoji: '❤️', art: () => f(HEART, C.wine) + glint(HEART_GLINT) },
   {
     id: 'heart_peach_glow',
+    size: 0.8,
     emoji: '🧡',
     glow: true,
     anim: (t) =>
       tr(50, 52, 1 + 0.05 * wave(t), 0, f(HEART, C.peach) + glint(HEART_GLINT)) +
       sparks(50, 52, 43 + 3 * wave(t), 49 + 3 * wave(t), 10, C.peach, 2.4, 18 + 36 * t),
   },
-  { id: 'heart_lavender', emoji: '💜', art: () => f(HEART, C.lav) + glint(HEART_GLINT) },
-  { id: 'heart_ink', emoji: '🖤', art: () => f(HEART, C.greyD) + glint(HEART_GLINT) },
+  { id: 'heart_lavender', size: 0.8, emoji: '💜', art: () => f(HEART, C.lav) + glint(HEART_GLINT) },
+  { id: 'heart_ink', size: 0.8, emoji: '🖤', art: () => f(HEART, C.greyD) + glint(HEART_GLINT) },
   {
     id: 'heart_broken',
+    size: 0.8,
     emoji: '💔',
     art: (u) =>
       `<defs><mask id="${u}m"><rect width="100" height="100" fill="#fff"/>${s('M50 24 L42 42 L56 52 L44 68 L50 90', '#000', 5)}</mask></defs>` +
@@ -184,6 +178,7 @@ export const designs = [
   },
   {
     id: 'heart_bandaged',
+    size: 0.8,
     emoji: '❤️‍🩹',
     art: () =>
       f(HEART, C.wineD) +
@@ -192,57 +187,24 @@ export const designs = [
       `</g>`,
   },
 
-  // ── Stars & sky (animated) ─────────────────────────────
+  // ── Stars ──────────────────────────────────────────────
   {
     id: 'sparkle_teal',
     emoji: '✨',
-    anim: (t) =>
-      tr(50, 50, 1 + 0.12 * wave(t), 8 * wave(t, 0.25), f(sparkle(50, 50, 32), C.teal) + glint('M48 30 L49 25', 2.6)) +
-      twinkle(78, 24, 9, pop(t, 0.3)) + twinkle(24, 76, 7, pop(t, 0.75)),
+    art: () => f(sparkle(50, 50, 32), C.teal) + glint('M48 30 L49 25', 2.6),
   },
-  {
-    id: 'sparkle_outline',
-    emoji: '✨',
-    shade: false,
-    anim: (t) => tr(50, 50, 1 + 0.1 * wave(2 * t), 90 * t, s(sparkle(50, 50, 29, 0.2), C.bone, 4.5)),
-  },
+  { id: 'sparkle_outline', emoji: '✨', shade: false, art: () => s(sparkle(50, 50, 29, 0.2), C.bone, 4.5) },
   {
     id: 'sparkles_duo',
     emoji: '✨',
-    anim: (t) =>
-      tr(40, 42, 1 + 0.14 * wave(t), 0, f(sparkle(40, 42, 22), C.gold)) +
-      tr(70, 70, 1 + 0.2 * wave(t, 0.5), 0, f(sparkle(70, 70, 13), C.bone)),
+    art: () => f(sparkle(40, 42, 22), C.gold) + f(sparkle(70, 70, 13), C.bone),
   },
-  { id: 'star_gold', emoji: '⭐️', anim: twinkleStar },
   {
-    id: 'star_outline',
+    id: 'star_gold',
     emoji: '⭐️',
-    shade: false,
-    anim: (t) => tr(50, 53, 1 + 0.08 * wave(t, 0.25), 12 * wave(t), s(star(50, 54, 28, 12, -94), C.wine, 5)),
+    art: () => filledStar(star(50, 53, 30, 13.5), C.gold, 5) + glint('M40 46 L46 44', 3),
   },
-  {
-    id: 'stars_cluster',
-    emoji: '🌟',
-    anim: (t) =>
-      tr(38, 38, 1 + 0.15 * wave(t), 0, filledStar(star(38, 38, 16, 7), C.lav, 3.5)) +
-      tr(66, 46, 1 + 0.15 * wave(t, 1 / 3), 0, filledStar(star(66, 46, 11, 5, -80), C.bone, 3.5)) +
-      tr(48, 68, 1 + 0.15 * wave(t, 2 / 3), 0, filledStar(star(48, 68, 11, 5, -100), C.teal, 3.5)),
-  },
-  {
-    id: 'moon',
-    emoji: '🌙',
-    anim: (t) =>
-      f('M60 10 C34 12 16 32 16 56 C16 76 34 92 56 90 C70 89 82 82 88 70 C62 76 42 60 42 38 C42 26 50 16 60 10 Z', C.bone) +
-      line('M30 58 C32 64 36 66 40 66') +
-      tr(74, 32, 0.8 + 0.25 * wave(t), 10 * wave(t, 0.25), f(sparkle(74, 32, 10), C.gold)),
-  },
-  {
-    id: 'shooting_star',
-    emoji: '🌠',
-    anim: (t) =>
-      s('M14 70 L44 52 M18 84 L48 66 M32 92 L54 78', C.greyL, 3.5, `stroke-dasharray="10 8" stroke-dashoffset="${(-36 * t).toFixed(2)}"`) +
-      tr(64, 42, 1 + 0.08 * wave(t), 10 * wave(t), filledStar(star(64, 42, 19, 8.5, -80), C.gold, 4)),
-  },
+  { id: 'star_outline', emoji: '⭐️', shade: false, art: () => s(star(50, 54, 28, 12, -94), C.wine, 5) },
 
   // ── Tiny star bullets (for lists) ──────────────────────
   { id: 'bullet_teal', emoji: '🔹', shade: false, art: () => f(sparkle(50, 50, 16, 0.12), C.teal) },
@@ -253,9 +215,7 @@ export const designs = [
     emoji: '🔸',
     shade: false,
     glow: true,
-    anim: (t) =>
-      tr(50, 50, 1 + 0.12 * wave(t), 0, f(sparkle(50, 50, 14, 0.12), C.peach)) +
-      sparks(50, 50, 20 + 2 * wave(t), 24 + 2 * wave(t), 8, C.peach, 2, 22 + 45 * t),
+    art: () => f(sparkle(50, 50, 14, 0.12), C.peach) + sparks(50, 50, 20, 24, 8, C.peach, 2, 22),
   },
   { id: 'bullet_gold', emoji: '⭐️', shade: false, art: () => filledStar(star(50, 52, 15, 6.5), C.gold, 3.5) },
   { id: 'bullet_lavender', emoji: '⭐️', shade: false, art: () => filledStar(star(50, 52, 15, 6.5), C.lav, 3.5) },
@@ -267,32 +227,7 @@ export const designs = [
     art: () => f(sparkle(45, 47, 14, 0.12), C.teal) + f(sparkle(62, 63, 7, 0.12), C.bone),
   },
 
-  // ── Glow, smoke & gothic ───────────────────────────────
-  {
-    id: 'spark',
-    emoji: '💥',
-    glow: true,
-    shade: false,
-    anim: (t) => {
-      // Two rings of dashes that keep flying outward and fading
-      const ring = (ph, rot) => {
-        const p = (t + ph) % 1;
-        const r1 = 12 + 26 * p;
-        const len = 8 + 10 * Math.sin(Math.PI * p);
-        const op = Math.sin(Math.PI * p).toFixed(2);
-        return sparks(50, 50, r1, r1 + len, 9, C.peach, 4, rot, `opacity="${op}"`);
-      };
-      return ring(0, 8) + ring(0.5, 28) + dot(50, 50, 5 + 1.5 * wave(2 * t), C.peachL);
-    },
-  },
-  {
-    id: 'smoke',
-    emoji: '🌫',
-    art: () =>
-      f('M30 92 C18 84 22 70 32 68 C22 60 26 44 40 46 C34 34 44 22 56 28 C60 16 78 18 78 32 C90 34 90 50 80 54 C88 62 82 76 70 74 C74 86 60 94 50 86 C44 94 36 94 30 92 Z', C.grey) +
-      f('M44 80 C36 76 38 66 46 66 C42 58 48 50 56 54 C58 46 68 46 70 54 C76 58 74 68 66 68 C68 76 60 82 54 78 C52 82 48 82 44 80 Z', C.greyD) +
-      line('M34 80 C38 78 38 74 36 72 M60 36 C64 36 66 40 64 42 M50 60 C52 58 55 60 54 62 M74 64 C72 62 70 64 72 66 M40 54 C42 50 46 52 44 56'),
-  },
+  // ── Gothic ─────────────────────────────────────────────
   {
     id: 'polaroid',
     emoji: '📸',
@@ -300,23 +235,6 @@ export const designs = [
       `<g transform="rotate(-8 50 50)">` +
       rect(18, 10, 64, 78, 2, C.bone) + rect(24, 16, 52, 50, 0, C.photo) +
       line('M24 16 L76 16 L76 66 L24 66 Z', 2) + `</g>`,
-  },
-  {
-    id: 'id_badge',
-    emoji: '🪪',
-    art: () =>
-      s('M30 4 L46 26 M70 4 L54 26', C.wineD, 5) +
-      rect(44, 22, 12, 8, 2, C.greyD) + rect(24, 28, 52, 66, 5, C.bone) + rect(36, 38, 28, 28, 0, C.photo) +
-      rect(40, 36, 20, 4, 2, C.grey) +
-      line('M34 76 L66 76 M34 84 L56 84'),
-  },
-  {
-    id: 'mask',
-    emoji: '🎭',
-    art: () =>
-      f('M8 40 C20 30 36 34 50 42 C64 34 80 30 92 40 C94 54 86 68 72 68 C62 68 56 60 50 56 C44 60 38 68 28 68 C14 68 6 54 8 40 Z', C.greyD) +
-      `<ellipse cx="30" cy="50" rx="10" ry="8" fill="${C.bone}"/><ellipse cx="70" cy="50" rx="10" ry="8" fill="${C.bone}"/>` +
-      dot(31, 51, 3.2, C.ink) + dot(69, 51, 3.2, C.ink),
   },
   {
     id: 'candle',
@@ -457,14 +375,6 @@ export const designs = [
       `</g>` + heartIcon(48, 54, 0.26, C.bone),
   },
   {
-    id: 'sticker',
-    emoji: '🎨',
-    art: () =>
-      f('M20 12 L80 12 C85 12 88 15 88 20 L88 62 L62 88 L20 88 C15 88 12 85 12 80 L12 20 C12 15 15 12 20 12 Z', C.moss) +
-      f('M88 62 L62 88 L66 66 Z', C.bone) + line('M88 62 L66 66 L62 88') +
-      f(sparkle(44, 46, 16), C.bone) + dot(66, 30, 3.5, C.bone),
-  },
-  {
     id: 'envelope',
     emoji: '✉️',
     art: () =>
@@ -472,32 +382,25 @@ export const designs = [
       line('M12 30 L50 58 L88 30', 2.4) +
       heartIcon(50, 58, 0.3, C.wine),
   },
-  {
-    id: 'paper_plane',
-    emoji: '✈️',
-    art: () =>
-      f('M8 46 L92 12 L68 84 L48 62 Z', C.bone) +
-      f('M92 12 L48 62 L44 84 L56 70 Z', C.greyL) +
-      line('M92 12 L48 62') +
-      s('M28 76 C20 82 14 90 6 90', C.peach, 2.4, 'stroke-dasharray="4 5"'),
-  },
 
-  // ── Logo: HEHEARSE.EXE across two tiles ────────────────
+  // ── Logo: HEHEARSE | .EXE, one line across two tiles ───
   {
     id: 'logo_hehearse',
     emoji: '🖤',
     shade: false,
+    bleed: true,
     art: (u) =>
-      logoGradient(`${u}g`, [[0, '#c8b8a8'], [0.6, '#f0e8de'], [1, C.teal]]) +
-      txt('HEHE', 50, 46, 44, `url(#${u}g)`) + txt('ARSE', 50, 90, 44, `url(#${u}g)`),
+      logoGradient(`${u}g`, [[0, '#c8b8a8'], [0.55, '#f0e8de'], [1, C.teal]]) +
+      txt('HEHEARSE', 3, 57, LOGO_SIZE, `url(#${u}g)`, 'start'),
   },
   {
     id: 'logo_exe',
     emoji: '💻',
     shade: false,
+    bleed: true,
     art: (u) =>
       logoGradient(`${u}g`, [[0, C.teal], [0.4, '#f0e8de'], [1, '#c8b8a8']]) +
-      f(sparkle(50, 30, 11), C.teal) + txt('.EXE', 46, 90, 44, `url(#${u}g)`),
+      txt('.EXE', 1, 57, LOGO_SIZE, `url(#${u}g)`, 'start') + f(sparkle(54, 50, 6), C.teal),
   },
 
   // ── Lettering (site font) ──────────────────────────────
@@ -571,6 +474,7 @@ export const designs = [
   },
   {
     id: 'cursor',
+    size: 0.72,
     emoji: '🖱',
     art: () =>
       f('M26 10 L26 78 L42 64 L54 90 L66 85 L54 60 L76 60 Z', C.bone) +
@@ -617,9 +521,15 @@ export const designs = [
     id: 'divider',
     emoji: '➖',
     shade: false,
-    art: () =>
-      s('M4 50 L34 50 M66 50 L96 50', C.teal, 3.5) + f(sparkle(50, 50, 11), C.teal) +
-      dot(40, 50, 2.5, C.bone) + dot(60, 50, 2.5, C.bone),
+    bleed: true,
+    art: () => s('M-10 50 L110 50', C.teal, 3.5, 'stroke-linecap="butt"'),
+  },
+  {
+    id: 'divider_sparkle',
+    emoji: '➖',
+    shade: false,
+    bleed: true,
+    art: () => s('M-10 50 L110 50', C.teal, 3.5, 'stroke-linecap="butt"') + f(sparkle(50, 50, 12), C.teal),
   },
 
   // ── Numbers for lists (site font) ──────────────────────

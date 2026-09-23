@@ -1,0 +1,269 @@
+{
+  "name": "hehearse_by_lin_forest_bot",
+  "stickers": {
+    "heart_teal": {
+      "custom_emoji_id": "5305641545347671017",
+      "sha256": "42583a73c963e210"
+    },
+    "heart_bone": {
+      "custom_emoji_id": "5305763196001367018",
+      "sha256": "5972e7515060b01a"
+    },
+    "heart_wine": {
+      "custom_emoji_id": "5307957129720669239",
+      "sha256": "231efbf2142ad274"
+    },
+    "heart_peach_glow": {
+      "custom_emoji_id": "5305341662141132693",
+      "sha256": "e31062d0bc313c1d"
+    },
+    "heart_lavender": {
+      "custom_emoji_id": "5305616368249383931",
+      "sha256": "199af16c5704c5ad"
+    },
+    "heart_ink": {
+      "custom_emoji_id": "5305749069853927722",
+      "sha256": "8b9440c8279b01a0"
+    },
+    "heart_broken": {
+      "custom_emoji_id": "5305545106152010066",
+      "sha256": "56104248afd2fcfe"
+    },
+    "heart_bandaged": {
+      "custom_emoji_id": "5305643344938970020",
+      "sha256": "c135ba322a355dc1"
+    },
+    "sparkle_teal": {
+      "custom_emoji_id": "5305535038748668749",
+      "sha256": "dc5de93a88495483"
+    },
+    "sparkle_outline": {
+      "custom_emoji_id": "5305462290592606180",
+      "sha256": "beb7455b625bb1fd"
+    },
+    "sparkles_duo": {
+      "custom_emoji_id": "5305772434476017951",
+      "sha256": "85fba2b8ed1f135a"
+    },
+    "star_gold": {
+      "custom_emoji_id": "5305589468869209778",
+      "sha256": "15bf2d31e28124a1"
+    },
+    "star_outline": {
+      "custom_emoji_id": "5305258253876245192",
+      "sha256": "15dd69939f21a884"
+    },
+    "bullet_teal": {
+      "custom_emoji_id": "5305618739071332686",
+      "sha256": "2088027227ec9d9b"
+    },
+    "bullet_bone": {
+      "custom_emoji_id": "5305459490273931028",
+      "sha256": "2e08327bc85251d4"
+    },
+    "bullet_wine": {
+      "custom_emoji_id": "5305656934215500040",
+      "sha256": "05cf38ea1b3ee29a"
+    },
+    "bullet_peach_glow": {
+      "custom_emoji_id": "5305592333612397041",
+      "sha256": "525c3c4c9974fd78"
+    },
+    "bullet_gold": {
+      "custom_emoji_id": "5305783884858828802",
+      "sha256": "be9eb1f3443071b0"
+    },
+    "bullet_lavender": {
+      "custom_emoji_id": "5307898658035900997",
+      "sha256": "fade06c22e5d3c13"
+    },
+    "bullet_heart": {
+      "custom_emoji_id": "5305700987695049903",
+      "sha256": "7f233deddb8e3820"
+    },
+    "bullet_twin": {
+      "custom_emoji_id": "5305358842010314501",
+      "sha256": "7b50cf449644a0f9"
+    },
+    "polaroid": {
+      "custom_emoji_id": "5305742081942137152",
+      "sha256": "66a1ec90c92c6276"
+    },
+    "candle": {
+      "custom_emoji_id": "5307791060515202115",
+      "sha256": "c22acb5aee8e8a58"
+    },
+    "rose": {
+      "custom_emoji_id": "5305674011005468682",
+      "sha256": "4485e5be69cbbc3d"
+    },
+    "dagger": {
+      "custom_emoji_id": "5307986344088219967",
+      "sha256": "fa0aa6e0fc93baec"
+    },
+    "eye": {
+      "custom_emoji_id": "5305653077334862105",
+      "sha256": "ea55a290fd8d2803"
+    },
+    "fire": {
+      "custom_emoji_id": "5305738152047061948",
+      "sha256": "85ad6f3d4b5a7865"
+    },
+    "acrylic_keychain": {
+      "custom_emoji_id": "5305468191877671912",
+      "sha256": "aeeefa9e467da8db"
+    },
+    "acrylic_stand": {
+      "custom_emoji_id": "5305640170958136428",
+      "sha256": "4bcc6c510da61f8e"
+    },
+    "postcard": {
+      "custom_emoji_id": "5305718339362927767",
+      "sha256": "757153b98cabb2af"
+    },
+    "shaker_charm": {
+      "custom_emoji_id": "5305597637897009590",
+      "sha256": "c6890baa4e0d6861"
+    },
+    "pin_badge": {
+      "custom_emoji_id": "5305397470946175591",
+      "sha256": "70ef2fb7c4d12357"
+    },
+    "enamel_pin": {
+      "custom_emoji_id": "5305777442407885841",
+      "sha256": "4b7077a2dd838b28"
+    },
+    "shopping_bag": {
+      "custom_emoji_id": "5307988117909711196",
+      "sha256": "5c20b4516de8c45b"
+    },
+    "parcel": {
+      "custom_emoji_id": "5307628710751413921",
+      "sha256": "9fe8b161e1f7a49f"
+    },
+    "price_tag": {
+      "custom_emoji_id": "5307545233767047595",
+      "sha256": "c7b711ee9bf0f08a"
+    },
+    "envelope": {
+      "custom_emoji_id": "5305244875053117089",
+      "sha256": "c5ae75ab844c6a24"
+    },
+    "logo_hehearse": {
+      "custom_emoji_id": "5305551638797265611",
+      "sha256": "e45fcc68e19928c3"
+    },
+    "logo_exe": {
+      "custom_emoji_id": "5305798084020711631",
+      "sha256": "8b6730644ca7bce2"
+    },
+    "word_new": {
+      "custom_emoji_id": "5305597964314519760",
+      "sha256": "90e53f947d580dfb"
+    },
+    "word_sold_out": {
+      "custom_emoji_id": "5305363046783301811",
+      "sha256": "f14056866912a09b"
+    },
+    "word_ps": {
+      "custom_emoji_id": "5305630378432703943",
+      "sha256": "5c4ad3560adee3f6"
+    },
+    "word_merch": {
+      "custom_emoji_id": "5305458425122039435",
+      "sha256": "2854cd0b2d3da30b"
+    },
+    "exclaim": {
+      "custom_emoji_id": "5305719103867102775",
+      "sha256": "0d27490e47373a24"
+    },
+    "question": {
+      "custom_emoji_id": "5305799333856195091",
+      "sha256": "ba7e54122f44a7e5"
+    },
+    "arrow_up": {
+      "custom_emoji_id": "5305625314666262516",
+      "sha256": "bf6e9830ad60e243"
+    },
+    "arrow_up_thin": {
+      "custom_emoji_id": "5307949922765547546",
+      "sha256": "e103bf7b0ab2da02"
+    },
+    "arrow_loop": {
+      "custom_emoji_id": "5305548091154284940",
+      "sha256": "1c62f72e2368898c"
+    },
+    "arrow_curly": {
+      "custom_emoji_id": "5305536971483949178",
+      "sha256": "fe601f389bfa72f6"
+    },
+    "cursor": {
+      "custom_emoji_id": "5305682399076593174",
+      "sha256": "60f5430ebde8c83d"
+    },
+    "loading": {
+      "custom_emoji_id": "5305716544066596247",
+      "sha256": "446aa660e8189a0a"
+    },
+    "window_exe": {
+      "custom_emoji_id": "5305654163961589697",
+      "sha256": "68380779c534b907"
+    },
+    "check": {
+      "custom_emoji_id": "5307719094043192321",
+      "sha256": "3db43ebe5710c786"
+    },
+    "cross": {
+      "custom_emoji_id": "5305701331292433840",
+      "sha256": "4bad747a88896ae8"
+    },
+    "divider": {
+      "custom_emoji_id": "5305506142208700455",
+      "sha256": "4d135fed17ade569"
+    },
+    "num_1": {
+      "custom_emoji_id": "5305715199741831307",
+      "sha256": "bce054c175bcd55e"
+    },
+    "num_2": {
+      "custom_emoji_id": "5305744740526894285",
+      "sha256": "e304a94a67258b7e"
+    },
+    "num_3": {
+      "custom_emoji_id": "5305753631109197334",
+      "sha256": "5462eb3d20ead27b"
+    },
+    "num_4": {
+      "custom_emoji_id": "5305336731518676800",
+      "sha256": "36b6affc5b87cf18"
+    },
+    "num_5": {
+      "custom_emoji_id": "5305556401915998084",
+      "sha256": "2570239d89426aad"
+    },
+    "num_6": {
+      "custom_emoji_id": "5305788227070770170",
+      "sha256": "6afd097547118dfc"
+    },
+    "num_7": {
+      "custom_emoji_id": "5307734040529379471",
+      "sha256": "f8c81e0a140b8cbf"
+    },
+    "num_8": {
+      "custom_emoji_id": "5305418984437359726",
+      "sha256": "f7c3dc1e1b60003b"
+    },
+    "num_9": {
+      "custom_emoji_id": "5305240489891509028",
+      "sha256": "8a0f20b779c5d52b"
+    },
+    "num_10": {
+      "custom_emoji_id": "5305648825317239194",
+      "sha256": "586d3ef9c64d2037"
+    },
+    "divider_sparkle": {
+      "custom_emoji_id": "5305767078651801035",
+      "sha256": "1ef1f9d12678e31a"
+    }
+  }
+}

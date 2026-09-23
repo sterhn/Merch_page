@@ -30,10 +30,10 @@ const MAX_KB = 60; // Bot API cap for video emoji is 64 KB; keep a little headro
 // - faint paper grain inside the colour
 // - a thin ink line around every silhouette
 // - optionally a soft peach glow (the glowing pieces)
-const inkFilter = (id, seed, { shade = true, glow = false, ink = true }) => `
-  <filter id="${id}" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+const inkFilter = (id, seed, { shade = true, glow = false, ink = true, bleed = false }) => `
+  <filter id="${id}" filterUnits="userSpaceOnUse" x="-20" y="-20" width="140" height="140" color-interpolation-filters="sRGB">
     <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="${seed}" result="warp"/>
-    <feDisplacementMap in="SourceGraphic" in2="warp" scale="1.4" xChannelSelector="R" yChannelSelector="G" result="art"/>
+    <feDisplacementMap in="SourceGraphic" in2="warp" scale="${bleed ? 0 : 1.4}" xChannelSelector="R" yChannelSelector="G" result="art"/>
     <feOffset in="art" dx="-3.5" dy="-4" result="shifted"/>
     <feComposite in="art" in2="shifted" operator="out" result="crescent"/>
     <feFlood flood-color="#151217" flood-opacity="${shade ? 0.3 : 0}"/>
@@ -52,11 +52,19 @@ const inkFilter = (id, seed, { shade = true, glow = false, ink = true }) => `
     </feMerge>
   </filter>`;
 
+// Wobble/grain seed from the design's id, so adding or removing a design
+// doesn't change how every other one renders (and trigger re-uploads).
+const seedOf = (id) => [...id].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) % 9973, 7);
+
 const toSvg = (d, i, art) => {
   const u = `${d.id}-`;
+  // Leave a margin for the ink line and glow, except on pieces that must
+  // touch the edges to join their neighbours (no wobble there either, so
+  // the seams line up).
+  const scale = d.bleed ? 1 : 0.92 * (d.size ?? 1);
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
-  <defs>${inkFilter(`${u}ink`, i * 13 + 3, d)}</defs>
-  <g filter="url(#${u}ink)"><g transform="translate(50 50) scale(.92) translate(-50 -50)">${art(u)}</g></g>
+  <defs>${inkFilter(`${u}ink`, seedOf(d.id), d)}</defs>
+  <g filter="url(#${u}ink)"><g transform="translate(50 50) scale(${scale}) translate(-50 -50)">${art(u)}</g></g>
 </svg>
 `;
 };

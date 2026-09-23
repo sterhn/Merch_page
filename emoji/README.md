@@ -1,18 +1,19 @@
 # HEHEARSE custom emoji
 
-74 Telegram custom emoji (premium emoji), drawn to match the shop's own comic art: thin black ink lines, flat cel shading in muted greys, wine, teal and bone, faint paper grain, and one glowing peach accent with little spark dashes. The lettering and numbers use Concrete, the site's display font.
+66 Telegram custom emoji (premium emoji), drawn to match the shop's own comic art: thin black ink lines, flat cel shading in muted greys, wine, teal and bone, faint paper grain, and one glowing peach accent with little spark dashes. The lettering and numbers use Concrete, the site's display font.
 
-14 of them are animated (marked ▶ in the table below): the stars and sparkles twinkle, the spark bursts, the flame flickers, the shaker's bits jiggle and the loading bar fills.
+4 of them are animated (marked ▶ in the table below): the glowing heart, the flame, the shaker charm and the loading bar.
 
 The set covers:
 - **Hearts:** teal, bone, wine, glowing peach ▶, lavender, ink, broken, bandaged
-- **Stars and sky ▶:** sparkles, stars, star cluster, moon, shooting star
-- **Tiny bullets for lists:** ✦ in teal, bone, wine and glowing peach ▶; ★ in gold and lavender; a small heart; a double sparkle
-- **Glow and gothic:** spark ▶, smoke, blank polaroid, ID badge, mask, candle, rose, dagger, eye, fire ▶
-- **Merch:** acrylic keychain, acrylic stand, postcard, shaker charm ▶, button pin, enamel pin, bag, parcel, price tag, sticker, envelope, paper plane
-- **Logo:** `HEHE/ARSE` + `.EXE`. Put the two side by side to spell HEHEARSE.EXE
+- **Stars:** sparkles and stars
+- **Tiny bullets for lists:** ✦ in teal, bone, wine and glowing peach; ★ in gold and lavender; a small heart; a double sparkle
+- **Gothic:** blank polaroid, candle, rose, dagger, eye, fire ▶
+- **Merch:** acrylic keychain, acrylic stand, postcard, shaker charm ▶, button pin, enamel pin, bag, parcel, price tag, envelope
+- **Logo:** `HEHEARSE` + `.EXE`. Send the two side by side for the full wordmark on one line
 - **Words:** `NEW`, `SOLD OUT`, `P.S.`, `МЕРЧ`, `!!`, `??`
-- **Arrows and interface:** bold and thin arrows up, curly arrows, cursor, loading bar ▶, `.exe` window, ✓, ✗, divider
+- **Arrows and interface:** bold and thin arrows up, curly arrows, cursor, loading bar ▶, `.exe` window, ✓, ✗
+- **Dividers:** a plain line and a line with a ✦. They run edge to edge, so sending several in a row makes one long line
 - **Numbers:** 1–10
 
 ![Dark theme preview](preview-dark.png)
@@ -35,13 +36,17 @@ To rebuild after changing something: `npm install && npm run build` in this fold
 
 The pack is live at **https://t.me/addemoji/hehearse_by_lin_forest_bot**.
 
-To upload it again (or to another bot), run `upload.mjs`. It creates the set through the Bot API and resumes if interrupted:
+To change the live pack, edit `designs.mjs`, run `npm run build`, then run `upload.mjs`. It brings the pack in line with `designs.mjs`:
+- deletes emoji you removed
+- replaces changed ones in place
+- adds new ones
+- reorders to match
 
 ```sh
 TELEGRAM_BOT_TOKEN=<token> TELEGRAM_USER_ID=<your user id> npm run upload
 ```
 
-The owner has to message the bot once first. If `TELEGRAM_USER_ID` is left out, the script uses whoever messaged the bot last.
+`pack.json` records which live emoji is which design, so only what changed gets uploaded. Commit it after each run. For a brand-new pack, the owner has to message the bot once first. If `TELEGRAM_USER_ID` is left out, the script uses whoever messaged the bot last.
 
 To do it by hand instead:
 
@@ -58,40 +63,36 @@ Telegram has allowed still and animated emoji in the same pack since 2024. If @S
 
 | # | File | Emoji | | # | File | Emoji |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | `heart_teal` | 🩵 | | 38 | `shaker_charm` ▶ | 🫧 |
-| 2 | `heart_bone` | 🤍 | | 39 | `pin_badge` | 📍 |
-| 3 | `heart_wine` | ❤️ | | 40 | `enamel_pin` | 📌 |
-| 4 | `heart_peach_glow` ▶ | 🧡 | | 41 | `shopping_bag` | 🛍 |
-| 5 | `heart_lavender` | 💜 | | 42 | `parcel` | 📦 |
-| 6 | `heart_ink` | 🖤 | | 43 | `price_tag` | 🏷 |
-| 7 | `heart_broken` | 💔 | | 44 | `sticker` | 🎨 |
-| 8 | `heart_bandaged` | ❤️‍🩹 | | 45 | `envelope` | ✉️ |
-| 9 | `sparkle_teal` ▶ | ✨ | | 46 | `paper_plane` | ✈️ |
-| 10 | `sparkle_outline` ▶ | ✨ | | 47 | `logo_hehearse` | 🖤 |
-| 11 | `sparkles_duo` ▶ | ✨ | | 48 | `logo_exe` | 💻 |
-| 12 | `star_gold` ▶ | ⭐️ | | 49 | `word_new` | 🆕 |
-| 13 | `star_outline` ▶ | ⭐️ | | 50 | `word_sold_out` | 🚫 |
-| 14 | `stars_cluster` ▶ | 🌟 | | 51 | `word_ps` | 📝 |
-| 15 | `moon` ▶ | 🌙 | | 52 | `word_merch` | 🛒 |
-| 16 | `shooting_star` ▶ | 🌠 | | 53 | `exclaim` | ‼️ |
-| 17 | `bullet_teal` | 🔹 | | 54 | `question` | ❓ |
-| 18 | `bullet_bone` | ▫️ | | 55 | `arrow_up` | ⬆️ |
-| 19 | `bullet_wine` | 🔸 | | 56 | `arrow_up_thin` | ⬆️ |
-| 20 | `bullet_peach_glow` ▶ | 🔸 | | 57 | `arrow_loop` | ⤵️ |
-| 21 | `bullet_gold` | ⭐️ | | 58 | `arrow_curly` | ➡️ |
-| 22 | `bullet_lavender` | ⭐️ | | 59 | `cursor` | 🖱 |
-| 23 | `bullet_heart` | ♥️ | | 60 | `loading` ▶ | ⏳ |
-| 24 | `bullet_twin` | ✨ | | 61 | `window_exe` | 🪟 |
-| 25 | `spark` ▶ | 💥 | | 62 | `check` | ✅ |
-| 26 | `smoke` | 🌫 | | 63 | `cross` | ❌ |
-| 27 | `polaroid` | 📸 | | 64 | `divider` | ➖ |
-| 28 | `id_badge` | 🪪 | | 65 | `num_1` | 1️⃣ |
-| 29 | `mask` | 🎭 | | 66 | `num_2` | 2️⃣ |
-| 30 | `candle` | 🕯 | | 67 | `num_3` | 3️⃣ |
-| 31 | `rose` | 🌹 | | 68 | `num_4` | 4️⃣ |
-| 32 | `dagger` | 🗡 | | 69 | `num_5` | 5️⃣ |
-| 33 | `eye` | 👁 | | 70 | `num_6` | 6️⃣ |
-| 34 | `fire` ▶ | 🔥 | | 71 | `num_7` | 7️⃣ |
-| 35 | `acrylic_keychain` | 🔑 | | 72 | `num_8` | 8️⃣ |
-| 36 | `acrylic_stand` | 🧍 | | 73 | `num_9` | 9️⃣ |
-| 37 | `postcard` | 💌 | | 74 | `num_10` | 🔟 |
+| 1 | `heart_teal` | 🩵 | | 34 | `shopping_bag` | 🛍 |
+| 2 | `heart_bone` | 🤍 | | 35 | `parcel` | 📦 |
+| 3 | `heart_wine` | ❤️ | | 36 | `price_tag` | 🏷 |
+| 4 | `heart_peach_glow` ▶ | 🧡 | | 37 | `envelope` | ✉️ |
+| 5 | `heart_lavender` | 💜 | | 38 | `logo_hehearse` | 🖤 |
+| 6 | `heart_ink` | 🖤 | | 39 | `logo_exe` | 💻 |
+| 7 | `heart_broken` | 💔 | | 40 | `word_new` | 🆕 |
+| 8 | `heart_bandaged` | ❤️‍🩹 | | 41 | `word_sold_out` | 🚫 |
+| 9 | `sparkle_teal` | ✨ | | 42 | `word_ps` | 📝 |
+| 10 | `sparkle_outline` | ✨ | | 43 | `word_merch` | 🛒 |
+| 11 | `sparkles_duo` | ✨ | | 44 | `exclaim` | ‼️ |
+| 12 | `star_gold` | ⭐️ | | 45 | `question` | ❓ |
+| 13 | `star_outline` | ⭐️ | | 46 | `arrow_up` | ⬆️ |
+| 14 | `bullet_teal` | 🔹 | | 47 | `arrow_up_thin` | ⬆️ |
+| 15 | `bullet_bone` | ▫️ | | 48 | `arrow_loop` | ⤵️ |
+| 16 | `bullet_wine` | 🔸 | | 49 | `arrow_curly` | ➡️ |
+| 17 | `bullet_peach_glow` | 🔸 | | 50 | `cursor` | 🖱 |
+| 18 | `bullet_gold` | ⭐️ | | 51 | `loading` ▶ | ⏳ |
+| 19 | `bullet_lavender` | ⭐️ | | 52 | `window_exe` | 🪟 |
+| 20 | `bullet_heart` | ♥️ | | 53 | `check` | ✅ |
+| 21 | `bullet_twin` | ✨ | | 54 | `cross` | ❌ |
+| 22 | `polaroid` | 📸 | | 55 | `divider` | ➖ |
+| 23 | `candle` | 🕯 | | 56 | `divider_sparkle` | ➖ |
+| 24 | `rose` | 🌹 | | 57 | `num_1` | 1️⃣ |
+| 25 | `dagger` | 🗡 | | 58 | `num_2` | 2️⃣ |
+| 26 | `eye` | 👁 | | 59 | `num_3` | 3️⃣ |
+| 27 | `fire` ▶ | 🔥 | | 60 | `num_4` | 4️⃣ |
+| 28 | `acrylic_keychain` | 🔑 | | 61 | `num_5` | 5️⃣ |
+| 29 | `acrylic_stand` | 🧍 | | 62 | `num_6` | 6️⃣ |
+| 30 | `postcard` | 💌 | | 63 | `num_7` | 7️⃣ |
+| 31 | `shaker_charm` ▶ | 🫧 | | 64 | `num_8` | 8️⃣ |
+| 32 | `pin_badge` | 📍 | | 65 | `num_9` | 9️⃣ |
+| 33 | `enamel_pin` | 📌 | | 66 | `num_10` | 🔟 |
