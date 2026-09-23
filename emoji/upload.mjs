@@ -22,11 +22,22 @@ if (!token) throw new Error('Set TELEGRAM_BOT_TOKEN');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function call(method, params = {}, files = {}) {
-  for (;;) {
+  for (let attempt = 1; ; attempt++) {
     const body = new FormData();
     for (const [k, v] of Object.entries(params)) body.append(k, typeof v === 'string' ? v : JSON.stringify(v));
     for (const [k, { bytes, filename }] of Object.entries(files)) body.append(k, new Blob([bytes]), filename);
-    const res = await (await fetch(`https://api.telegram.org/bot${token}/${method}`, { method: 'POST', body })).json();
+    // An empty multipart body gets rejected, so parameterless calls send none
+    const empty = !Object.keys(params).length && !Object.keys(files).length;
+    let res;
+    try {
+      res = await (await fetch(`https://api.telegram.org/bot${token}/${method}`, empty ? {} : { method: 'POST', body })).json();
+    } catch (e) {
+      // Dropped connections and empty replies: back off and try again
+      if (attempt >= 5) throw e;
+      console.log(`  ${method}: network error (${e.cause?.code || e.message}), retrying`);
+      await sleep(2000 * attempt);
+      continue;
+    }
     if (res.ok) return res.result;
     if (res.error_code === 429) {
       const wait = (res.parameters?.retry_after ?? 5) + 1;

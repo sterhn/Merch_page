@@ -22,6 +22,7 @@ const RENDER = 400; // drawn at 4×, then downsampled to 100 for clean edges
 const FPS = 30;
 const SECONDS = 2; // Telegram allows up to 3 s per video emoji
 const FFMPEG = process.env.FFMPEG || 'ffmpeg';
+const MAX_KB = 60; // Bot API cap for video emoji is 64 KB; keep a little headroom
 
 // Comic-ink look, matching the shop's artwork:
 // - a slight wobble so lines feel hand-inked
@@ -114,14 +115,19 @@ for (const [i, d] of designs.entries()) {
     const png = await render(toSvg(d, i, (u) => d.anim(n / frameCount, u)));
     await writeFile(join(frames, `${String(n).padStart(3, '0')}.png`), png);
   }
+  // The Bot API rejects video emoji over 64 KB, so raise the compression
+  // until the file fits.
   const out = join(here, 'anim', `${d.id}.webm`);
-  execFileSync(FFMPEG, [
-    '-y', '-loglevel', 'error', '-framerate', String(FPS), '-i', join(frames, '%03d.png'),
-    '-c:v', 'libvpx-vp9', '-pix_fmt', 'yuva420p', '-b:v', '0', '-crf', '34',
-    '-deadline', 'good', '-auto-alt-ref', '0', '-an', out,
-  ]);
-  const kb = (await stat(out)).size / 1024;
-  if (kb > 256) console.warn(`  ${d.id}.webm is ${kb.toFixed(0)} KB (Telegram's video emoji limit is 256 KB)`);
+  let kb = Infinity;
+  for (let crf = 34; kb > MAX_KB && crf <= 63; crf += 4) {
+    execFileSync(FFMPEG, [
+      '-y', '-loglevel', 'error', '-framerate', String(FPS), '-i', join(frames, '%03d.png'),
+      '-c:v', 'libvpx-vp9', '-pix_fmt', 'yuva420p', '-b:v', '0', '-crf', String(Math.min(crf, 63)),
+      '-deadline', 'good', '-auto-alt-ref', '0', '-an', out,
+    ]);
+    kb = (await stat(out)).size / 1024;
+  }
+  if (kb > MAX_KB) console.warn(`  ${d.id}.webm is still ${kb.toFixed(0)} KB (limit ${MAX_KB} KB)`);
 }
 
 // Preview sheets: the pack laid out like Telegram's emoji keyboard.

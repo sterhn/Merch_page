@@ -24,7 +24,7 @@ The set covers:
 | Path | What |
 | --- | --- |
 | `png/*.png` | **Upload these** for the still emoji. 100×100 transparent PNGs |
-| `anim/*.webm` | **Upload these** for the animated ones. 100×100 VP9 video, 2 s loop, all well under Telegram's 256 KB limit |
+| `anim/*.webm` | **Upload these** for the animated ones. 100×100 VP9 video, 2 s loop, each under the Bot API's 64 KB limit |
 | `svg/*.svg` | Vector sources with the ink filter included (lettering needs the Concrete font from `../assets/fonts/`) |
 | `designs.mjs` | The drawings and animations, written as code. Edit a shape, colour or motion here |
 | `build.mjs` | Renders `designs.mjs` to all of the above plus the preview sheets |
@@ -32,6 +32,18 @@ The set covers:
 To rebuild after changing something: `npm install && npm run build` in this folder. It needs Chromium (set `CHROME_PATH` if Playwright can't find one) and an ffmpeg with VP9 support (set `FFMPEG` if it isn't on your PATH).
 
 ## Publishing the pack in Telegram
+
+The pack is live at **https://t.me/addemoji/hehearse_by_lin_forest_bot**.
+
+To upload it again (or to another bot), run `upload.mjs`. It creates the set through the Bot API and resumes if interrupted:
+
+```sh
+TELEGRAM_BOT_TOKEN=<token> TELEGRAM_USER_ID=<your user id> npm run upload
+```
+
+The owner has to message the bot once first. If `TELEGRAM_USER_ID` is left out, the script uses whoever messaged the bot last.
+
+To do it by hand instead:
 
 You don't need Premium to create a pack. To send the emoji in messages you need Premium, but everyone can see them, and channels can use them in posts.
 
