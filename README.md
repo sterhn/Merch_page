@@ -38,3 +38,7 @@ No build step: it's one `index.html`.
 Stock numbers are live from Supabase — the same `stock_qty` that Merch Planner updates automatically when you mark orders as sent.
 
 Don't want prices shown? Remove the `sale_price` line from the view SQL and the price row in `index.html`.
+
+## Telegram emoji pack
+
+[`emoji/`](emoji/) has a 64-piece custom emoji pack in the shop's colours, ready to upload via @Stickers. See [`emoji/README.md`](emoji/README.md).

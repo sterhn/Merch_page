@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+  <filter id="price_tag-chalk" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="341" result="warp"/>
+    <feDisplacementMap in="SourceGraphic" in2="warp" scale="3.2" xChannelSelector="R" yChannelSelector="G" result="wobbly"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="2" seed="348" result="noise"/>
+    <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  3.2 0 0 0 -0.45" result="grain"/>
+    <feComposite in="wobbly" in2="grain" operator="in" result="chalky"/>
+    <!-- Soft plum rim so cream shapes still read on Telegram's light theme -->
+    <feMorphology in="wobbly" operator="dilate" radius="1.4" result="fat"/>
+    <feComposite in="fat" in2="wobbly" operator="out" result="ring"/>
+    <feFlood flood-color="#4a3d55" flood-opacity=".6"/>
+    <feComposite in2="ring" operator="in" result="rim"/>
+    <feMerge><feMergeNode in="rim"/><feMergeNode in="chalky"/></feMerge>
+  </filter></defs>
+  <g filter="url(#price_tag-chalk)"><defs><mask id="price_tag-h"><rect width="100" height="100" fill="#fff"/><circle cx="70" cy="28" r="6.5" fill="#000" /></mask></defs><path d="M70 28 C80 16 88 10 96 8" fill="none" stroke="#f1e6d6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" /><g mask="url(#price_tag-h)"><path d="M52 12 L84 12 C86 12 88 14 88 16 L88 46 L46 88 C43 91 39 91 36 88 L12 64 C9 61 9 57 12 54 Z" fill="#e89aae" /></g><g transform="translate(48 54) scale(0.26) translate(-50 -50)"><path d="M50 86 C26 70 10 54 12 36 C14 20 34 14 50 30 C66 14 86 20 88 36 C90 54 74 70 50 86 Z" fill="#f1e6d6" /></g></g>
+</svg>
