@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>HEHEARSE — мерч</title>
   <meta name="description" content="Каталог мерча HEHEARSE: значки, стикеры и другое по любимым фандомам. Наличие обновляется автоматически." />
-  <meta name="theme-color" content="#0f0e0d" />
+  <meta name="theme-color" content="#f2efe9" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="HEHEARSE — мерч" />
   <meta property="og:description" content="Каталог мерча по любимым фандомам. Наличие обновляется автоматически — выбирай и заказывай в Telegram." />
@@ -14,7 +14,7 @@
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='85' fill='%23f2c4b0'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='85' fill='%23121110'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" href="assets/smoke-hand.webp" as="image" type="image/webp" />
@@ -27,41 +27,33 @@
       font-weight: 400;
       font-display: swap;
     }
-    /* Palette lifted from the artwork: warm charcoal, ink greys, paper white,
-       and one glowing accent — the peach thread. */
+    /* A black-and-white comic page: paper, ink, screentone. The merch
+       photos are the only colour on the page. */
     :root {
-      color-scheme: dark;
-      --bg: #0f0e0d;
-      --surface: #1a1917;
-      --surface-2: #23211e;
-      --panel: #3a3631;            /* manga panel border */
-      --panel-hi: #57514a;
-      --ink: #ebe6de;
-      /* Both greys clear WCAG AA on --bg: muted ≈ 7.5:1, faint ≈ 5.3:1 */
-      --muted: #a8a197;
-      --faint: #8c867c;
-      --thread: #f2c4b0;
-      --thread-dim: rgba(242,196,176,0.35);
-      --thread-glow: 0 0 6px rgba(242,196,176,0.55), 0 0 18px rgba(242,196,176,0.2);
-      --page-accent: var(--thread);
+      color-scheme: light;
+      --paper: #f2efe9;
+      --panel: #fbfaf7;
+      --ink: #121110;
+      --ink-2: #2e2c29;
+      /* Greys clear WCAG AA on --paper: muted ≈ 6.8:1, faint ≈ 4.8:1 */
+      --muted: #56524c;
+      --faint: #6d6861;
+      --wash: #dcd8d1;             /* ink-wash grey for quiet fills */
+      --line: 3px;                 /* panel border weight */
+      --tone: radial-gradient(rgba(18,17,16,0.16) 1.1px, transparent 1.5px) 0 0 / 7px 7px;
       --gutter: 24px;
       --display: 'Concrete', 'Courier New', monospace;
       --sans: 'IBM Plex Sans', system-ui, sans-serif;
-      --mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
-      /* Hand-drawn wobble for the thread, tiled vertically */
-      --thread-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='240' viewBox='0 0 8 240'%3E%3Cpath d='M4 0 C 2.6 40, 5.6 70, 4.2 120 S 2.8 200, 4 240' fill='none' stroke='%23f2c4b0' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");
-      /* The little tick-burst the thread gives off where it catches */
-      --spark-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f2c4b0' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M12 2.5v4M12 17.5v4M2.5 12h4M17.5 12h4M5.3 5.3l2.6 2.6M16.1 16.1l2.6 2.6M18.7 5.3l-2.6 2.6M7.9 16.1l-2.6 2.6'/%3E%3C/svg%3E");
-      --yarn-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='18' fill='%23f2c4b0'/%3E%3Cg fill='none' stroke='%23b98a78' stroke-width='1.3' stroke-linecap='round'%3E%3Cpath d='M6 12c8 2 18 10 22 24'/%3E%3Cpath d='M4 19c9 1 18 7 21 19'/%3E%3Cpath d='M10 6c7 4 17 14 20 29'/%3E%3Cpath d='M26 4c-6 8-8 20-5 34'/%3E%3Cpath d='M33 9c-7 7-10 17-8 28'/%3E%3Cpath d='M37 17c-6 5-8 12-7 19'/%3E%3C/g%3E%3Ccircle cx='20' cy='20' r='18' fill='none' stroke='%23b98a78' stroke-width='1.3'/%3E%3C/svg%3E");
+      --yarn-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='17' fill='%23fbfaf7' stroke='%23121110' stroke-width='2.4'/%3E%3Cg fill='none' stroke='%23121110' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M7 13c8 2 17 9 21 22'/%3E%3Cpath d='M5 20c9 1 17 7 20 17'/%3E%3Cpath d='M11 7c7 4 16 13 19 27'/%3E%3Cpath d='M26 5c-6 8-8 19-5 32'/%3E%3Cpath d='M33 10c-7 7-9 16-8 26'/%3E%3C/g%3E%3C/svg%3E");
     }
-    @media (max-width: 420px) { :root { --gutter: 18px; } }
+    @media (max-width: 420px) { :root { --gutter: 16px; } }
     *, *::before, *::after { box-sizing: border-box; margin: 0; }
     /* Reserve the scrollbar gutter so locking the body when an overlay opens
        doesn't shift the whole page sideways. */
     html { scrollbar-gutter: stable; }
     body {
       font-family: var(--sans);
-      background: var(--bg);
+      background: var(--paper);
       color: var(--ink);
       -webkit-font-smoothing: antialiased;
       min-height: 100vh;
@@ -69,330 +61,267 @@
     }
     /* Paper grain, like the textured fills in the artwork */
     body::before {
-      content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none;
-      opacity: .07; mix-blend-mode: overlay;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+      content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      opacity: .09; mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
     }
     body.scroll-locked { overflow: hidden; }
-    a { color: var(--thread); transition: color 0.2s; }
-    a:hover { color: #ffd9c8; }
-    :focus-visible { outline: 2px solid var(--page-accent); outline-offset: 2px; }
-    ::selection { background: color-mix(in srgb, var(--thread) 35%, transparent); color: var(--ink); }
-    ::-webkit-scrollbar { width: 10px; height: 10px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(168,161,151,0.22); border-radius: 5px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(168,161,151,0.4); }
+    a { color: var(--ink); }
+    :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+    ::selection { background: var(--ink); color: var(--panel); }
 
-    .wrap { position: relative; z-index: 2; max-width: 860px; margin: 0 auto; padding: 0 var(--gutter) 120px; }
-
-    /* The thread: drops out of the header art, runs down the left gutter past
-       every fandom and ends at the yarn ball in the footer. */
+    .wrap { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: var(--gutter) var(--gutter) 120px; }
     .col { position: relative; }
-    .thread {
-      position: absolute; top: -40px; bottom: 90px; width: 8px;
-      -webkit-mask-image: linear-gradient(to bottom, transparent, #000 90px, #000 calc(100% - 160px), transparent);
-      mask-image: linear-gradient(to bottom, transparent, #000 90px, #000 calc(100% - 160px), transparent);
-      left: calc(var(--gutter) / -2 - 4px);
-      background: var(--thread-svg) repeat-y 0 0 / 8px 240px;
-      filter: drop-shadow(0 0 3px rgba(242,196,176,0.7)) drop-shadow(0 0 10px rgba(242,196,176,0.25));
-      pointer-events: none; z-index: 0;
-      animation: fadeIn 1.6s ease both .4s;
-    }
 
-    /* Header — the smoke-hand artwork under a flashlight spotlight */
-    .header {
-      position: relative; z-index: 1;
-      margin: 0 calc(var(--gutter) * -1) 40px;
-      min-height: min(78vh, 640px);
-      display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-      padding: 0 var(--gutter) 36px; text-align: center; overflow: hidden;
+    /* Header — the smoke-hand artwork as the opening panel of the page */
+    .header { margin-bottom: 28px; }
+    .hero {
+      position: relative; overflow: hidden;
+      aspect-ratio: 4 / 5; max-height: 72vh; width: 100%;
+      border: 4px solid var(--ink); background: #111;
+      animation: panelIn .7s cubic-bezier(.3,.7,.3,1) both;
     }
+    @media (min-width: 640px) { .hero { aspect-ratio: 16 / 10; } }
     .header-art {
-      position: absolute; inset: 0; z-index: -1;
-      background: url('assets/smoke-hand.webp') center 30% / cover no-repeat;
-      /* Spotlight: the art fades into black at the edges, like the torch
-         circle in the illustrations */
-      -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 44%, #000 32%, rgba(0,0,0,0.45) 64%, transparent 90%);
-      mask-image: radial-gradient(ellipse 50% 50% at 50% 44%, #000 32%, rgba(0,0,0,0.45) 64%, transparent 90%);
-      animation: artIn 1.8s ease both;
+      position: absolute; inset: 0;
+      background: url('assets/smoke-hand.webp') center 34% / cover no-repeat;
     }
-    .header::after {
-      /* Darken the bottom so the title sits on smoke, not on the palm */
-      content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-      background: linear-gradient(to bottom, transparent 45%, rgba(15,14,13,0.75) 78%, var(--bg) 100%);
-    }
-    @keyframes artIn { from { opacity: 0; transform: scale(1.04); } to { opacity: 1; transform: scale(1); } }
+    /* Caption box, top-left — how the comics set their narration */
     .header h1 {
-      font-family: var(--display);
-      font-size: clamp(2.6rem, 11vw, 4.2rem);
-      font-weight: 400; letter-spacing: .08em;
-      text-transform: uppercase; margin: 0 0 6px;
-      color: var(--ink);
-      text-shadow: 0 2px 0 #000, 0 0 24px rgba(0,0,0,0.9);
-      animation: fadeUp .9s ease both .3s;
+      position: absolute; top: 14px; left: 14px; z-index: 2;
+      font-family: var(--display); font-weight: 400;
+      font-size: clamp(1.9rem, 8vw, 3.2rem); line-height: 1;
+      letter-spacing: .08em; text-transform: uppercase;
+      padding: 10px 16px 8px; background: var(--panel); color: var(--ink);
+      border: var(--line) solid var(--ink);
     }
-    .tagline {
-      font-size: .82rem; color: var(--muted); letter-spacing: .06em; margin-bottom: 20px;
-      text-shadow: 0 1px 8px #000;
-      animation: fadeUp .9s ease both .45s;
-    }
+    /* Telegram link as a speech bubble */
     .tg-link {
+      position: absolute; right: 16px; bottom: 18px; z-index: 2;
       display: inline-flex; align-items: center; gap: 8px;
-      padding: 10px 22px; border: 1.5px solid var(--thread-dim);
-      color: var(--thread); text-decoration: none; background: rgba(15,14,13,0.6);
-      font-size: .78rem; font-weight: 600; text-transform: uppercase; letter-spacing: .12em;
-      transition: all .3s; animation: fadeUp .9s ease both .6s;
+      padding: 12px 20px; border-radius: 999px;
+      background: var(--panel); color: var(--ink); text-decoration: none;
+      border: var(--line) solid var(--ink);
+      font-size: .82rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+      transition: transform .2s;
     }
-    .tg-link:hover { border-color: var(--thread); box-shadow: var(--thread-glow); color: #ffd9c8; }
-    .tg-link svg { width: 15px; height: 15px; fill: currentColor; }
+    .tg-link::before, .tg-link::after {
+      content: ''; position: absolute; left: 26px; width: 0; height: 0;
+      border-left: 10px solid transparent; border-right: 6px solid transparent;
+    }
+    .tg-link::before { top: -17px; border-bottom: 16px solid var(--ink); }
+    .tg-link::after { top: -11px; left: 29px; border-left-width: 7px; border-right-width: 4px; border-bottom: 12px solid var(--panel); }
+    .tg-link:hover { transform: rotate(-2deg) scale(1.04); }
+    .tg-link svg { width: 16px; height: 16px; fill: currentColor; }
+    @keyframes panelIn { from { opacity: 0; transform: scale(.98); } to { opacity: 1; transform: none; } }
 
     /* Controls: fandom selection + type chips */
-    .controls { position: relative; z-index: 1; margin-bottom: 44px; animation: fadeUp .8s ease both .7s; opacity: 0; }
-    .fandoms { display: flex; flex-wrap: wrap; gap: 8px; }
+    .controls { margin-bottom: 40px; }
+    .fandoms { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    @media (min-width: 640px) { .fandoms { grid-template-columns: repeat(4, 1fr); } }
     .fandom-btn {
-      flex: 1 1 calc(50% - 4px); min-width: 150px;
-      padding: 14px 16px; cursor: pointer;
-      background: var(--surface); border: 2px solid var(--panel);
+      padding: 12px 14px; cursor: pointer; min-height: 56px;
+      background: var(--panel); border: var(--line) solid var(--ink); color: var(--ink);
       font-family: var(--display); font-size: var(--fs, 1.15rem); font-weight: 400;
-      letter-spacing: .04em; color: var(--ink); text-align: left;
-      display: flex; align-items: baseline; gap: 10px;
-      transition: border-color .25s, box-shadow .25s, opacity .25s, background .25s;
+      letter-spacing: .04em; text-align: left;
+      display: flex; align-items: center; gap: 10px;
+      transition: background .15s, color .15s;
     }
     .fandom-btn .cnt {
-      margin-left: auto; align-self: center;
-      font-family: var(--sans); font-size: .72rem; font-weight: 500;
+      margin-left: auto;
+      font-family: var(--sans); font-size: .74rem; font-weight: 600;
       font-variant-numeric: tabular-nums; color: var(--muted);
     }
-    .fandom-btn:hover { border-color: var(--panel-hi); }
-    .fandom-btn.active {
-      border-color: var(--thread);
-      background: color-mix(in srgb, var(--thread) 7%, var(--surface));
-      box-shadow: 0 0 14px rgba(242,196,176,0.18);
-    }
-    .fandom-btn.active .cnt { color: var(--thread); }
-    .fandoms.has-active .fandom-btn:not(.active) { opacity: .5; }
+    .fandom-btn:hover { background: var(--wash); }
+    /* Selected = inverted, white on black, like a reversed panel */
+    .fandom-btn.active { background: var(--ink); color: var(--panel); }
+    .fandom-btn.active .cnt { color: var(--wash); }
 
-    /* Small type chips */
-    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
     .chip {
-      padding: 6px 11px; border: 1px solid var(--panel);
-      background: transparent; color: var(--muted); cursor: pointer;
-      font-family: var(--sans); font-size: .72rem; font-weight: 600;
+      padding: 7px 12px; border: 2px solid var(--ink);
+      background: var(--panel); color: var(--ink); cursor: pointer;
+      font-family: var(--sans); font-size: .72rem; font-weight: 700;
       text-transform: uppercase; letter-spacing: .07em;
-      transition: all .2s;
+      transition: background .15s, color .15s;
     }
-    .chip:hover { border-color: var(--panel-hi); color: var(--ink); }
-    .chip.active { border-color: var(--thread); color: var(--thread); background: rgba(242,196,176,0.07); }
+    .chip:hover { background: var(--wash); }
+    .chip.active { background: var(--ink); color: var(--panel); }
     .chip-stock { margin-left: auto; border-style: dashed; }
 
     /* Status */
-    .status {
-      text-align: center; color: var(--muted);
-      font-size: .95rem; line-height: 1.5;
-    }
+    .status { text-align: center; color: var(--muted); font-size: .95rem; line-height: 1.5; }
 
     /* Skeleton loading */
-    .sk-header { height: 22px; width: 180px; margin-bottom: 20px; }
+    .sk-header { height: 34px; width: 160px; margin-bottom: 20px; }
     .sk-card { aspect-ratio: 1 / 1.35; }
     .sk {
-      background: linear-gradient(100deg, var(--surface) 40%, var(--surface-2) 50%, var(--surface) 60%);
-      background-size: 200% 100%;
-      animation: skShimmer 1.4s ease-in-out infinite;
-      border: 2px solid rgba(58,54,49,0.5);
+      background: var(--tone), var(--panel);
+      border: var(--line) solid var(--wash);
+      animation: skPulse 1.2s ease-in-out infinite alternate;
     }
-    @keyframes skShimmer { 0% { background-position: 120% 0; } 100% { background-position: -80% 0; } }
+    @keyframes skPulse { from { opacity: .5; } to { opacity: 1; } }
 
-    /* Fandom groups */
-    .fandom-group { position: relative; z-index: 1; margin-bottom: 52px; }
-    .fandom-header {
-      position: relative;
-      display: flex; align-items: center; gap: 14px;
-      margin-bottom: 18px;
-    }
-    /* Where the thread catches on each fandom */
-    .fandom-header::before {
-      content: ''; position: absolute; width: 18px; height: 18px;
-      left: calc(var(--gutter) / -2 - 9px); top: 50%; margin-top: -9px;
-      background: var(--spark-svg) center / contain no-repeat;
-      filter: drop-shadow(0 0 4px rgba(242,196,176,0.8));
-    }
+    /* Fandom groups — each opens with a black caption box */
+    .fandom-group { margin-bottom: 48px; }
+    .fandom-header { display: flex; align-items: center; margin-bottom: 10px; }
     .fandom-header h2 {
-      font-family: var(--display);
-      font-size: 1.6rem; font-weight: 400; color: var(--ink);
-      margin: 0; letter-spacing: .04em;
+      font-family: var(--display); font-weight: 400;
+      font-size: 1.5rem; line-height: 1; letter-spacing: .05em;
+      background: var(--ink); color: var(--panel);
+      padding: 9px 16px 7px;
     }
-    .fandom-header .line { flex: 1; height: 2px; background: linear-gradient(to right, var(--panel), transparent); }
-    .fandom-full { margin: -8px 0 18px; line-height: 1.55; }
-    .fandom-en { font-size: .8rem; color: var(--muted); letter-spacing: .04em; }
-    .fandom-ru { font-size: .76rem; color: var(--faint); letter-spacing: .03em; }
+    .fandom-header .line { flex: 1; height: var(--line); background: var(--ink); }
+    .fandom-full { margin: 0 0 16px; line-height: 1.5; }
+    .fandom-en { font-size: .84rem; color: var(--ink-2); font-weight: 500; }
+    .fandom-ru { font-size: .78rem; color: var(--muted); }
 
-    /* Card grid — cards are comic panels: heavy ink border, tight gutters */
+    /* Card grid — cards are comic panels with narrow white gutters */
     .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
     @media (min-width: 640px) { .card-grid { grid-template-columns: repeat(3, 1fr); } }
     .card {
-      background: var(--surface); border: 2px solid var(--panel);
-      overflow: hidden; position: relative;
-      display: flex; flex-direction: column;
-      transition: transform .3s, border-color .3s, box-shadow .3s;
+      background: var(--panel); border: var(--line) solid var(--ink);
+      position: relative; display: flex; flex-direction: column;
+      transition: transform .2s;
     }
-    .card:hover { transform: translateY(-3px); border-color: var(--panel-hi); box-shadow: 0 14px 34px rgba(0,0,0,0.5); }
-    .card.sold-out { opacity: 0.55; }
-    .card.sold-out .card-img img, .card.sold-out .card-img .ph { filter: grayscale(1); }
+    .card:hover { transform: rotate(-.6deg) translateY(-2px); }
+    .card:nth-child(even):hover { transform: rotate(.6deg) translateY(-2px); }
     /* A real <button> so the card art is reachable by keyboard and screen readers */
     .card-img {
       width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
       overflow: hidden; position: relative; cursor: pointer;
       padding: 0; border: none; font: inherit; color: inherit;
-      border-bottom: 2px solid var(--panel);
+      border-bottom: var(--line) solid var(--ink);
       flex-shrink: 0;
-      /* Each item sits in its own little spotlight */
-      background: radial-gradient(circle at 50% 44%, #2e2b27 0%, #1d1b19 55%, #141312 100%);
+      /* Screentone behind every product */
+      background: var(--tone), var(--panel);
     }
-    .card-img:focus-visible { outline-offset: -4px; }
-    .card-img img { width: 100%; height: 100%; object-fit: contain; transition: transform .4s ease, filter .4s; }
+    .card-img:focus-visible { outline-offset: -6px; }
+    .card-img img { width: 100%; height: 100%; object-fit: contain; transition: transform .35s ease, filter .35s; }
     .card:hover .card-img img { transform: scale(1.05); }
-    .card-img .ph {
-      font-family: var(--display);
-      font-size: 2.2rem; color: var(--panel-hi);
-      transition: transform .4s ease;
-    }
-    .card:hover .card-img .ph { transform: scale(1.08); }
+    .card-img .ph { font-family: var(--display); font-size: 2.4rem; color: var(--faint); }
+    .card.sold-out .card-img img, .card.sold-out .card-img .ph { filter: grayscale(1) contrast(.9); opacity: .55; }
+    .card.sold-out .card-name, .card.sold-out .card-price { color: var(--faint); }
     .stock-badge {
       position: absolute; bottom: 8px; right: 8px;
-      padding: 3px 8px; background: rgba(15,14,13,0.82);
-      color: var(--muted); font-size: .72rem; font-weight: 600;
-      font-variant-numeric: tabular-nums; letter-spacing: .03em;
+      padding: 2px 8px; background: var(--panel); border: 2px solid var(--ink);
+      color: var(--ink); font-size: .72rem; font-weight: 700;
+      font-variant-numeric: tabular-nums;
     }
 
-    /* Sold-out rubber stamp */
+    /* Sold-out ink stamp */
     .stamp {
       position: absolute; left: 50%; top: 50%; z-index: 2;
-      transform: translate(-50%, -50%) rotate(-12deg);
-      border: 2px solid rgba(206,96,86,0.85); border-radius: 3px;
-      color: rgba(232,132,120,0.95); background: rgba(15,14,13,0.4);
-      padding: 5px 12px; font-size: .7rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: .16em; white-space: nowrap;
-      box-shadow: inset 0 0 6px rgba(206,96,86,0.25);
+      transform: translate(-50%, -50%) rotate(-10deg);
+      border: 3px solid var(--ink); background: var(--panel); color: var(--ink);
+      padding: 5px 12px; font-size: .74rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .14em; white-space: nowrap;
       pointer-events: none;
     }
-    .detail-img .stamp {
-      font-size: 1.05rem; padding: 9px 22px; border-width: 3px; letter-spacing: .22em;
-    }
+    .detail-img .stamp { font-size: 1.05rem; padding: 9px 22px; border-width: 4px; }
     .card-info { padding: 10px 12px 12px; flex: 1; display: flex; flex-direction: column; }
     .card-type {
-      font-size: .7rem; font-weight: 600; text-transform: uppercase;
-      letter-spacing: .1em; margin-bottom: 4px; color: var(--faint);
+      font-size: .7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; margin-bottom: 4px; color: var(--muted);
     }
     .card-name {
-      font-family: var(--display);
-      font-size: 1rem; font-weight: 400; color: var(--ink);
-      margin-bottom: 8px; line-height: 1.3;
+      font-family: var(--display); font-weight: 400;
+      font-size: 1.05rem; color: var(--ink);
+      margin-bottom: 8px; line-height: 1.25;
     }
     /* margin-top:auto keeps price + add button on one line across a row of
        cards whose names wrap to different heights */
     .card-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 4px; }
     /* Prices stay in Plex: Concrete's flagged "1" reads as a minus sign */
-    .card-price { font-size: 1rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+    .card-price { font-size: 1.05rem; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
     .add-btn {
       min-width: 40px; height: 40px; padding: 0 10px;
-      border: 1.5px solid var(--panel-hi); background: transparent;
-      color: var(--muted); font-size: 1rem; font-weight: 600; cursor: pointer;
+      border: 2px solid var(--ink); background: var(--panel);
+      color: var(--ink); font-size: 1.1rem; font-weight: 700; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      transition: all .2s; font-family: var(--sans);
+      transition: background .15s, color .15s; font-family: var(--sans);
     }
-    .add-btn:hover { border-color: var(--thread); color: var(--thread); }
-    .add-btn.in-cart { border-color: var(--thread); background: rgba(242,196,176,0.1); color: var(--thread); box-shadow: 0 0 10px rgba(242,196,176,0.2); }
+    .add-btn:hover { background: var(--wash); }
+    .add-btn.in-cart { background: var(--ink); color: var(--panel); }
 
     /* Detail overlay */
     .detail-overlay {
       position: fixed; inset: 0; z-index: 300;
-      background: rgba(8,7,6,0.88); backdrop-filter: blur(10px);
+      background: rgba(18,17,16,0.55);
       display: flex; align-items: center; justify-content: center;
-      opacity: 0; pointer-events: none; transition: opacity .3s;
+      opacity: 0; pointer-events: none; transition: opacity .25s;
       padding: 20px;
     }
     .detail-overlay.open { opacity: 1; pointer-events: auto; }
     .detail-card {
-      background: var(--surface); border: 2px solid var(--panel);
+      background: var(--panel); border: 4px solid var(--ink);
       max-width: 360px; width: 100%; max-height: 85vh; overflow-y: auto; overscroll-behavior: contain;
-      transform: translateY(30px) scale(0.96); transition: transform .35s cubic-bezier(.4,0,.2,1);
-      position: relative; box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+      transform: translateY(24px) rotate(-1deg); transition: transform .3s cubic-bezier(.3,.7,.3,1);
+      position: relative;
     }
-    .detail-overlay.open .detail-card { transform: translateY(0) scale(1); }
+    .detail-overlay.open .detail-card { transform: none; }
     @media (min-width: 640px) { .detail-card { max-width: 420px; } }
     .detail-close {
-      position: absolute; top: 12px; right: 12px; z-index: 3;
-      width: 38px; height: 38px; border: 1.5px solid var(--panel-hi);
-      background: rgba(15,14,13,0.85);
-      color: var(--muted); font-size: 1rem; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; transition: all .2s;
+      position: absolute; top: 10px; right: 10px; z-index: 3;
+      width: 40px; height: 40px; border: 2px solid var(--ink);
+      background: var(--panel); color: var(--ink); font-size: 1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
     }
-    .detail-close:hover { color: var(--ink); border-color: var(--muted); }
+    .detail-close:hover { background: var(--ink); color: var(--panel); }
     .detail-img {
       width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
-      overflow: hidden; position: relative; border-bottom: 2px solid var(--panel);
-      background: radial-gradient(circle at 50% 44%, #312e29 0%, #1d1b19 58%, #131211 100%);
+      overflow: hidden; position: relative; border-bottom: var(--line) solid var(--ink);
+      background: var(--tone), var(--panel);
     }
     .detail-img img { width: 100%; height: 100%; object-fit: contain; }
-    .detail-img.sold img, .detail-img.sold .ph { filter: grayscale(1); opacity: .75; }
-    .detail-img .ph { font-family: var(--display); font-size: 4rem; color: var(--panel-hi); }
-    .detail-info { padding: 20px; }
+    .detail-img.sold img, .detail-img.sold .ph { filter: grayscale(1); opacity: .6; }
+    .detail-img .ph { font-family: var(--display); font-size: 4rem; color: var(--faint); }
+    .detail-info { padding: 18px 20px 20px; }
     .detail-type {
-      font-size: .7rem; font-weight: 600; text-transform: uppercase;
-      letter-spacing: .1em; margin-bottom: 4px; color: var(--faint);
+      font-size: .72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; margin-bottom: 2px; color: var(--muted);
     }
-    .detail-fandom { font-size: .76rem; color: var(--faint); letter-spacing: .04em; margin-bottom: 8px; }
+    .detail-fandom { font-size: .8rem; color: var(--muted); margin-bottom: 8px; }
     .detail-name {
-      font-family: var(--display);
-      font-size: 1.5rem; font-weight: 400; color: var(--ink);
-      line-height: 1.3; margin-bottom: 10px;
+      font-family: var(--display); font-weight: 400;
+      font-size: 1.6rem; color: var(--ink); line-height: 1.2; margin-bottom: 10px;
     }
-    .detail-desc { font-size: .9rem; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+    .detail-desc { font-size: .92rem; color: var(--ink-2); line-height: 1.6; margin-bottom: 16px; }
     .detail-bottom {
       display: flex; align-items: center; justify-content: space-between;
-      padding-top: 14px; border-top: 1px solid var(--panel);
+      padding-top: 14px; border-top: 2px solid var(--ink);
     }
-    .detail-price { font-size: 1.35rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+    .detail-price { font-size: 1.4rem; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
     .detail-add {
-      padding: 10px 20px; min-height: 42px; border: 1.5px solid var(--thread);
-      background: transparent; color: var(--thread);
-      font-family: var(--sans);
-      font-size: .78rem; font-weight: 600; text-transform: uppercase;
-      letter-spacing: .08em; cursor: pointer; transition: all .2s;
+      padding: 10px 20px; min-height: 44px; border: var(--line) solid var(--ink);
+      background: var(--ink); color: var(--panel);
+      font-family: var(--sans); font-size: .8rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; cursor: pointer; transition: background .15s, color .15s;
     }
-    .detail-add:hover, .detail-add.in-cart { background: rgba(242,196,176,0.1); box-shadow: var(--thread-glow); }
+    .detail-add:hover { background: var(--panel); color: var(--ink); }
+    .detail-add.in-cart { background: var(--panel); color: var(--ink); }
 
     .cart-badge.pulse { animation: badgePulse .5s ease; }
     @keyframes badgePulse { 0% { transform: scale(1) rotate(0); } 40% { transform: scale(1.3) rotate(-20deg); } 100% { transform: scale(1) rotate(0); } }
 
     /* Animations */
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .fade-in { opacity: 0; animation: fadeUp .5s ease both; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { opacity: 0; animation: fadeUp .45s ease both; }
 
-    /* Footer — the thread ends in its yarn ball */
-    .footer { position: relative; z-index: 1; margin-top: 72px; text-align: center; }
-    .footer .yarn {
-      display: block; width: 44px; height: 44px; margin: 0 auto 14px;
-      background: var(--yarn-svg) center / contain no-repeat;
-      filter: drop-shadow(0 0 8px rgba(242,196,176,0.55)) drop-shadow(0 0 22px rgba(242,196,176,0.2));
-    }
-    .footer span.sig {
-      font-family: var(--display);
-      font-size: .85rem; color: var(--faint); letter-spacing: .1em;
-    }
+    /* Footer */
+    .footer { margin-top: 64px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .footer .yarn { display: block; width: 40px; height: 40px; background: var(--yarn-svg) center / contain no-repeat; }
+    .footer .sig { font-family: var(--display); font-size: .9rem; color: var(--muted); letter-spacing: .1em; }
 
-    /* Cart bar — ticket stub */
+    /* Cart bar — an inverted strip, ticket-stub edge on top */
     .cart-bar {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-      background: rgba(26,25,23,0.94);
-      border-top: 2px solid var(--panel);
-      transform: translateY(100%); transition: transform .4s cubic-bezier(.4,0,.2,1);
-      backdrop-filter: blur(16px);
+      background: var(--ink); color: var(--panel);
+      transform: translateY(100%); transition: transform .35s cubic-bezier(.3,.7,.3,1);
     }
     .cart-bar::before {
-      content: ''; position: absolute; top: -2px; left: 0; right: 0; height: 8px;
-      background: radial-gradient(circle at 7px 0, var(--bg) 4px, transparent 4.5px);
+      content: ''; position: absolute; top: -1px; left: 0; right: 0; height: 8px;
+      background: radial-gradient(circle at 7px 0, var(--paper) 4px, transparent 4.5px);
       background-size: 16px 8px; background-repeat: repeat-x;
       pointer-events: none;
     }
@@ -405,124 +334,107 @@
       padding-bottom: calc(12px + env(safe-area-inset-bottom));
       background: none; border: none; font: inherit; color: inherit; text-align: left;
     }
-    .cart-bar-inner:focus-visible { outline-offset: -3px; }
+    .cart-bar-inner:focus-visible { outline-color: var(--panel); outline-offset: -5px; }
     .cart-bar-left { display: flex; align-items: center; gap: 12px; }
-    /* The cart is the yarn ball; the count sits on it */
     .cart-badge {
       display: inline-flex; align-items: center; justify-content: center;
-      width: 34px; height: 34px; border-radius: 50%;
-      background: var(--yarn-svg) center / contain no-repeat;
-      filter: drop-shadow(0 0 6px rgba(242,196,176,0.5));
-      color: #2a1c16; font-size: .85rem; font-weight: 700;
-      font-variant-numeric: tabular-nums;
-      text-shadow: 0 0 3px #f2c4b0, 0 0 3px #f2c4b0;
+      min-width: 32px; height: 32px; padding: 0 8px; border-radius: 999px;
+      background: var(--panel); color: var(--ink);
+      font-size: .92rem; font-weight: 800; font-variant-numeric: tabular-nums;
     }
-    .cart-bar-label {
-      font-family: var(--display);
-      font-size: 1rem; text-transform: uppercase;
-      letter-spacing: .1em; color: var(--ink);
-    }
-    .cart-bar-total { font-size: 1.1rem; font-weight: 600; color: var(--thread); font-variant-numeric: tabular-nums; }
+    .cart-bar-label { font-family: var(--display); font-size: 1.05rem; text-transform: uppercase; letter-spacing: .1em; }
+    .cart-bar-total { font-size: 1.15rem; font-weight: 700; font-variant-numeric: tabular-nums; }
 
     /* Cart panel */
     .cart-overlay {
-      position: fixed; inset: 0; background: rgba(8,7,6,0.75);
-      backdrop-filter: blur(6px); z-index: 200;
-      opacity: 0; pointer-events: none; transition: opacity .3s;
+      position: fixed; inset: 0; background: rgba(18,17,16,0.55); z-index: 200;
+      opacity: 0; pointer-events: none; transition: opacity .25s;
     }
     .cart-overlay.open { opacity: 1; pointer-events: auto; }
     .cart-panel {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 201;
-      background: var(--surface); border-top: 2px solid var(--panel);
+      background: var(--panel); border-top: 4px solid var(--ink);
       max-height: 80vh; overflow-y: auto; overscroll-behavior: contain;
-      transform: translateY(100%); transition: transform .4s cubic-bezier(.4,0,.2,1);
+      transform: translateY(100%); transition: transform .35s cubic-bezier(.3,.7,.3,1);
     }
     .cart-panel.open { transform: translateY(0); }
     .cart-panel-inner {
       max-width: 860px; margin: 0 auto;
-      padding: 24px var(--gutter) calc(32px + env(safe-area-inset-bottom));
+      padding: 22px var(--gutter) calc(30px + env(safe-area-inset-bottom));
     }
-    .cart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .cart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
     .cart-title {
-      font-family: var(--display);
-      font-size: 1.4rem; text-transform: uppercase; letter-spacing: .08em;
+      font-family: var(--display); font-size: 1.35rem; text-transform: uppercase; letter-spacing: .08em;
+      background: var(--ink); color: var(--panel); padding: 8px 14px 6px;
     }
     .cart-close {
-      width: 40px; height: 40px; border: 1.5px solid var(--panel-hi);
-      background: transparent; color: var(--muted);
-      font-size: 1.1rem; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; transition: all .2s;
+      width: 40px; height: 40px; border: 2px solid var(--ink);
+      background: var(--panel); color: var(--ink); font-size: 1.1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
     }
-    .cart-close:hover { color: var(--ink); border-color: var(--muted); }
+    .cart-close:hover { background: var(--ink); color: var(--panel); }
     .cart-item {
       display: flex; align-items: center; gap: 14px;
-      padding: 12px 0; border-bottom: 1px solid var(--panel);
+      padding: 12px 0; border-bottom: 2px dashed var(--wash);
     }
     .cart-item:last-child { border-bottom: none; }
     .cart-item .info { flex: 1; min-width: 0; }
-    .cart-item .name { font-family: var(--display); font-size: 1rem; color: var(--ink); }
-    .cart-item .type-tag { font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--faint); }
+    .cart-item .name { font-family: var(--display); font-size: 1.02rem; color: var(--ink); }
+    .cart-item .type-tag { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
     /* Thumbnail so a long order stays scannable at a glance */
     .cart-item .thumb {
-      width: 48px; height: 48px; flex-shrink: 0; overflow: hidden;
-      border: 2px solid var(--panel);
-      background: radial-gradient(circle at 50% 44%, #2e2b27, #161513);
+      width: 52px; height: 52px; flex-shrink: 0; overflow: hidden;
+      border: 2px solid var(--ink); background: var(--tone), var(--panel);
       display: flex; align-items: center; justify-content: center;
     }
     .cart-item .thumb img { width: 100%; height: 100%; object-fit: contain; }
-    .cart-item .thumb .ph { font-family: var(--display); font-size: 1.1rem; color: var(--panel-hi); }
-    .cart-item .cart-price { font-size: .85rem; font-weight: 600; color: var(--muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
-    .qty-controls { display: flex; align-items: center; flex-shrink: 0; }
+    .cart-item .thumb .ph { font-family: var(--display); font-size: 1.1rem; color: var(--faint); }
+    .cart-item .cart-price { font-size: .88rem; font-weight: 700; color: var(--ink-2); margin-top: 2px; font-variant-numeric: tabular-nums; }
+    .qty-controls { display: flex; align-items: center; flex-shrink: 0; border: 2px solid var(--ink); }
     .qty-btn {
-      width: 40px; height: 40px; border: 1.5px solid var(--panel-hi);
-      background: transparent; color: var(--muted);
-      font-size: 1rem; font-weight: 600; cursor: pointer;
+      width: 40px; height: 40px; border: none;
+      background: var(--panel); color: var(--ink);
+      font-size: 1.05rem; font-weight: 700; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
     }
-    .qty-btn:hover { color: var(--thread); border-color: var(--thread); }
+    .qty-btn:hover { background: var(--ink); color: var(--panel); }
     .qty-val {
       width: 40px; height: 40px;
-      border-top: 1.5px solid var(--panel-hi);
-      border-bottom: 1.5px solid var(--panel-hi);
+      border-left: 2px solid var(--ink); border-right: 2px solid var(--ink);
       display: flex; align-items: center; justify-content: center;
-      font-size: .9rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums;
+      font-size: .92rem; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums;
     }
     .cart-total-row {
       display: flex; justify-content: space-between; align-items: baseline;
-      margin-top: 18px; padding-top: 16px;
-      border-top: 2px solid var(--panel);
+      margin-top: 16px; padding-top: 14px; border-top: var(--line) solid var(--ink);
     }
-    .cart-total-label { font-family: var(--display); font-size: 1.1rem; text-transform: uppercase; letter-spacing: .08em; }
-    .cart-total-val { font-size: 1.4rem; font-weight: 600; color: var(--thread); font-variant-numeric: tabular-nums; }
+    .cart-total-label { font-family: var(--display); font-size: 1.15rem; text-transform: uppercase; letter-spacing: .08em; }
+    .cart-total-val { font-size: 1.45rem; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
     .send-btn {
       display: flex; align-items: center; justify-content: center; gap: 10px;
-      width: 100%; padding: 15px; margin-top: 16px; border: none;
-      background: var(--thread); color: #22160f;
-      font-family: var(--sans);
-      font-size: .88rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .1em; text-decoration: none; cursor: pointer; transition: all .3s;
+      width: 100%; padding: 15px; margin-top: 16px; border: var(--line) solid var(--ink);
+      background: var(--ink); color: var(--panel);
+      font-family: var(--sans); font-size: .9rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; text-decoration: none; cursor: pointer; transition: background .15s, color .15s;
     }
-    .send-btn:hover { background: #f7d3c2; box-shadow: var(--thread-glow); transform: translateY(-1px); color: #22160f; }
-    .send-btn svg { width: 16px; height: 16px; fill: currentColor; }
-    .order-hint {
-      margin-top: 12px; text-align: center;
-      font-size: .78rem; color: var(--muted); line-height: 1.5;
-    }
-    .cart-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .send-btn:hover { background: var(--panel); color: var(--ink); }
+    .send-btn svg { width: 17px; height: 17px; fill: currentColor; }
+    .order-hint { margin-top: 12px; text-align: center; font-size: .8rem; color: var(--muted); line-height: 1.5; }
+    .cart-actions { display: flex; gap: 8px; margin-top: 8px; }
     .vk-btn, .copy-btn, .clear-btn {
-      flex: 1; padding: 12px 10px; border: 1.5px solid var(--panel-hi);
-      background: transparent; color: var(--muted);
-      font-size: .72rem; font-weight: 600; text-transform: uppercase;
-      letter-spacing: .08em; cursor: pointer; transition: all .2s;
+      flex: 1; padding: 12px 10px; border: 2px solid var(--ink);
+      background: var(--panel); color: var(--ink);
+      font-size: .72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; cursor: pointer; transition: background .15s, color .15s;
       font-family: var(--sans); text-decoration: none;
       display: flex; align-items: center; justify-content: center; gap: 6px;
     }
-    .vk-btn:hover, .copy-btn:hover { border-color: var(--thread); color: var(--thread); }
-    .vk-btn svg { width: 14px; height: 14px; fill: currentColor; }
-    .copy-btn.copied { border-color: var(--thread); color: var(--thread); background: rgba(242,196,176,0.08); }
-    .clear-btn { color: var(--faint); }
-    .clear-btn:hover { border-color: rgba(206,96,86,0.6); color: #e08478; }
-    .cart-empty { text-align: center; padding: 24px 0; color: var(--faint); }
+    .vk-btn:hover, .copy-btn:hover { background: var(--wash); }
+    .vk-btn svg { width: 15px; height: 15px; fill: currentColor; }
+    .copy-btn.copied { background: var(--ink); color: var(--panel); }
+    .clear-btn { border-style: dashed; color: var(--muted); }
+    .clear-btn:hover { background: var(--wash); color: var(--ink); }
+    .cart-empty { text-align: center; padding: 24px 0; color: var(--muted); }
     .hidden { display: none !important; }
     /* display:none would stop screen readers announcing the live region */
     .sr-only {
@@ -534,24 +446,29 @@
     .empty-state { text-align: center; padding: 32px 0; }
     .reset-btn {
       margin-top: 14px; padding: 10px 20px;
-      border: 1.5px solid var(--panel-hi); background: transparent;
-      color: var(--muted); font-family: var(--sans); font-size: .72rem; font-weight: 600;
-      text-transform: uppercase; letter-spacing: .1em; cursor: pointer; transition: all .2s;
+      border: 2px solid var(--ink); background: var(--panel);
+      color: var(--ink); font-family: var(--sans); font-size: .74rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .1em; cursor: pointer;
     }
-    .reset-btn:hover { border-color: var(--thread); color: var(--thread); }
+    .reset-btn:hover { background: var(--ink); color: var(--panel); }
 
-    /* Toast — the order flow depends on a clipboard copy the user can't otherwise see */
+    /* Toast as a speech bubble — the order flow depends on a clipboard copy
+       the user can't otherwise see */
     .toast {
-      position: fixed; left: 50%; bottom: 96px; z-index: 400;
+      position: fixed; left: 50%; bottom: 100px; z-index: 400;
       transform: translate(-50%, 12px); opacity: 0;
-      padding: 11px 20px; max-width: min(90vw, 420px);
-      background: rgba(26,25,23,0.97); border: 1.5px solid var(--thread-dim);
-      color: var(--ink); font-size: .8rem; line-height: 1.45; text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      pointer-events: none; transition: opacity .25s, transform .25s;
+      padding: 12px 22px; max-width: min(88vw, 420px); border-radius: 26px;
+      background: var(--panel); border: var(--line) solid var(--ink);
+      color: var(--ink); font-size: .84rem; font-weight: 500; line-height: 1.45; text-align: center;
+      pointer-events: none; transition: opacity .2s, transform .2s;
+    }
+    .toast::after {
+      content: ''; position: absolute; bottom: -14px; left: 32px;
+      width: 18px; height: 14px; background: var(--ink);
+      clip-path: polygon(0 0, 100% 0, 10% 100%);
     }
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
-    .toast.warn { border-color: rgba(206,96,86,0.6); }
+    .toast.warn { font-weight: 700; }
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -559,26 +476,26 @@
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
-      .fade-in, .controls, .header h1, .tagline, .tg-link, .header-art, .thread { opacity: 1 !important; transform: none !important; animation: none !important; }
-      .card:hover { transform: none; }
-      .card:hover .card-img img, .card:hover .card-img .ph { transform: none; }
+      .fade-in, .hero { opacity: 1 !important; transform: none !important; animation: none !important; }
+      .card:hover, .card:nth-child(even):hover { transform: none; }
+      .card:hover .card-img img { transform: none; }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
     <header class="header">
+      <div class="hero">
       <div class="header-art" aria-hidden="true"></div>
       <h1>Hehearse</h1>
-      <p class="tagline">мерч по любимым фандомам</p>
       <a class="tg-link" href="https://t.me/hehearse_exe" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0h-.056zm4.962 7.224c.1-.002.321.023.465.14a.5.5 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
         Telegram
       </a>
+      </div>
     </header>
 
     <div class="col">
-    <div class="thread" aria-hidden="true"></div>
 
     <nav class="controls" aria-label="Фильтры каталога">
       <div id="fandoms" class="fandoms hidden" aria-label="Фандомы"></div>
@@ -735,8 +652,8 @@
     let stockOnly = false
     let firstRender = true
 
-    /* Muted tints that sit inside the artwork's warm-grey palette */
-    const fandomColors = ['#cfa996', '#9fb5ae', '#c79ca6', '#aba4c4', '#b5ba92', '#c2ad8c']
+    /* The page is black and white: every fandom shares one ink grey */
+    const fandomColors = ['#56524c']
     let fandomColor = new Map()
 
     function buildFandomColors() {
