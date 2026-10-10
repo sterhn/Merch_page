@@ -31,6 +31,7 @@ No build step: it's one `index.html`.
 
 - Every catalog item, grouped by fandom, with photo, sale price, description, and stock amount
 - Fandom buttons as the main navigation (each shows how many items it has), plus filter chips by type and an "in stock only" toggle
+- Each fandom has its own hand-drawn icon on its button and section header, and it stands in for items that don't have a picture yet
 - Sold-out items are dimmed, labeled, and sorted to the end of each group
 - A tap on any card opens a detail view with the real product photo (when one is set in Merch Planner) and description; a cart composes a ready-to-send Telegram order message
 - Works with a keyboard and a screen reader: cards and the cart bar are real buttons, the overlays are proper modal dialogs, and text meets WCAG AA contrast
@@ -38,3 +39,9 @@ No build step: it's one `index.html`.
 Stock numbers are live from Supabase — the same `stock_qty` that Merch Planner updates automatically when you mark orders as sent.
 
 Don't want prices shown? Remove the `sale_price` line from the view SQL and the price row in `index.html`.
+
+## Icons
+
+The hand-drawn originals are in [`assets/icons/`](assets/icons): `cat.png` (GSGW), `flower.png` (MSCH), `swirl.png` (OC), `sparkle.png` (ORV, and the site's ornament) and `heartbeat.png`, the line under the title. The page doesn't load the PNGs. It uses vector traces of them (made with potrace), kept in the `<svg class="sprite">` block at the top of `<body>` in `index.html`, so they stay sharp on phone screens and can take each fandom's color. The browser-tab icon is `assets/icons/favicon.svg`.
+
+Which icon a fandom gets is the `icon:` field of its entry in `FANDOM_FULL` in `index.html`. A fandom without one gets the sparkle. To add a new drawing, trace it, add it to the sprite as `<symbol id="i-name">`, and set `icon: 'name'` on the fandom.
