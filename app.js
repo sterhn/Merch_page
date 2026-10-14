@@ -112,10 +112,14 @@ function buildFandoms(rows) {
       sort_order: r.sort_order ?? null,
     })
   }
-  /* Table order first (sort_order), then the rest alphabetically, and
-     items without a fandom at the very end */
+  /* Most items first, so the biggest collections lead both the buttons and
+     the page; sort_order only breaks ties, then the name. Items without a
+     fandom always come last. */
+  const counts = new Map()
+  for (const it of items) counts.set(fandomOf(it), (counts.get(fandomOf(it)) || 0) + 1)
   fandomList = [...fandomMeta.keys()].sort((a, b) => {
     if (a === OTHER || b === OTHER) return (a === OTHER) - (b === OTHER)
+    if (counts.get(a) !== counts.get(b)) return counts.get(b) - counts.get(a)
     const sa = fandomMeta.get(a).sort_order, sb = fandomMeta.get(b).sort_order
     if (sa != null && sb != null && sa !== sb) return sa - sb
     if ((sa != null) !== (sb != null)) return sa != null ? -1 : 1
@@ -506,20 +510,18 @@ function setFandomFilter(idx) {
 }
 
 function renderFandomChips() {
-  /* Title size scales with how many items the fandom has (largest = 1.35rem,
-     smallest = 1rem) — the buttons themselves stay equal for easy tapping. */
+  /* All buttons are the same size; the count and the order (most items
+     first, see buildFandoms) show which fandom is biggest. */
   const counts = new Map()
   for (const it of items) {
     const key = fandomOf(it)
     counts.set(key, (counts.get(key) || 0) + 1)
   }
-  const maxCount = Math.max(1, ...counts.values())
   let html = ''
   fandomList.forEach((f, i) => {
     const n = counts.get(f) || 0
-    const fs = (1 + 0.35 * (n / maxCount)).toFixed(3)
     const on = fandomFilter === f
-    html += `<button type="button" class="fandom-btn${on ? ' active' : ''}" style="--fc:${fandomColor(f)};--fs:${fs}rem" data-act="fandom" data-idx="${i}" aria-pressed="${on}">
+    html += `<button type="button" class="fandom-btn${on ? ' active' : ''}" style="--fc:${fandomColor(f)}" data-act="fandom" data-idx="${i}" aria-pressed="${on}">
       ${icon(fandomIcon(f), 'orn')}${esc(f)}<span class="cnt">${n}<span class="sr-only"> ${plural(n, 'товар', 'товара', 'товаров')}</span></span>
     </button>`
   })
