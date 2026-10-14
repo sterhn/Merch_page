@@ -2,30 +2,68 @@
 
 A public, read-only page you can send to clients: every item from your [Merch Planner](https://github.com/sterhn/merch_planner) catalog with photo, price, and how many are in stock. No login needed to view it.
 
-It reads from the same Supabase project as Merch Planner, but **only** through a dedicated public view that exposes name, type, fandom, photo, sale price, and stock. Your cost prices, profit, orders, customers, and expenses are not accessible from this page.
+It reads from the same Supabase project as Merch Planner, but **only** through a dedicated public view that exposes name, type, fandom, photo, sale price, and stock, plus a small `fandoms` table of display info. Your cost prices, profit, orders, customers, and expenses are not accessible from this page.
 
-No build step: it's one `index.html`.
+No build step and no runtime dependencies: plain HTML, CSS and JS.
 
-## Setup (~5 minutes)
+## Files
 
-### 1. Create the public view in Supabase
+| File | What's in it |
+| --- | --- |
+| `index.html` | Page markup |
+| `styles.css` | All styles. Colours are tokens at the top (`--accent-rgb`, `--grey-rgb`, …) |
+| `app.js` | Loading, filters, detail view, cart and order flow |
+| `config.js` | **Settings you might change**: Supabase project, Telegram/VK links, colour palette, fallback fandom info |
+| `assets/icons/sprite.svg` | The hand-drawn icons plus the Telegram/VK marks |
+| `supabase/*.sql` | One-time setup scripts for the database |
+| `tests/` | Smoke tests (they run automatically before every deploy) |
 
-1. Open your Supabase project → **SQL Editor**.
-2. Copy all of [`supabase/public_stock_view.sql`](supabase/public_stock_view.sql), paste, press **Run**.
+## Everyday tasks
 
-(The dashboard may warn about a "security definer view" — that's expected; the file explains why. To take the data offline later, run `drop view public_stock;`.)
+**Add a fandom, or change its full title, icon, colour or position.** In Supabase, go to **Table Editor → fandoms** and edit the row. Use the name exactly as Merch Planner writes it (e.g. `[ORV]`). The page picks the change up on the next reload, with no redeploy. A fandom without a row still shows up: it gets the sparkle icon and an automatic colour that never changes, and it goes after the fandoms that have a `sort_order`.
 
-**Already ran an older version of this file?** Run it again as-is: it starts with `drop view if exists public_stock;`, so re-running recreates the view with the current column list (the page now also reads `description` and `product_photo_url` — the large product photo shown in the item detail view).
+**Change the Telegram or VK link.** Edit `links` in `config.js`.
 
-### 2. Configure and deploy this repo
+**Change the site's accent colour.** Edit `--accent-rgb` (and `--accent-hi` / `--accent-deep`) at the top of `styles.css`.
 
-1. In Supabase: **Settings → API**. Copy the **Project URL** and the **anon public** key (the same values you used for Merch Planner).
-2. In this repo: **Settings → Secrets and variables → Actions → Variables tab → New repository variable**:
-   - `VITE_SUPABASE_URL` = the Project URL
-   - `VITE_SUPABASE_ANON_KEY` = the anon key
-3. Still in repo settings: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-4. Go to the **Actions** tab → "Deploy to GitHub Pages" → **Run workflow** (or push any commit to `main`).
-5. When it's green, the page is live at **https://sterhn.github.io/Merch_page/** — that's the link you send to clients.
+**Add a new drawing.** Trace it to a path (potrace works well) and add it to `assets/icons/sprite.svg` as `<symbol id="i-name" viewBox="0 0 24 24">…</symbol>` with `fill="currentColor"`. Then set `icon` to `name` in the fandom's row. The PNG originals live in [`assets/icons/`](assets/icons): `cat.png` (GSGW), `flower.png` (MSCH), `swirl.png` (OC), `sparkle.png` (ORV, and the site's ornament) and `heartbeat.png`, the line under the title. The browser-tab icon is `assets/icons/favicon.svg`.
+
+**Hide prices.** Remove `sale_price` from the view in `supabase/public_stock_view.sql` and re-run it. Items without a price show "цена по запросу", and the cart total says it's partial.
+
+## Preview locally
+
+```sh
+python3 -m http.server 8080      # then open http://localhost:8080
+```
+
+It shows your real, live catalog. Opening `index.html` straight from disk won't work, because browsers block the icon sprite on `file://`.
+
+## Tests
+
+```sh
+npm install
+npx playwright install chromium   # first time only
+npm test
+```
+
+The tests use made-up catalog data, not your real stock. They check that the page renders, the filters work, the detail view opens and closes, and the cart builds the right order text. GitHub runs them on every pull request and before every deploy. If they fail, the deploy is skipped and the live page stays as it was.
+
+## Setup (already done for this repo)
+
+### 1. Database
+
+In your Supabase project, open **SQL Editor** and run each file once:
+
+1. [`supabase/public_stock_view.sql`](supabase/public_stock_view.sql) creates the public, read-only view of the catalog. (The dashboard may warn about a "security definer view". That's expected; the file explains why. To take the data offline, run `drop view public_stock;`.) Re-running it is safe and picks up new columns.
+2. [`supabase/fandoms.sql`](supabase/fandoms.sql) creates the `fandoms` table, already filled with today's titles, icons and colours. Re-running it is safe: it never overwrites rows you've edited. Until it has been run, the page uses the copy in `config.js`.
+
+### 2. Config and deploy
+
+1. In Supabase, go to **Settings → API** and put the **Project URL** and the **anon public** key in `config.js`. The anon key is meant to be public: every visitor's browser gets it anyway, and row-level security hides everything except the view and the fandoms table. **Never** use the `service_role` key here.
+2. In the repo, go to **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+3. Push to `main`, or go to **Actions → "Deploy to GitHub Pages" → Run workflow**. The page goes live at **https://sterhn.github.io/Merch_page/**.
+
+The `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` repository variables used by older versions are no longer read. You can delete them.
 
 ## What clients see
 
@@ -36,12 +74,4 @@ No build step: it's one `index.html`.
 - A tap on any card opens a detail view with the real product photo (when one is set in Merch Planner) and description; a cart composes a ready-to-send Telegram order message
 - Works with a keyboard and a screen reader: cards and the cart bar are real buttons, the overlays are proper modal dialogs, and text meets WCAG AA contrast
 
-Stock numbers are live from Supabase — the same `stock_qty` that Merch Planner updates automatically when you mark orders as sent.
-
-Don't want prices shown? Remove the `sale_price` line from the view SQL and the price row in `index.html`.
-
-## Icons
-
-The hand-drawn originals are in [`assets/icons/`](assets/icons): `cat.png` (GSGW), `flower.png` (MSCH), `swirl.png` (OC), `sparkle.png` (ORV, and the site's ornament) and `heartbeat.png`, the line under the title. The page doesn't load the PNGs. It uses vector traces of them (made with potrace), kept in the `<svg class="sprite">` block at the top of `<body>` in `index.html`, so they stay sharp on phone screens and can take each fandom's color. The browser-tab icon is `assets/icons/favicon.svg`.
-
-Which icon a fandom gets is the `icon:` field of its entry in `FANDOM_FULL` in `index.html`. A fandom without one gets the sparkle. To add a new drawing, trace it, add it to the sprite as `<symbol id="i-name">`, and set `icon: 'name'` on the fandom.
+Stock numbers are live from Supabase: the same `stock_qty` that Merch Planner updates automatically when you mark orders as sent.
