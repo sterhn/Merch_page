@@ -1,0 +1,12 @@
+{
+  "name": "merch-page",
+  "private": true,
+  "description": "Dev tooling only: the site itself has no build step and no dependencies.",
+  "scripts": {
+    "serve": "python3 -m http.server 8080",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1"
+  }
+}
