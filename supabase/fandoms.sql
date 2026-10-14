@@ -10,8 +10,8 @@
 --               swirl (empty = sparkle)
 --   color       hex colour for the fandom's button, header and cards
 --               (empty = an automatic one that never changes)
---   sort_order  smaller comes first; fandoms without a row go after these,
---               alphabetically
+--   sort_order  fandoms are ordered by item count, most first; this only
+--               decides between fandoms with the same count (smaller first)
 
 create table if not exists fandoms (
   name        text primary key,

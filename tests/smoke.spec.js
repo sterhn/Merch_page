@@ -13,7 +13,7 @@ const ITEMS = [
 ]
 
 const FANDOMS = [
-  { name: '[ORV]', title_en: "omniscient reader's viewpoint", title_ru: 'всеведущий читатель', icon: 'sparkle', color: '#7b6ba4', sort_order: 10 },
+  { name: '[ORV]', title_en: "omniscient reader's viewpoint", title_ru: 'всеведущий читатель', icon: 'sparkle', color: '#7b6ba4', sort_order: 30 },
   { name: '[MSCH]', title_en: 'my s-class hunters', title_ru: 'воспитанные мной s-классы', icon: 'flower', color: '#a3854e', sort_order: 20 },
 ]
 
@@ -33,12 +33,17 @@ test.beforeEach(async ({ page }) => {
   page.on('pageerror', (e) => { throw e })
 })
 
-test('renders fandoms in table order with their titles, icons and counts', async ({ page }) => {
+test('renders fandoms biggest-first, with their titles, icons and counts', async ({ page }) => {
   await mockSupabase(page)
   await page.goto('/')
 
+  // Most items first even though [ORV] has the larger sort_order; ties
+  // ([MSCH] vs [NEW]) fall back to sort_order; no fandom is always last
   const buttons = page.locator('.fandom-btn')
   await expect(buttons).toHaveText([/\[ORV\]\s*3/, /\[MSCH\]\s*1/, /\[NEW\]\s*1/, /Другое\s*1/])
+  // Every button is the same size, whatever its count
+  const sizes = await buttons.evaluateAll((els) => els.map((e) => getComputedStyle(e).fontSize))
+  expect(new Set(sizes).size).toBe(1)
   await expect(page.locator('.fandom-group h2')).toHaveText(['[ORV]', '[MSCH]', '[NEW]', 'Другое'])
   await expect(page.locator('.fandom-en').first()).toHaveText("omniscient reader's viewpoint")
   await expect(buttons.nth(1).locator('use')).toHaveAttribute('href', 'assets/icons/sprite.svg#i-flower')
@@ -64,8 +69,8 @@ test('the icon sprite has every icon the page and config use', async ({ request 
 test('falls back to config.js fandom info before fandoms.sql is run', async ({ page }) => {
   await mockSupabase(page, { fandoms: null })
   await page.goto('/')
-  await expect(page.locator('.fandom-group h2').first()).toHaveText('[MSCH]')
-  await expect(page.locator('.fandom-ru').first()).toHaveText('воспитанные мной s-классы')
+  await expect(page.locator('.fandom-group h2').first()).toHaveText('[ORV]')
+  await expect(page.locator('.fandom-ru').first()).toHaveText('всеведущий читатель')
 })
 
 test('filters by fandom, type and stock, and resets', async ({ page }) => {

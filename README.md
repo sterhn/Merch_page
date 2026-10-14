@@ -20,7 +20,9 @@ No build step and no runtime dependencies: plain HTML, CSS and JS.
 
 ## Everyday tasks
 
-**Add a fandom, or change its full title, icon, colour or position.** In Supabase, go to **Table Editor → fandoms** and edit the row. Use the name exactly as Merch Planner writes it (e.g. `[ORV]`). The page picks the change up on the next reload, with no redeploy. A fandom without a row still shows up: it gets the sparkle icon and an automatic colour that never changes, and it goes after the fandoms that have a `sort_order`.
+**Add a fandom, or change its full title, icon or colour.** In Supabase, go to **Table Editor → fandoms** and edit the row. Use the name exactly as Merch Planner writes it (e.g. `[ORV]`). The page picks the change up on the next reload, with no redeploy. A fandom without a row still shows up, with the sparkle icon and an automatic colour that never changes.
+
+**Fandom order** is automatic: the fandom with the most items comes first, on the buttons and down the page. `sort_order` only decides between fandoms with the same number of items.
 
 **Change the Telegram or VK link.** Edit `links` in `config.js`.
 
@@ -68,7 +70,7 @@ The `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` repository variables used by 
 ## What clients see
 
 - Every catalog item, grouped by fandom, with photo, sale price, description, and stock amount
-- Fandom buttons as the main navigation (each shows how many items it has), plus filter chips by type and an "in stock only" toggle
+- Fandom buttons as the main navigation, biggest collection first (each shows how many items it has), plus filter chips by type and an "in stock only" toggle
 - Each fandom has its own hand-drawn icon on its button and section header, and it stands in for items that don't have a picture yet
 - Sold-out items are dimmed, labeled, and sorted to the end of each group
 - A tap on any card opens a detail view with the real product photo (when one is set in Merch Planner) and description; a cart composes a ready-to-send Telegram order message
