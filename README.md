@@ -28,7 +28,7 @@ No build step and no runtime dependencies: plain HTML, CSS and JS.
 
 **Change the site's accent colour.** Edit `--accent-rgb` (and `--accent-hi` / `--accent-deep`) at the top of `styles.css`.
 
-**Add a new drawing.** Trace it to a path (potrace works well) and add it to `assets/icons/sprite.svg` as `<symbol id="i-name" viewBox="0 0 24 24">…</symbol>` with `fill="currentColor"`. Then set `icon` to `name` in the fandom's row. The PNG originals live in [`assets/icons/`](assets/icons): `cat.png` (GSGW), `flower.png` (MSCH), `swirl.png` (OC), `sparkle.png` (ORV, and the site's ornament) and `heartbeat.png`, the line under the title. The browser-tab icon is `assets/icons/favicon.svg`.
+**Add a new drawing.** Trace it to a path (potrace works well) and add it to `assets/icons/sprite.svg` as `<symbol id="i-name" viewBox="0 0 24 24">…</symbol>` with `fill="currentColor"`. Then set `icon` to `name` in the fandom's row. It then also shows up wherever the fandom's icon does, including the little scatter of copies on cards without a photo. The big faint doodles behind the page are listed in `index.html` (`<div class="doodles">`); add or swap one there if you like. The PNG originals live in [`assets/icons/`](assets/icons): `cat.png` (GSGW), `flower.png` (MSCH), `swirl.png` (OC), `sparkle.png` (ORV, and the site's ornament) and `heartbeat.png`, the line under the title. The browser-tab icon is `assets/icons/favicon.svg`.
 
 **Hide prices.** Remove `sale_price` from the view in `supabase/public_stock_view.sql` and re-run it. Items without a price show "цена по запросу", and the cart total says it's partial.
 
@@ -70,10 +70,11 @@ The `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` repository variables used by 
 ## What clients see
 
 - Every catalog item, grouped by fandom, with photo, sale price, description, and stock amount
-- Fandom buttons as the main navigation, biggest collection first (each shows how many items it has), plus filter chips by type and an "in stock only" toggle
+- Fandom buttons as the main navigation, biggest collection first (each shows how many items it has), a search box (name, type, description or fandom title; case and ё/е don't matter), plus filter chips by type and an "in stock only" toggle
 - Each fandom has its own hand-drawn icon on its button and section header, and it stands in for items that don't have a picture yet
-- Sold-out items are dimmed, labeled, and sorted to the end of each group
-- A tap on any card opens a detail view with the real product photo (when one is set in Merch Planner) and description; a cart composes a ready-to-send Telegram order message
+- Sold-out items are dimmed, stamped, and folded away under each fandom ("Нет в наличии · N", one tap to open), so the page leads with what can be ordered. A search shows sold-out hits straight away
+- A tap on any card opens a detail view with the real product photo (when one is set in Merch Planner), description, and how many are left; a cart composes a ready-to-send Telegram order message
+- The look follows the hand-drawn icons: hand-cut uneven corners, a heartbeat blip starting each fandom's line, an inked rubber stamp on sold-out items, and the drawings scattered faintly behind the page
 - Works with a keyboard and a screen reader: cards and the cart bar are real buttons, the overlays are proper modal dialogs, and text meets WCAG AA contrast
 
 Stock numbers are live from Supabase: the same `stock_qty` that Merch Planner updates automatically when you mark orders as sent.

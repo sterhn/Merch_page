@@ -21,6 +21,26 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- Filters for CSS (filter: url(#…)); they have to live in the page itself -->
+  <svg class="sprite" aria-hidden="true">
+    <!-- Rubber-stamp ink: wobbles the edges and knocks speckles out of the fill -->
+    <filter id="ink" x="-10%" y="-20%" width="120%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.2" result="rough"/>
+      <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.2 1.75" result="speckle"/>
+      <feComposite in="rough" in2="speckle" operator="in"/>
+    </filter>
+  </svg>
+
+  <div class="doodles" aria-hidden="true">
+    <svg class="ico" style="--s:120px;--r:-14deg;left:4%;top:12%"><use href="assets/icons/sprite.svg#i-cat"/></svg>
+    <svg class="ico" style="--s:70px;--r:18deg;right:6%;top:8%"><use href="assets/icons/sprite.svg#i-sparkle"/></svg>
+    <svg class="ico" style="--s:100px;--r:10deg;right:3%;top:42%"><use href="assets/icons/sprite.svg#i-flower"/></svg>
+    <svg class="ico" style="--s:56px;--r:-6deg;left:8%;top:52%"><use href="assets/icons/sprite.svg#i-sparkle"/></svg>
+    <svg class="ico" style="--s:110px;--r:-20deg;left:2%;top:78%"><use href="assets/icons/sprite.svg#i-swirl"/></svg>
+    <svg class="ico" style="--s:84px;--r:12deg;right:7%;top:80%"><use href="assets/icons/sprite.svg#i-cat"/></svg>
+  </div>
+
   <div class="wrap">
     <header class="header">
       <h1>Hehearse</h1>
@@ -36,6 +56,11 @@
 
     <nav class="controls" aria-label="Фильтры каталога">
       <div id="fandoms" class="fandoms hidden" aria-label="Фандомы"></div>
+      <div id="search" class="search hidden" role="search">
+        <svg class="ico orn" aria-hidden="true"><use href="assets/icons/sprite.svg#i-sparkle"/></svg>
+        <input id="search-input" type="search" placeholder="Поиск: имя, персонаж, тип…" aria-label="Поиск по каталогу" autocomplete="off" enterkeyhint="search" />
+        <button type="button" id="search-clear" class="search-clear hidden" data-act="clear-search" aria-label="Очистить поиск">✕</button>
+      </div>
       <div id="chips" class="chips hidden" aria-label="Тип товара"></div>
     </nav>
 

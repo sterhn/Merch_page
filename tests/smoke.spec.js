@@ -87,12 +87,54 @@ test('filters by fandom, type and stock, and resets', async ({ page }) => {
   await expect(page.locator('.card')).toHaveCount(ITEMS.length)
 })
 
+test('search matches name, type and fandom title, ignoring case and ё', async ({ page }) => {
+  await mockSupabase(page)
+  await page.goto('/')
+  const search = page.locator('#search-input')
+  await search.fill('ЗНАЧОК КИМА')
+  await expect(page.locator('.card')).toHaveCount(1)
+  await expect(page.locator('.card-name')).toHaveText('Значок Кима')
+  await search.fill('брелок без цёны')
+  await expect(page.locator('.card-name')).toHaveText('Брелок без цены')
+  await search.fill('всеведущий брелок')
+  await expect(page.locator('.card')).toHaveCount(2)
+  // A search shows sold-out hits right away instead of folding them
+  await expect(page.locator('.sold-fold')).toHaveCount(0)
+  await expect(page.locator('.card.sold-out')).toBeVisible()
+
+  await search.fill('нет такого')
+  await expect(page.locator('.empty-state')).toContainText('«нет такого»')
+  await page.locator('[data-act="reset"]').click()
+  await expect(search).toHaveValue('')
+  await expect(page.locator('.card')).toHaveCount(ITEMS.length)
+
+  await search.fill('кима')
+  await search.press('Escape')
+  await expect(search).toHaveValue('')
+})
+
+test('sold-out items fold away under their fandom and stay open once opened', async ({ page }) => {
+  await mockSupabase(page)
+  await page.goto('/')
+  const fold = page.locator('.fandom-group').first().locator('.sold-fold')
+  await expect(fold.locator('summary')).toContainText('Нет в наличии · 1')
+  await expect(fold.locator('.card')).toBeHidden()
+  await fold.locator('summary').click()
+  await expect(fold.locator('.card.sold-out')).toBeVisible()
+  // Re-rendering (here: the stock filter on and off) keeps it open
+  await page.locator('.chip', { hasText: 'В наличии' }).click()
+  await expect(page.locator('.sold-fold')).toHaveCount(0)
+  await page.locator('.chip', { hasText: 'В наличии' }).click()
+  await expect(page.locator('.fandom-group').first().locator('.sold-fold')).toHaveAttribute('open', '')
+})
+
 test('detail view opens from a card and Escape closes it without leaving the site', async ({ page }) => {
   await mockSupabase(page)
   await page.goto('/')
   await page.locator('.card-img[data-id="a1"]').click()
   await expect(page.locator('#detail-overlay')).toHaveClass(/open/)
   await expect(page.locator('#detail-name')).toHaveText('Значок Кима')
+  await expect(page.locator('.detail-stock')).toHaveText('В наличии: 3 шт.')
   await expect(page).toHaveURL(/#item=a1$/)
 
   await page.keyboard.press('Escape')
@@ -105,6 +147,7 @@ test('a #item= link opens that item', async ({ page }) => {
   await mockSupabase(page)
   await page.goto('/#item=b1')
   await expect(page.locator('#detail-name')).toHaveText('Карточка')
+  await expect(page.locator('.detail-fandom')).toContainText('my s-class hunters')
 })
 
 test('cart: stock cap, partial total and the copied order text', async ({ page, context }) => {

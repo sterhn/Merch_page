@@ -72,9 +72,49 @@ let typeFilter = null
 let fandomList = []
 let fandomFilter = null
 let stockOnly = false
+let searchText = ''
+/* Fandoms whose sold-out fold the visitor opened; kept across re-renders */
+const openFolds = new Set()
 let firstRender = true
 
 const fandomOf = (item) => item.fandom || OTHER
+
+/* Search is forgiving: case, ё/е and extra spaces don't matter */
+const norm = (s) => String(s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim()
+function matchesQuery(item) {
+  if (!norm(searchText)) return true
+  const meta = metaOf(fandomOf(item))
+  const hay = norm([item.name, item.type, item.description, item.fandom, meta.title_en, meta.title_ru].join(' '))
+  return norm(searchText).split(' ').every((word) => hay.includes(word))
+}
+
+/* Cheap stable hash, so a card's doodle scatter doesn't reshuffle on every render */
+function hashOf(s) {
+  let h = 2166136261
+  for (const ch of String(s)) h = Math.imul(h ^ ch.codePointAt(0), 16777619) >>> 0
+  return h
+}
+
+/* A few small copies of the fandom's icon strewn around a card that has no
+   picture yet, each card differently — like stickers on a blank sheet.
+   The slots stay clear of the big icon in the middle. */
+const SCATTER_SLOTS = [[8, 12], [70, 8], [10, 66], [74, 60], [42, 80]]
+function doodleScatter(id, name, color) {
+  let h = hashOf(id)
+  const next = (n) => { h = Math.imul(h ^ (h >>> 15), 2246822519) >>> 0; return h % n }
+  let out = ''
+  for (const [x, y] of SCATTER_SLOTS) {
+    if (next(5) === 0) continue
+    const size = 12 + next(9)
+    out += `<svg class="ico" style="--x:${x + next(9) - 4}%;--y:${y + next(9) - 4}%;--s:${size}%;--r:${next(61) - 30}deg;color:${color}"><use href="${SPRITE}#i-${esc(name)}"/></svg>`
+  }
+  return `<span class="scatter" aria-hidden="true">${out}</span>`
+}
+
+/* The pulse blip that starts each fandom's rule, echoing the one under the title */
+const BLIP = '<svg class="blip" viewBox="0 0 44 22" aria-hidden="true"><polyline points="1,13 10,13 13,9 17,19 21,3 25,16 28,13 33,13 35,10.5 37,13 43,13"/></svg>'
+/* ...and the flatline on a fold of sold-out items */
+const FLAT = '<svg class="flat" viewBox="0 0 44 14" aria-hidden="true"><polyline points="1,7 12,7 15,4 18,10 21,7 43,7"/></svg>'
 const stockOf = (item) => item.stock_qty ?? 0
 
 /* Fandom info (titles, icon, colour, order) comes from the fandoms table,
@@ -267,7 +307,7 @@ function updateCartUI() {
 
   const ci = getCartItems()
   if (!ci.length) {
-    $('cart-items').innerHTML = '<div class="cart-empty">Корзина пуста</div>'
+    $('cart-items').innerHTML = `<div class="cart-empty">${icon('sparkle', '')}Корзина пуста</div>`
     $('cart-footer').classList.add('hidden')
     return
   }
@@ -397,8 +437,15 @@ function openDetail(id) {
 
   let info = ''
   if (item.type) info += `<div class="detail-type" style="color:${color}">${esc(item.type)}</div>`
-  if (item.fandom) info += `<div class="detail-fandom">${esc(item.fandom)}</div>`
+  if (item.fandom) {
+    const title = metaOf(fandom).title_en
+    info += `<div class="detail-fandom">${icon(fIcon, 'orn', `color:${color}`)}${esc(item.fandom)}${title ? ` · ${esc(title)}` : ''}</div>`
+  }
   info += `<h2 class="detail-name" id="detail-name">${esc(item.name)}</h2>`
+  if (!soldOut) {
+    const left = stockOf(item)
+    info += `<div class="detail-stock${left <= 2 ? ' low' : ''}">${left <= 2 ? 'Осталось' : 'В наличии'}: ${left} шт.</div>`
+  }
   if (item.description) info += `<div class="detail-desc">${esc(item.description)}</div>`
   info += `<div class="detail-bottom">`
   info += hasPrice(item)
@@ -565,11 +612,40 @@ function renderSkeleton() {
   </div>`
 }
 
+function cardHtml(item, i, { color, fIcon, delay }) {
+  const qty = stockOf(item)
+  const soldOut = qty <= 0
+  const inCart = cart[item.id] > 0
+  const img = item.image_url
+    ? `<img src="${esc(item.image_url)}" alt="${esc(item.name)}" loading="lazy" decoding="async" data-fallback="${fIcon}" data-fallback-color="${color}" data-id="${esc(item.id)}" />`
+    : doodleScatter(item.id, fIcon, color) + icon(fIcon, 'ph', `color:${color}`)
+  const addBtn = !soldOut
+    ? `<button type="button" class="add-btn${inCart ? ' in-cart' : ''}" data-act="add" data-id="${esc(item.id)}" aria-label="Добавить в корзину: ${esc(item.name)}">${inCart ? cart[item.id] : '+'}</button>`
+    : ''
+  const fade = delay != null
+  return `<div class="card${fade ? ' fade-in' : ''}${soldOut ? ' sold-out' : ''}" style="--fc:${color}${fade ? `;animation-delay:${delay}ms` : ''}">
+    <button type="button" class="card-img" data-act="detail" data-id="${esc(item.id)}" aria-label="Подробнее: ${esc(item.name)}" aria-haspopup="dialog" style="background:${item.image_url ? 'none' : `linear-gradient(135deg,${color}22,${color}08)`}">
+      ${img}
+      <span class="card-idx" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
+      ${soldOut ? '<span class="stamp">Нет в наличии</span>' : `<span class="stock-badge in-stock">${qty} шт.</span>`}
+    </button>
+    <div class="card-info">
+      ${item.type ? `<div class="card-type" style="color:${color}">${esc(item.type)}</div>` : ''}
+      <div class="card-name">${esc(item.name)}</div>
+      <div class="card-bottom">
+        ${hasPrice(item) ? `<span class="card-price">${esc(rub(item.sale_price))}</span>` : `<span class="card-price on-request">${ON_REQUEST}</span>`}
+        ${addBtn}
+      </div>
+    </div>
+  </div>`
+}
+
 function render() {
   let visible = items
   if (fandomFilter) visible = visible.filter((i) => fandomOf(i) === fandomFilter)
   if (typeFilter) visible = visible.filter((i) => i.type === typeFilter)
   if (stockOnly) visible = visible.filter((i) => stockOf(i) > 0)
+  if (norm(searchText)) visible = visible.filter(matchesQuery)
 
   // Single visible fandom → the whole page takes on its color
   const visibleFandoms = new Set(visible.map(fandomOf))
@@ -593,63 +669,44 @@ function render() {
     if (!list.length) continue
     const color = fandomColor(fandom)
     const groupDelay = animate ? groupIdx * 100 : 0
-    const fadeCls = animate ? ' fade-in' : ''
-    const sorted = [
-      ...list.filter((i) => stockOf(i) > 0),
-      ...list.filter((i) => stockOf(i) <= 0),
-    ]
+    const inStock = list.filter((i) => stockOf(i) > 0)
+    const soldOut = list.filter((i) => stockOf(i) <= 0)
     const meta = metaOf(fandom)
     const fIcon = fandomIcon(fandom)
-    html += `<div class="fandom-group${fadeCls}"${animate ? ` style="animation-delay:${groupDelay}ms"` : ''}>
-      <div class="fandom-header" style="border-bottom:1px solid ${color}33">
-        ${icon(fIcon, 'orn', `color:${color}`)}
+    const card = (item, i, fade) => cardHtml(item, i, { color, fIcon, delay: fade ? groupDelay + i * 60 : null })
+
+    html += `<section class="fandom-group${animate ? ' fade-in' : ''}" style="--fc:${color}${animate ? `;animation-delay:${groupDelay}ms` : ''}">
+      <div class="fandom-header" style="color:${color}">
+        ${icon(fIcon, 'orn')}
         <h2>${esc(fandom)}</h2>
-        <div class="line" style="background:linear-gradient(to right,${color}33,transparent)"></div>
+        ${BLIP}<div class="line"></div>
       </div>
       ${meta.title_en || meta.title_ru ? `<div class="fandom-full">
         ${meta.title_en ? `<div class="fandom-en">${esc(meta.title_en)}</div>` : ''}
         ${meta.title_ru ? `<div class="fandom-ru">${esc(meta.title_ru)}</div>` : ''}
-      </div>` : ''}
-      <div class="card-grid">`
+      </div>` : ''}`
 
-    for (let i = 0; i < sorted.length; i++) {
-      const item = sorted[i]
-      const qty = stockOf(item)
-      const soldOut = qty <= 0
-      const inCart = cart[item.id] > 0
-      const delay = animate ? i * 60 : 0
-      const img = item.image_url
-        ? `<img src="${esc(item.image_url)}" alt="${esc(item.name)}" loading="lazy" decoding="async" data-fallback="${fIcon}" data-fallback-color="${color}" />`
-        : icon(fIcon, 'ph', `color:${color}`)
-      const addBtn = !soldOut
-        ? `<button type="button" class="add-btn${inCart ? ' in-cart' : ''}" data-act="add" data-id="${esc(item.id)}" aria-label="Добавить в корзину: ${esc(item.name)}">${inCart ? cart[item.id] : '+'}</button>`
-        : ''
-
-      html += `<div class="card${fadeCls}${soldOut ? ' sold-out' : ''}" style="--fc:${color}${animate ? `;animation-delay:${groupDelay + delay}ms` : ''}">
-        <button type="button" class="card-img" data-act="detail" data-id="${esc(item.id)}" aria-label="Подробнее: ${esc(item.name)}" aria-haspopup="dialog" style="background:${item.image_url ? 'none' : `linear-gradient(135deg,${color}22,${color}08)`}">
-          ${img}
-          <span class="card-idx" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
-          ${soldOut ? '<span class="stamp">Нет в наличии</span>' : `<span class="stock-badge in-stock">${qty} шт.</span>`}
-        </button>
-        <div class="card-info">
-          ${item.type ? `<div class="card-type" style="color:${color}">${esc(item.type)}</div>` : ''}
-          <div class="card-name">${esc(item.name)}</div>
-          <div class="card-bottom">
-            ${hasPrice(item) ? `<span class="card-price">${esc(rub(item.sale_price))}</span>` : `<span class="card-price on-request">${ON_REQUEST}</span>`}
-            ${addBtn}
-          </div>
-        </div>
-      </div>`
+    /* Sold-out items fold away once there's something in stock to lead
+       with — unless the visitor is searching, then every hit shows. */
+    const fold = soldOut.length && inStock.length && !norm(searchText)
+    const shown = fold ? inStock : [...inStock, ...soldOut]
+    html += `<div class="card-grid">${shown.map((it, i) => card(it, i, animate)).join('')}</div>`
+    if (fold) {
+      const open = openFolds.has(fandom)
+      html += `<details class="sold-fold" data-fandom="${esc(fandom)}"${open ? ' open' : ''}>
+        <summary>${FLAT}<span>Нет в наличии · ${soldOut.length}</span><span class="chev" aria-hidden="true">▾</span></summary>
+        <div class="card-grid">${soldOut.map((it, i) => card(it, inStock.length + i, false)).join('')}</div>
+      </details>`
     }
-
-    html += '</div></div>'
+    html += '</section>'
     groupIdx++
   }
 
   if (!html) {
-    const filtered = fandomFilter || typeFilter || stockOnly
+    const filtered = fandomFilter || typeFilter || stockOnly || searchText
     html = `<div class="empty-state">
-      <p class="status">Ничего не найдено.</p>
+      ${icon('cat', '')}
+      <p class="status">Ничего не найдено${searchText ? ` по запросу «${esc(searchText.trim())}»` : ''}.</p>
       ${filtered ? '<button type="button" class="reset-btn" data-act="reset">Сбросить фильтры</button>' : ''}
     </div>`
   }
@@ -657,10 +714,20 @@ function render() {
   $('list').removeAttribute('aria-busy')
 }
 
+function setQuery(text) {
+  searchText = text
+  if ($('search-input').value !== text) $('search-input').value = text
+  $('search-clear').classList.toggle('hidden', !text)
+  render()
+}
+
 function resetFilters() {
   fandomFilter = null
   typeFilter = null
   stockOnly = false
+  searchText = ''
+  $('search-input').value = ''
+  $('search-clear').classList.add('hidden')
   renderFandomChips()
   renderChips()
   render()
@@ -694,8 +761,22 @@ document.addEventListener('click', (e) => {
     case 'type': setTypeFilter(Number(el.dataset.idx)); break
     case 'stock': toggleStockOnly(); break
     case 'reset': resetFilters(); break
+    case 'clear-search': setQuery(''); $('search-input').focus(); break
   }
 })
+
+$('search-input').addEventListener('input', (e) => setQuery(e.target.value))
+$('search-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && e.target.value) { e.stopPropagation(); setQuery('') }
+})
+
+/* <details> toggle doesn't bubble, hence the capture */
+document.addEventListener('toggle', (e) => {
+  const fold = e.target
+  if (!fold.classList || !fold.classList.contains('sold-fold')) return
+  if (fold.open) openFolds.add(fold.dataset.fandom)
+  else openFolds.delete(fold.dataset.fandom)
+}, true)
 
 /* A dead image URL used to leave a broken-image icon in the card */
 document.addEventListener('error', (e) => {
@@ -704,7 +785,8 @@ document.addEventListener('error', (e) => {
   const color = img.dataset.fallbackColor || PALETTE[0]
   const box = img.parentElement
   if (box) box.style.background = `linear-gradient(135deg,${color}22,${color}08)`
-  img.insertAdjacentHTML('afterend', icon(img.dataset.fallback, 'ph', `color:${esc(color)}`))
+  const scatter = img.dataset.id ? doodleScatter(img.dataset.id, img.dataset.fallback, esc(color)) : ''
+  img.insertAdjacentHTML('afterend', scatter + icon(img.dataset.fallback, 'ph', `color:${esc(color)}`))
   img.remove()
 }, true)
 
@@ -746,6 +828,7 @@ async function loadItems() {
   })
   saveCart()
   renderFandomChips()
+  $('search').classList.remove('hidden')
   renderChips()
   render()
   updateCartUI()
